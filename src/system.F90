@@ -75,9 +75,8 @@ module system
 
   end function
   
-   
   function point_at(a)
-   real(kind=DB), intent(in), target :: a
+   real(kind=db), intent(in), target :: a
    type(use) :: point_at
    
    point_at%z => a
