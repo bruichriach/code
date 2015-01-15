@@ -1,9 +1,9 @@
 module parallel
- use mpi
-
-#include "include.h"
  
  implicit none
+
+include 'mpif.h'
+#include "include.h"
  
  integer, parameter :: max_core=2
  integer, parameter :: ens_num=1
