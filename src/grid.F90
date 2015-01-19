@@ -290,6 +290,8 @@ module grid
       
    allocate(dat%z(dat%p%lx:dat%p%lx+dat%p%nx+1,   &
          dat%p%ly:dat%p%ly+dat%p%ny+1))
+   dat%bz => dat%z(dat%p%lx+1:dat%p%lx+dat%p%nx,   &
+         dat%p%ly+1:dat%p%ly+dat%p%ny)
    
    
    if (synced) then
@@ -394,6 +396,7 @@ module grid
    logical, intent(in) :: synced
    
    call create_var(dat%z,hgrid,synced)
+   dat%p => dat%z%p
    
   end subroutine
   
@@ -407,6 +410,7 @@ module grid
    logical, intent(in) :: synced
    
    call create_var(dat%z,ugrid,synced)
+   dat%p => dat%z%p
    
   end subroutine
   
@@ -420,6 +424,7 @@ module grid
    logical, intent(in) :: synced
    
    call create_var(dat%z,vgrid,synced)
+   dat%p => dat%z%p
    
   end subroutine
   
@@ -433,6 +438,7 @@ module grid
    logical, intent(in) :: synced
    
    call create_var(dat%z,zgrid,synced)
+   dat%p => dat%z%p
    
   end subroutine
   
@@ -447,7 +453,7 @@ module grid
    integer :: k
    
    do k=lbound(dat,1),ubound(dat,1)
-    call create_var(dat(k)%z,hgrid,synced)
+    call create_hvar(dat(k),synced)
    end do
    
   end subroutine
@@ -463,7 +469,7 @@ module grid
    integer :: k
    
    do k=lbound(dat,1),ubound(dat,1)
-    call create_var(dat(k)%z,ugrid,synced)
+    call create_uvar(dat(k),synced)
    end do
    
   end subroutine
@@ -479,7 +485,7 @@ module grid
    integer :: k
    
    do k=lbound(dat,1),ubound(dat,1)
-    call create_var(dat(k)%z,vgrid,synced)
+    call create_vvar(dat(k),synced)
    end do
    
   end subroutine
@@ -495,7 +501,7 @@ module grid
    integer :: k
    
    do k=lbound(dat,1),ubound(dat,1)
-    call create_var(dat(k)%z,zgrid,synced)
+    call create_zvar(dat(k),synced)
    end do
    
   end subroutine

@@ -23,7 +23,8 @@ module global
  
  type var
   type(grd), pointer :: p
-  real(kind=db), allocatable :: z(:,:)
+  real(kind=db), pointer :: z(:,:)
+  real(kind=db), pointer :: bz(:,:)
   type(mpi_sendrecv), allocatable :: mpi(:)
   integer :: tag
   logical :: synced
@@ -31,18 +32,22 @@ module global
   
  type hvar
   type(var) :: z
+  type(grd), pointer :: p
  end type
  
  type uvar
   type(var) :: z
+  type(grd), pointer :: p
  end type
  
  type vvar
   type(var) :: z
+  type(grd), pointer :: p
  end type
  
  type zvar
   type(var) :: z
+  type(grd), pointer :: p
  end type
  
   

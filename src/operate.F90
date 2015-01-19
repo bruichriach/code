@@ -361,10 +361,9 @@ module overload
   implicit none
   
   type(var), intent(inout) :: dat
-  real(kind=db), intent(in) :: field(dat%p%lx+1:dat%p%lx+dat%p%nx,   &
-                 dat%p%ly+1:dat%p%ly+dat%p%ny)
+  real(kind=db), intent(in) :: field(:,:)
   
-  dat%z=field
+  dat%bz=field
   
  end subroutine
  
@@ -483,15 +482,54 @@ module grid_operate
    use params
    
    type(var), intent(in) :: a
-   type(var) :: b
+   real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
    
-   
-   b%z=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
+   b=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
         a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))/dx
  
   end function
-
-
+ 
+  pure function sGy(a) result (b)
+   use global
+   use params
+   
+   type(var), intent(in) :: a
+   real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
+   
+   
+   b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1) - &
+        a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny))/dy
+ 
+  end function
+ 
+  pure function sAx(a) result (b)
+   use global
+   use params
+   
+   type(var), intent(in) :: a
+   real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
+   
+   
+   b=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) + &
+        a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))/2.0d0
+ 
+  end function
+ 
+  pure function sAy(a) result (b)
+   use global
+   use params
+   
+   type(var), intent(in) :: a
+   real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
+   
+   
+   b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1) + &
+        a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny))/2.0d0
+ 
+  end function
+  
+  
+  
 
 
 end module

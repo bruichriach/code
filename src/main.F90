@@ -5,6 +5,8 @@ program sw
  use params
  use variables
  use grid_operate
+ use sync
+ 
  
   implicit none
   
@@ -64,10 +66,33 @@ program sw
  call create_field(vtau,.false.)
  
  call create_field(f,.false.)
+ 
+ 
+ h(1)=int2real(proc_name)
+ call start_sync(h(1)%z)
   
-  print *,  u(1)%z%tag, h(1)%z%tag
-  u(1)%z=sGx(h(1)%z)
-  print *,  u(1)%z%tag, h(1)%z%tag
+  if (proc_name == proc_master) then
+   do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
+    print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
+   end do
+   do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
+    print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
+   end do
+  end if
+  call end_sync(h(1)%z)
+  v(1)%z=sAy(h(1)%z)
+  call start_sync(v(1)%z)
+  call end_sync(v(1)%z)
+  
+  
+  if (proc_name == proc_master) then
+   do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
+    print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
+   end do
+   do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
+    print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
+   end do
+  end if
   
   
   call mpi_finalize(stat)
