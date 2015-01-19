@@ -486,8 +486,8 @@ module grid_operate
    type(var) :: b
    
    
-   b%z=(a%bz(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
-        a%bz(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))/dx
+   b%z=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
+        a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))/dx
  
   end function
 

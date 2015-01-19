@@ -288,24 +288,11 @@ module grid
    ox=grid%nx-nx
    oy=grid%ny-ny
       
-   allocate(dat%z(dat%p%lx+1:dat%p%lx+dat%p%nx,   &
-         dat%p%ly+1:dat%p%ly+dat%p%ny))
-   dat%p => grid
+   allocate(dat%z(dat%p%lx:dat%p%lx+dat%p%nx+1,   &
+         dat%p%ly:dat%p%ly+dat%p%ny+1))
    
    
    if (synced) then
-    allocate(dat%bz(dat%p%lx:dat%p%lx+dat%p%nx+1,   &
-         dat%p%ly:dat%p%ly+dat%p%ny+1))
-    do j=dat%p%ly,dat%p%ly+dat%p%ny+1
-     do i=dat%p%lx,dat%p%lx+dat%p%nx+1
-      dat%bz(i,j) = point_at(null_field)
-     end do
-    end do
-    do j=dat%p%ly+1,dat%p%ly+dat%p%ny
-     do i=dat%p%lx+1,dat%p%lx+dat%p%nx
-      dat%bz(i,j) = point_at(dat%z(i,j))
-     end do
-    end do
        
     dat%tag=max_tag
     max_tag=max_tag+1
@@ -321,7 +308,6 @@ module grid
       allocate(dat%mpi(k)%s(j),dat%mpi(k)%r(j),    &
           dat%mpi(k)%s_mpi(j),dat%mpi(k)%r_mpi(j))
       dat%mpi(k)%r%slip=unity
-      dat%mpi(k)%r%z=null_field
       dat%mpi(k)%r_req=mpi_request_null
       dat%mpi(k)%s_req=mpi_request_null
      end if
@@ -365,29 +351,29 @@ module grid
      l=0
      if (south == j) then
       do i=1,dat%p%nx
-       dat%bz(dat%p%lx+i,dat%p%ly) =  &
-         point_at(dat%mpi(j)%r(l+i)%z)
+       dat%mpi(j)%r(l+i)%z =  &
+         point_at(dat%z(dat%p%lx+i,dat%p%ly))
       end do
       l=l+dat%p%nx
      end if
      if (north == j) then
       do i=1,dat%p%nx
-       dat%bz(dat%p%lx+i,dat%p%ly+dat%p%ny+1) =  &
-         point_at(dat%mpi(j)%r(l+i)%z)
+       dat%mpi(j)%r(l+i)%z =  &
+         point_at(dat%z(dat%p%lx+i,dat%p%ly+dat%p%ny+1))
       end do
       l=l+dat%p%nx
      end if
      if (west == j) then
        do i=1,dat%p%ny
-        dat%bz(dat%p%lx,dat%p%ly+i) =  &
-          point_at(dat%mpi(j)%r(l+i)%z)
+         dat%mpi(j)%r(l+i)%z =  &
+          point_at(dat%z(dat%p%lx,dat%p%ly+i))
        end do
       l=l+dat%p%ny
      end if
      if (east == j) then
       do i=1,dat%p%ny
-       dat%bz(dat%p%lx+dat%p%nx+1,dat%p%ly+i) =  &
-         point_at(dat%mpi(j)%r(l+i)%z)
+        dat%mpi(j)%r(l+i)%z =  &
+         point_at(dat%z(dat%p%lx+dat%p%nx+1,dat%p%ly+i))
       end do
       l=l+dat%p%ny
      end if
@@ -578,7 +564,7 @@ module sync
     if (allocated(dat%mpi(k)%r_mpi)) then
      call mpi_wait(dat%mpi(k)%r_req,mpi_status_ignore,stat)
      do i=1,ubound(dat%mpi(k)%r_mpi,1)
-      dat%mpi(k)%r(i)%z=sign(dat%mpi(k)%r_mpi(i),dat%mpi(k)%r_mpi(i)*dat%mpi(k)%r(i)%slip)
+      dat%mpi(k)%r(i)%z%z=sign(dat%mpi(k)%r_mpi(i),dat%mpi(k)%r_mpi(i)*dat%mpi(k)%r(i)%slip)
      end do
     end if
    end do

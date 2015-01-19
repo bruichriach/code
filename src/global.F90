@@ -3,7 +3,7 @@ module global
  use overloading
  
  type bound
-  real(kind=db) :: z
+  type(use) :: z
   real(kind=db) :: slip
  end type
 
@@ -24,7 +24,6 @@ module global
  type var
   type(grd), pointer :: p
   real(kind=db), allocatable :: z(:,:)
-  type(use), allocatable :: bz(:,:)
   type(mpi_sendrecv), allocatable :: mpi(:)
   integer :: tag
   logical :: synced

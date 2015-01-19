@@ -96,7 +96,6 @@ module overloading
  
  interface assignment (=)
    module procedure usereal_ass
-   module procedure realuse_ass
  end interface
  
  interface operator (+)
@@ -140,18 +139,6 @@ module overloading
    real(kind=db), intent(out) :: v3
    
    v3 = v1%z
-   
-  end subroutine
- 
-  elemental subroutine realuse_ass(v3,v1)
-   use system
-  
-   implicit none
-  
-   real(kind=db), intent(in) :: v1
-   type(use), intent(out) :: v3
-   
-   v3%z = v1
    
   end subroutine
   
