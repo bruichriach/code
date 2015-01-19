@@ -70,32 +70,36 @@ program sw
  
  h(1)=int2real(proc_name)
  call start_sync(h(1)%z)
+ call end_sync(h(1)%z)
   
-  if (proc_name == proc_master) then
-   do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
-    print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
-   end do
-   do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
-    print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
-   end do
-  end if
-  call end_sync(h(1)%z)
-  v(1)%z=sAy(h(1)%z)
-  call start_sync(v(1)%z)
-  call end_sync(v(1)%z)
+ if (proc_name == proc_master) then
+  do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
+   print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
+  end do
+  do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
+   print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
+  end do
+ end if
   
+ v(1)=Ay(h(1))
+ call start_sync(v(1)%z)
+ h(1)=Ay(v(1))
+ call start_sync(h(1)%z)
+ call end_sync(v(1)%z)
+ call end_sync(h(1)%z)
+ 
   
-  if (proc_name == proc_master) then
-   do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
-    print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
-   end do
-   do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
-    print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
-   end do
-  end if
+ if (proc_name == proc_master) then
+  do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
+   print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
+  end do
+  do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
+   print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
+  end do
+ end if
+ 
   
-  
-  call mpi_finalize(stat)
+ call mpi_finalize(stat)
 
 
 end program
