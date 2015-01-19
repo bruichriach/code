@@ -4,6 +4,7 @@ program sw
  use grid
  use params
  use variables
+ use grid_operate
  
   implicit none
   
@@ -64,6 +65,9 @@ program sw
  
  call create_field(f,.false.)
   
+  print *,  u(1)%z%tag, h(1)%z%tag
+  u(1)%z=sGx(h(1)%z)
+  print *,  u(1)%z%tag, h(1)%z%tag
   
   
   call mpi_finalize(stat)

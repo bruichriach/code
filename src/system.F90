@@ -131,7 +131,7 @@ module overloading
  
  
  
-  pure subroutine usereal_ass(v3,v1)
+  elemental subroutine usereal_ass(v3,v1)
    use system
   
    implicit none
@@ -143,7 +143,7 @@ module overloading
    
   end subroutine
  
-  pure subroutine realuse_ass(v3,v1)
+  elemental subroutine realuse_ass(v3,v1)
    use system
   
    implicit none
@@ -166,7 +166,7 @@ module overloading
   
   
  
-  pure function use_add(v1,v2) result (v3)
+  elemental function use_add(v1,v2) result (v3)
    use system
   
    implicit none
@@ -178,7 +178,7 @@ module overloading
    
   end function
  
-  pure function usereal_add(v1,v2) result (v3)
+  elemental function usereal_add(v1,v2) result (v3)
    use system
   
    implicit none
@@ -192,7 +192,7 @@ module overloading
   end function
   
  
-  pure function realuse_add(v1,v2) result (v3)
+  elemental function realuse_add(v1,v2) result (v3)
    use system
   
    implicit none
@@ -213,7 +213,7 @@ module overloading
   
   
  
-  pure function usereal_sub(v1,v2) result (v3)
+  elemental function usereal_sub(v1,v2) result (v3)
    use system
   
    implicit none
@@ -227,7 +227,7 @@ module overloading
    
   end function
  
-  pure function use_sub(v1,v2) result (v3)
+  elemental function use_sub(v1,v2) result (v3)
    use system
   
    implicit none
@@ -240,7 +240,7 @@ module overloading
    
   end function
  
-  pure function realuse_sub(v1,v2) result (v3)
+  elemental function realuse_sub(v1,v2) result (v3)
    use system
   
    implicit none
@@ -261,7 +261,7 @@ module overloading
   
   
  
-  pure function usereal_dot(v1,v2) result (v3)
+  elemental function usereal_dot(v1,v2) result (v3)
    use system
   
    implicit none
@@ -274,7 +274,7 @@ module overloading
    
   end function
  
-  pure function use_dot(v1,v2) result (v3)
+  elemental function use_dot(v1,v2) result (v3)
    use system
   
    implicit none
@@ -286,7 +286,7 @@ module overloading
    
   end function
  
-  pure function realuse_dot(v1,v2) result (v3)
+  elemental function realuse_dot(v1,v2) result (v3)
    use system
   
    implicit none
@@ -309,7 +309,7 @@ module overloading
   
   
  
-  pure function usereal_div(v1,v2) result (v3)
+  elemental function usereal_div(v1,v2) result (v3)
    use system
   
    implicit none
@@ -323,7 +323,7 @@ module overloading
    
   end function
  
-  pure function use_div(v1,v2) result (v3)
+  elemental function use_div(v1,v2) result (v3)
    use system
   
    implicit none
@@ -336,7 +336,7 @@ module overloading
    
   end function
  
-  pure function realuse_div(v1,v2) result (v3)
+  elemental function realuse_div(v1,v2) result (v3)
    use system
   
    implicit none
