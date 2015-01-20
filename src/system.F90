@@ -40,6 +40,7 @@ module system
  integer :: stat
  real(kind=db), parameter :: unity=1.0d0
  real(kind=db), target :: null_field=1.0d99
+
  
  type use
   real(kind=db), pointer :: z
@@ -47,6 +48,7 @@ module system
  
 
  contains
+  
  
   function is_factor(m,n)
  

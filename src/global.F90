@@ -21,10 +21,25 @@ module global
   integer :: lx, ly, nx, ny
  end type
  
+ type send_dat
+  real(kind=db), allocatable :: dat(:)
+ end type send_dat
+ 
+ type out_var
+  integer :: tag
+  integer :: req
+  integer, allocatable :: req_master(:)
+  real(kind=db), allocatable :: send(:)
+  type(send_dat), allocatable :: recv(:)
+  real(kind=db), allocatable :: z(:,:)
+  character(8) name
+ end type out_var
+ 
  type var
   type(grd), pointer :: p
   real(kind=db), pointer :: z(:,:)
   real(kind=db), pointer :: bz(:,:)
+  type(out_var) :: out
   type(mpi_sendrecv), allocatable :: mpi(:)
   integer :: tag
   logical :: synced
@@ -52,6 +67,23 @@ module global
  
   
  type(grd), target :: hgrid, ugrid, vgrid, zgrid
+ 
+ contains
+ 
+  subroutine print_var(dat)
+  
+   implicit none
+   
+   type(var), intent(in) :: dat
+   integer :: i,j
+   
+   print *
+   do j=dat%p%ly,dat%p%ly+dat%p%ny+1
+    print *,  (dat%z(i,j) , i=dat%p%lx,dat%p%lx+dat%p%nx+1)
+   end do
+   print *
+  
+  end subroutine
   
 end module
 
@@ -68,6 +100,10 @@ module variables
  type(hvar) :: h(nz)
  type(uvar) :: u(nz)
  type(vvar) :: v(nz)
+ 
+ type(hvar), pointer :: tendh0(:),tendh1(:),tendh2(:),tendh3(:)
+ type(uvar), pointer :: tendu0(:),tendu1(:),tendu2(:),tendu3(:)
+ type(vvar), pointer :: tendv0(:),tendv1(:),tendv2(:),tendv3(:)
  
  type(hvar) :: h_tmp(nz)
  type(uvar) :: u_tmp(nz)

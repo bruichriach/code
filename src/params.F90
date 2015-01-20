@@ -3,7 +3,7 @@ module params
  
  implicit none
 
- integer, parameter :: mx=2, my=4
+ integer, parameter :: mx=2, my=8
  integer, parameter :: nz=3
  real(kind=db), parameter :: dx=0.1d0, dy=0.1d0
 #ifdef DOUBLE_PRECISION

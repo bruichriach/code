@@ -6,6 +6,8 @@ program sw
  use variables
  use grid_operate
  use sync
+ use solver
+ use solver_variables
  
  
   implicit none
@@ -26,7 +28,7 @@ program sw
   call set_grids()
   
 
- call create_field(s,.false.)
+ call create_field(s,.true.)
  
  call create_field(depth,.true.)
  call create_field(mindepth,.false.)
@@ -34,6 +36,22 @@ program sw
  call create_field(h,.true.)
  call create_field(u,.true.)
  call create_field(v,.true.)
+ 
+ allocate(tendh1(nz),tendh2(nz),tendh3(nz))
+ allocate(tendu1(nz),tendu2(nz),tendu3(nz))
+ allocate(tendv1(nz),tendv2(nz),tendv3(nz))
+ 
+ call create_field(tendh1,.false.)
+ call create_field(tendu1,.false.)
+ call create_field(tendv1,.false.)
+ 
+ call create_field(tendh2,.false.)
+ call create_field(tendu2,.false.)
+ call create_field(tendv2,.false.)
+ 
+ call create_field(tendh3,.false.)
+ call create_field(tendu3,.false.)
+ call create_field(tendv3,.false.)
  
  call create_field(h_tmp,.false.)
  call create_field(u_tmp,.false.)
@@ -68,35 +86,36 @@ program sw
  call create_field(f,.false.)
  
  
- h(1)=int2real(proc_name)
+ 
+ s=-1.0d0
+ call start_sync(s%z)
+ call end_sync(s%z)
+ 
+ h(1)=1.0d0
  call start_sync(h(1)%z)
- call end_sync(h(1)%z)
-  
- if (proc_name == proc_master) then
-  do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
-   print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
-  end do
-  do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
-   print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
-  end do
- end if
-  
- v(1)=Ay(h(1))
- call start_sync(v(1)%z)
- h(1)=Ay(v(1))
- call start_sync(h(1)%z)
- call end_sync(v(1)%z)
  call end_sync(h(1)%z)
  
+ call set_solver()
   
- if (proc_name == proc_master) then
-  do j=h(1)%p%ly,h(1)%p%ly+h(1)%p%ny+1
-   print *,  (h(1)%z%z(i,j) , i=h(1)%p%lx,h(1)%p%lx+h(1)%p%nx+1)
-  end do
-  do j=v(1)%p%ly,v(1)%p%ly+v(1)%p%ny+1
-   print *,  (v(1)%z%z(i,j) , i=v(1)%p%lx,v(1)%p%lx+v(1)%p%nx+1)
-  end do
+ v(2)=pi*v(1)%p%y/y0
+ call start_sync(v(2)%z)
+ call end_sync(v(2)%z)
+ v(1)=cos(2.0d0*pi*v(1)%p%y/y0)
+ call start_sync(v(1)%z)
+ call end_sync(v(1)%z)
+ 
+ 
+ inty=Gy(v(1))
+ 
+ call surfpressure(stat)
+ 
+ call end_sync(pres%z)
+ 
+ 
+ if (proc_name == 1) then
+  call print_var(pres%z)
  end if
+ 
  
   
  call mpi_finalize(stat)

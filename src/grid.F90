@@ -290,8 +290,10 @@ module grid
       
    allocate(dat%z(dat%p%lx:dat%p%lx+dat%p%nx+1,   &
          dat%p%ly:dat%p%ly+dat%p%ny+1))
-   dat%bz => dat%z(dat%p%lx+1:dat%p%lx+dat%p%nx,   &
+   dat%bz =>  &
+         dat%z(dat%p%lx+1:dat%p%lx+dat%p%nx,   &
          dat%p%ly+1:dat%p%ly+dat%p%ny)
+   dat%bz(dat%p%lx+1:,dat%p%ly+1:) => dat%bz
    
    
    if (synced) then
