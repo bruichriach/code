@@ -1,0 +1,296 @@
+module solver_variables
+ use global
+ use params
+
+ implicit none
+
+ type(hvar) :: pres, p, r
+ type(uvar) :: thavx,inthavx
+ type(vvar) :: thavy,inthavy
+ type(hvar) :: inty
+ type(hvar) :: y(nz)
+ type(hvar) :: ap, z
+
+end module
+
+module solver
+ 
+ 
+ implicit none
+ 
+ 
+ 
+ contains
+ 
+ subroutine set_solver()
+  use solver_variables
+  use variables
+  use params
+  use grid_operate
+  use grid
+  use sync
+  use params
+  
+  implicit none
+  
+  integer :: i
+ 
+  call create_field(pres,.true.)
+  call create_field(p,.true.)
+  call create_field(r,.true.)
+  call create_field(y,.false.)
+  call create_field(inty,.false.)
+  call create_field(thavx,.false.)
+  call create_field(thavy,.false.)
+  call create_field(inthavx,.false.)
+  call create_field(inthavy,.false.)
+  call create_field(ap,.false.)
+  call create_field(z,.false.)
+  
+  
+  pres%z%z=0.0d0
+  call start_sync(pres%z)
+  r%z%z=0.0d0
+  call start_sync(r%z)
+  p%z%z=0.0d0
+  call start_sync(p%z)
+  
+  
+  
+  
+  call end_sync(s%z)
+  thavx%z%bz=-Ax(s)
+  thavy%z%bz=-Ay(s)
+       
+   
+  inthavx%z%bz=merge(0.0d0,1.0d0/thavx%z%bz,(thavx%z%bz == 0.0d0))
+  inthavy%z%bz=merge(0.0d0,1.0d0/thavy%z%bz,(thavy%z%bz == 0.0d0))
+  
+  
+ end subroutine
+ 
+  
+ 
+ 
+ 
+ subroutine surfpressure(ierr)
+  use solver_variables
+  use parallel
+  use grid_operate
+  use sync
+ 
+ 
+  implicit none
+
+  integer :: n
+  integer, intent(out) :: ierr
+  real (kind=8) :: alpha, rdotold, rdotnew, rdotfirst, rdotfrac
+  real (kind=8) :: pdotap, p_0
+  real (kind=8) :: pdotap_tmp, rdotnew_tmp, p_0_tmp
+   
+  
+   
+  ierr = 0
+  p_0=0
+ ! p_0_tmp=sum(pres%z%z(1:pres%nx,1:pres%ny))
+ ! call real_allsum(p_0_tmp, p_0)
+ ! p_0=p_0/real(mx*my)
+  
+  
+  
+ ! pres%z%z%z%z=0.0d0!pres%z%z%z%z-p_0
+ ! r%z%z%z%z=0.0d0
+ ! p%z%z%z%z=0.0d0
+ 
+ 
+  call end_sync(pres%z)
+  
+  ap=Gx(thavx%z%bz*Gx(pres))+   &
+            Gy(thavy%z%bz*Gy(pres))
+            
+  
+ 
+ 
+  
+  r =  inty
+  
+  call start_sync(r%z)
+  
+   
+  rdotfrac = 1.0d-16
+   
+  
+  
+  call end_sync(r%z)
+  z=Ax(inthavx%z%bz*Ax(r))+Ay(inthavy%z%bz*Ay(r))
+  
+   
+ 
+    
+  rdotnew_tmp = sum(z%z%bz*r%z%bz)
+  call real_allsum(rdotnew_tmp, rdotold)
+  rdotfirst = rdotfrac*rdotold
+
+  !if (proc_name == proc_master) print *, rdotold
+
+
+  r =  inty%z%bz - ap%z%bz
+
+  call start_sync(r%z)
+
+
+
+  call end_sync(r%z)
+
+  z=Ax(inthavx%z%bz*Ax(r))+Ay(inthavy%z%bz*Ay(r))
+
+
+  p = z%z%bz
+
+  call start_sync(p%z)
+
+  rdotnew_tmp = sum(z%z%bz*r%z%bz)
+  call real_allsum(rdotnew_tmp, rdotold)
+
+
+ 
+
+ ! if (proc_name == proc_master) print *, rdotold
+ 
+ 
+  do n = 1, 1000
+  
+     
+   if (abs(rdotold) /= 0.0) then
+   
+      
+   call end_sync(p%z)
+   ap=Gx(thavx%z%bz*Gx(p))+Gy(thavy%z%bz*Gy(p))
+  
+   
+   
+   pdotap_tmp=sum(p%z%bz*ap%z%bz)
+   call real_allsum(pdotap_tmp, pdotap)
+    
+   
+   alpha = rdotold/pdotap
+   
+     
+   
+     
+   r%z%bz=r%z%bz-alpha*ap%z%bz
+   
+   
+   
+   call start_sync(r%z)
+   
+   
+  
+   pres%z%bz=pres%z%bz+alpha*p%z%bz
+   
+   
+   
+   
+   call end_sync(r%z)
+   
+   z=Ax(inthavx%z%bz*Ax(r))+Ay(inthavy%z%bz*Ay(r))
+   
+   
+      
+   rdotnew_tmp = sum(z%z%bz*r%z%bz)
+   call real_allsum(rdotnew_tmp, rdotnew)
+        
+        
+  
+   p%z%bz=z%z%bz+(rdotnew/rdotold)*p%z%bz
+   
+   call start_sync(p%z)
+    
+   
+   
+   rdotold=rdotnew
+!   if (proc_name == proc_master) print *, n, rdotold, pdotap
+
+
+  
+
+   if (abs(rdotold) <=  rdotfirst) then
+  
+ 
+   !if (proc_name == ens_master) print *, ens_name, n, rdotold
+    call start_sync(pres%z)
+    
+    
+    return
+   end if
+   
+   else
+   
+    if (proc_name == ens_master) then
+     print *, 'exact solve'
+     print *, ens_name
+    end if
+   
+    call start_sync(pres%z)
+
+    
+    return
+   
+   end if
+   
+  end do
+   
+  if (proc_name == ens_master) then
+   print *, 'no convergence'
+   print *, rdotold, ens_name
+  end if
+  ierr=1
+  
+  
+   
+    call start_sync(pres%z)
+   
+  return
+ 
+ end subroutine
+ 
+ subroutine prescorrection(n)
+  use solver_variables
+  use global
+  use grid_operate
+  use sync
+  use params
+  use variables
+  use overload
+  
+ 
+  implicit none
+ 
+  integer :: i
+  integer, intent(in) :: n
+  type(uvar), pointer :: tendu
+  type(vvar), pointer :: tendv
+  
+  
+   do i=1,nz
+    if (n == 1) then
+     tendu => tendu2(i)
+     tendv => tendv2(i)
+    else
+     tendu => tendu1(i)
+     tendv => tendv1(i)
+    end if
+    call end_sync(pres%z)
+    tendu=tendu%z%bz + Gx(pres)
+    tendv=tendv%z%bz + Gy(pres)
+   end do
+  
+  
+  
+  return
+ 
+ end subroutine
+    
+end module
+ 
+
