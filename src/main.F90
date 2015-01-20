@@ -1,5 +1,5 @@
 program sw
- use system
+ use sys
  use parallel
  use grid
  use params

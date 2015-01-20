@@ -12,6 +12,7 @@ include 'mpif.h'
  integer :: ens_name, ens_images, ens_master
  integer :: max_tag=0
  integer :: mobile_tag=0
+ integer, allocatable :: proc_grid(:,:)
 #ifdef DOUBLE_PRECISION
  integer, parameter :: mpi_precision=mpi_double_precision
 #else
@@ -26,7 +27,7 @@ end module
 
 
 
-module system
+module sys
 
 #include "include.h"
  
@@ -133,7 +134,7 @@ module overloading
  
  
   elemental subroutine usereal_ass(v3,v1)
-   use system
+   use sys
   
    implicit none
   
@@ -156,7 +157,7 @@ module overloading
   
  
   elemental function use_add(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -168,7 +169,7 @@ module overloading
   end function
  
   elemental function usereal_add(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -182,7 +183,7 @@ module overloading
   
  
   elemental function realuse_add(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -203,7 +204,7 @@ module overloading
   
  
   elemental function usereal_sub(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -217,7 +218,7 @@ module overloading
   end function
  
   elemental function use_sub(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -230,7 +231,7 @@ module overloading
   end function
  
   elemental function realuse_sub(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -251,7 +252,7 @@ module overloading
   
  
   elemental function usereal_dot(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -264,7 +265,7 @@ module overloading
   end function
  
   elemental function use_dot(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -276,7 +277,7 @@ module overloading
   end function
  
   elemental function realuse_dot(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -299,7 +300,7 @@ module overloading
   
  
   elemental function usereal_div(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -313,7 +314,7 @@ module overloading
   end function
  
   elemental function use_div(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   
@@ -326,7 +327,7 @@ module overloading
   end function
  
   elemental function realuse_div(v1,v2) result (v3)
-   use system
+   use sys
   
    implicit none
   

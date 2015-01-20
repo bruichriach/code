@@ -1,5 +1,5 @@
 module global
- use system
+ use sys
  use overloading
  
  type bound
@@ -18,7 +18,7 @@ module global
  type grd
   real (kind = db), allocatable :: x(:,:), y(:,:)
   integer, allocatable :: i(:,:), j(:,:)
-  integer :: lx, ly, nx, ny
+  integer :: lx, ly, nx, ny, ox, oy
  end type
  
  type send_dat
@@ -32,6 +32,7 @@ module global
   real(kind=db), allocatable :: send(:)
   type(send_dat), allocatable :: recv(:)
   real(kind=db), allocatable :: z(:,:)
+  integer, pointer :: grid(:,:,:)
   character(8) name
  end type out_var
  

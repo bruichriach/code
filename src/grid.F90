@@ -28,7 +28,7 @@ module grid
    integer :: core, node
    integer :: grid_core, grid_node
    integer, allocatable :: node_names(:,:), core_names(:,:), names(:,:)
-   integer :: node_grid(mx,my), grid(mx,my)
+   integer :: node_grid(mx,my)
    integer :: i, j, k, i1, j1
    
    if (max_core > proc_num) then
@@ -117,20 +117,22 @@ module grid
    
 !   print *, proc_name, west, east, north, south
    
+   allocate(proc_grid(0:mx+1,0:my+1))
+   proc_grid = -1
    
    do j=1,my
     do i=1,mx
-     grid(i,j)=names(   &
+     proc_grid(i,j)=names(   &
      ceiling(dble(node_x*core_x)*(dble(i)-0.5d0)/dble(mx)),  &
      ceiling(dble(node_y*core_y)*(dble(j)-0.5d0)/dble(my)))
     end do
    end do
    
    
-   nx=count((count((grid(1:mx,1:my) == proc_name),2) /= 0))
-   ny=count((count((grid(1:mx,1:my) == proc_name),1) /= 0))
-   lx = maxloc(count((grid(1:mx,1:my) == proc_name),2),1)-1
-   ly = maxloc(count((grid(1:mx,1:my) == proc_name),1),1)-1
+   nx=count((count((proc_grid(1:mx,1:my) == proc_name),2) /= 0))
+   ny=count((count((proc_grid(1:mx,1:my) == proc_name),1) /= 0))
+   lx = maxloc(count((proc_grid(1:mx,1:my) == proc_name),2),1)-1
+   ly = maxloc(count((proc_grid(1:mx,1:my) == proc_name),1),1)-1
    
 !   if (proc_name == proc_master) print *, grid
    
@@ -143,7 +145,7 @@ module grid
   end subroutine
  
   subroutine split_axes(mx, my, n, nx, ny)
-   use system
+   use sys
    use parallel
    
    implicit none
@@ -212,6 +214,8 @@ module grid
    end do
    hgrid%lx=lx
    hgrid%ly=ly
+   zgrid%ox=0
+   zgrid%oy=0
    hgrid%nx=nx
    hgrid%ny=ny
    
@@ -231,6 +235,8 @@ module grid
    end do
    ugrid%lx=lx
    ugrid%ly=ly
+   zgrid%ox=1
+   zgrid%oy=0
    ugrid%nx=nx+1
    ugrid%ny=ny
    
@@ -248,6 +254,8 @@ module grid
    end do
    vgrid%lx=lx
    vgrid%ly=ly
+   zgrid%ox=0
+   zgrid%oy=1
    vgrid%nx=nx
    vgrid%ny=ny+1
    
@@ -265,6 +273,8 @@ module grid
    end do
    zgrid%lx=lx
    zgrid%ly=ly
+   zgrid%ox=1
+   zgrid%oy=1
    zgrid%nx=nx+1
    zgrid%ny=ny+1
   
@@ -281,12 +291,10 @@ module grid
    
    type(var), intent(out) :: dat
    type(grd), target, intent(in) :: grid
-   integer :: i,j,k,l,ox,oy
+   integer :: i,j,k,l
    logical, intent(in) :: synced
    
    dat%p => grid
-   ox=grid%nx-nx
-   oy=grid%ny-ny
       
    allocate(dat%z(dat%p%lx:dat%p%lx+dat%p%nx+1,   &
          dat%p%ly:dat%p%ly+dat%p%ny+1))
@@ -323,28 +331,28 @@ module grid
      if (north == j) then
       do i=1,dat%p%nx
        dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+i,dat%p%ly+dat%p%ny-oy))
+         point_at(dat%z(dat%p%lx+i,dat%p%ly+dat%p%ny-dat%p%oy))
       end do
       l=l+dat%p%nx
      end if
      if (south == j) then
       do i=1,dat%p%nx
        dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+i,dat%p%ly+1+oy))
+         point_at(dat%z(dat%p%lx+i,dat%p%ly+1+dat%p%oy))
       end do
       l=l+dat%p%nx
      end if
      if (east == j) then
       do i=1,dat%p%ny
        dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+dat%p%nx-ox,dat%p%ly+i))
+         point_at(dat%z(dat%p%lx+dat%p%nx-dat%p%ox,dat%p%ly+i))
       end do
       l=l+dat%p%ny
      end if
      if (west == j) then
       do i=1,dat%p%ny
        dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+1+ox,dat%p%ly+i))
+         point_at(dat%z(dat%p%lx+1+dat%p%ox,dat%p%ly+i))
       end do
       l=l+dat%p%ny
      end if
@@ -587,7 +595,7 @@ module sync
   
   subroutine integer_allmax(in, out)
    use parallel
-   use system
+   use sys
    
    implicit none
   
@@ -620,7 +628,7 @@ module sync
 
   subroutine real_allsum(in, out)
    use parallel
-   use system
+   use sys
 
    implicit none
   
@@ -659,7 +667,7 @@ module sync
   
   subroutine real_allmax(in, out)
    use parallel
-   use system
+   use sys
    
    implicit none
   
