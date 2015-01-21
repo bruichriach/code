@@ -32,8 +32,6 @@ module solver
   use params
   
   implicit none
-  
-  integer :: i
  
   call create_field(pres,.true.)
   call create_field(p,.true.)
@@ -86,7 +84,7 @@ module solver
   integer, intent(out) :: ierr
   real (kind=8) :: alpha, rdotold, rdotnew, rdotfirst, rdotfrac
   real (kind=8) :: pdotap, p_0
-  real (kind=8) :: pdotap_tmp, rdotnew_tmp, p_0_tmp
+  real (kind=8) :: pdotap_tmp, rdotnew_tmp
    
   
    

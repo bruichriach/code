@@ -392,8 +392,6 @@ module grid
     end do
     
    end if
-   
-   print *, size(dat%bz), proc_name
     
   end subroutine
   

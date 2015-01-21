@@ -12,8 +12,6 @@ program sw
  
   implicit none
   
-  integer :: i,j,k
-  
   call mpi_init(stat)
   
   call mpi_comm_rank(mpi_comm_world, proc_name, stat)
@@ -100,22 +98,13 @@ program sw
  v(2)=2.0d0*pi*v(1)%p%y/y0
  call start_sync(v(2))
  call end_sync(v(2))
- if (proc_name == 0) then
-  call print_var(v(2))
- end if
+ 
  v(1)=cos(v(2)%bz)
  call start_sync(v(1))
  call end_sync(v(1))
- if (proc_name == 0) then
-  call print_var(v(1))
- end if
  
  
  inty=Gy(v(1))
- 
- if (proc_name == 0) then
-  call print_var(inty)
- end if
  
  call surfpressure(stat)
  
