@@ -7,7 +7,7 @@ F90=mpif90
 
 default: all
 
-OBJS = system.o global.o params.o grid.o operate.o solver.o writeout.o
+OBJS = system.o global.o params.o grid.o writeout.o allocation.o operate.o solver.o
 
 
 %.o: src/%.F90

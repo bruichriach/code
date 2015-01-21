@@ -33,7 +33,7 @@ module global
   type(send_dat), allocatable :: recv(:)
   real(kind=db), allocatable :: z(:,:)
   integer, pointer :: grid(:,:,:)
-  character(8) name
+  character(16) name
  end type out_var
  
  type var
@@ -131,5 +131,21 @@ module variables
  type(zvar) :: f
 
 
+
+end module
+
+
+module solver_variables
+ use global
+ use params
+
+ implicit none
+
+ type(hvar) :: pres, p, r
+ type(uvar) :: thavx,inthavx
+ type(vvar) :: thavy,inthavy
+ type(hvar) :: inty
+ type(hvar) :: y(nz)
+ type(hvar) :: ap, z
 
 end module

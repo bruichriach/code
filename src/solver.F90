@@ -1,17 +1,4 @@
-module solver_variables
- use global
- use params
 
- implicit none
-
- type(hvar) :: pres, p, r
- type(uvar) :: thavx,inthavx
- type(vvar) :: thavy,inthavy
- type(hvar) :: inty
- type(hvar) :: y(nz)
- type(hvar) :: ap, z
-
-end module
 
 module solver
  
@@ -30,10 +17,11 @@ module solver
   use grid
   use sync
   use params
+  use allocation
   
   implicit none
  
-  call create_field(pres,.true.)
+  call create_field(pres,'pres',.true.)
   call create_field(p,.true.)
   call create_field(r,.true.)
   call create_field(y,.false.)

@@ -8,6 +8,8 @@ program sw
  use sync
  use solver
  use solver_variables
+ use writeout
+ use allocation
  
  
   implicit none
@@ -23,25 +25,26 @@ program sw
   
   call split_domain(mx, my, lx, nx, ly, ny, north, south, east, west)
   
-  call set_grids()
+  call set_grids
+  call init_write_grids
   
 
- call create_field(s,.true.)
+ call create_field(s,'s',.true.)
  
- call create_field(depth,.true.)
+ call create_field(depth,'d',.true.)
  call create_field(mindepth,.false.)
  
- call create_field(h,.true.)
- call create_field(u,.true.)
- call create_field(v,.true.)
+ call create_field(h,'h',.true.)
+ call create_field(u,'u',.true.)
+ call create_field(v,'v',.true.)
  
  allocate(tendh1(nz),tendh2(nz),tendh3(nz))
  allocate(tendu1(nz),tendu2(nz),tendu3(nz))
  allocate(tendv1(nz),tendv2(nz),tendv3(nz))
  
- call create_field(tendh1,.false.)
- call create_field(tendu1,.false.)
- call create_field(tendv1,.false.)
+ call create_field(tendh1,'tendh',.false.)
+ call create_field(tendu1,'tendu',.false.)
+ call create_field(tendv1,'tendv',.false.)
  
  call create_field(tendh2,.false.)
  call create_field(tendu2,.false.)
@@ -55,33 +58,33 @@ program sw
  call create_field(u_tmp,.false.)
  call create_field(v_tmp,.false.)
  
- call create_field(ke,.true.)
- call create_field(ape,.false.)
+ call create_field(ke,'ke',.true.)
+ call create_field(ape,'ape',.false.)
  
- call create_field(zeta,.false.)
+ call create_field(zeta,'z',.false.)
  
- call create_field(lapu,.true.)
- call create_field(lapv,.true.)
+ call create_field(lapu,'lapu',.true.)
+ call create_field(lapv,'lapv',.true.)
  
- call create_field(smag,.true.)
- call create_field(tension,.true.)
- call create_field(strain,.false.)
+ call create_field(smag,'smag',.true.)
+ call create_field(tension,'tension',.true.)
+ call create_field(strain,'strain',.false.)
  
- call create_field(smagu,.false.)
- call create_field(smagv,.false.)
+ call create_field(smagu,'smagu',.false.)
+ call create_field(smagv,'smagv',.false.)
  
- call create_field(q,.false.)
+ call create_field(q,'q',.false.)
   
- call create_field(m,.true.)
+ call create_field(m,'m',.true.)
  call create_field(minm,.false.)
  
- call create_field(bfricu,.false.)
- call create_field(bfricv,.false.)
+ call create_field(bfricu,'bfricu',.false.)
+ call create_field(bfricv,'bfricv',.false.)
  
- call create_field(utau,.false.)
- call create_field(vtau,.false.)
+ call create_field(utau,'utau',.false.)
+ call create_field(vtau,'vtau',.false.)
  
- call create_field(f,.false.)
+ call create_field(f,'f',.false.)
  
  
  
@@ -103,6 +106,8 @@ program sw
  call start_sync(v(1))
  call end_sync(v(1))
  
+ 
+ call write_main('in')
  
  inty=Gy(v(1))
  

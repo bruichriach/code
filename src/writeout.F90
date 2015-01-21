@@ -35,7 +35,7 @@ MODULE writeout
                            (proc_grid(0:mx,1:my) == k)))
    vgrid_out(:,:,k)=merge(1,0,((proc_grid(1:mx,1:my+1) == k).or.&
                            (proc_grid(1:mx,0:my) == k)))
-   ugrid_out(:,:,k)=merge(1,0,(((proc_grid(1:mx+1,1:my+1) == k).or.&
+   zgrid_out(:,:,k)=merge(1,0,(((proc_grid(1:mx+1,1:my+1) == k).or.&
                            (proc_grid(0:mx,1:my+1) == k)).or. &
                            ((proc_grid(1:mx+1,0:my) == k).or. &
                            (proc_grid(0:mx,0:my) == k))))
@@ -44,7 +44,7 @@ MODULE writeout
  
  end subroutine
  
- subroutine write_config(dat,grid)
+ subroutine write_config(dat)
   use writeout_grid
   use variables
   use parallel
@@ -52,13 +52,11 @@ MODULE writeout
   implicit none
  
   type(var), intent(inout) :: dat
-  integer, intent(in) :: grid(:,:,:)
   character(32) :: filename
   logical :: dir_e
   
   
    call mpi_barrier(mpi_comm_world,stat)
-   call init_writeouts(dat,grid)
    call init_var_write(dat)
    if (proc_name == ens_master) then
     write (filename, "(a1,i4.4)") '/', ens_name
@@ -174,6 +172,7 @@ MODULE writeout
    end do
   end if
   
+  
   do k=1,nz
    call init_var_write(h(k))
    call init_var_write(u(k))
@@ -197,8 +196,8 @@ MODULE writeout
   
   implicit none
  
-  type(var), target, intent(inout) :: dat
-  integer, target, intent(in) :: grid(:,:,:)
+  class(var), intent(inout) :: dat
+  integer, target, intent(in) :: grid(:,:,0:)
   integer :: k
   
   max_write_tag=max_write_tag+1
@@ -213,7 +212,7 @@ MODULE writeout
    dat%out%req_master(0:ens_images-1)=mpi_request_null
    allocate(dat%out%recv(0:ens_images-1))
    do k=0,ens_images-1
-    allocate(dat%out%recv(k)%dat(count((grid == ens_master+k))))
+    allocate(dat%out%recv(k)%dat(count((grid(:,:,k) == 1))))
    end do
   end if
   dat%out%tag=10000+max_write_tag
@@ -233,8 +232,9 @@ MODULE writeout
 
   class(var), intent(inout) :: dat
   integer :: i,j,k
-  
 
+  
+  
   k=0
   call mpi_wait(dat%out%req,mpi_status_ignore,stat)
   do j=dat%p%ly+1,dat%p%ly+dat%p%ny
@@ -272,7 +272,11 @@ MODULE writeout
   integer, intent(in) :: fmt
   
   
+  
+  
   write (filename, "(a32)") trim(foldername)//'/'//trim(dat%out%name)
+  filename=adjustl(filename)
+   print *, 'here', foldername, dat%out%name
   
   if (proc_name == ens_master) then
    do k=0,ens_images-1 
@@ -331,17 +335,12 @@ MODULE writeout
   use solver_variables
   use variables
   use parallel
-  use grid_operate
  
   implicit none
    
   integer :: i
   
   
-  
-  do i=1,nz
-   q(i)=(f%bz+zeta(i)%bz)!*merge(0.0d0,1.0d0/h_z(i)%z%bz,(h_z(i)%z%bz == 0.0d0))
-  end do
   
   call init_var_write(utau)
   call init_var_write(vtau)
