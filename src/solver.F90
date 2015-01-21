@@ -48,23 +48,23 @@ module solver
   call create_field(z,.false.)
   
   
-  pres%z%z=0.0d0
-  call start_sync(pres%z)
-  r%z%z=0.0d0
-  call start_sync(r%z)
-  p%z%z=0.0d0
-  call start_sync(p%z)
+  pres=0.0d0
+  call start_sync(pres)
+  r=0.0d0
+  call start_sync(r)
+  p=0.0d0
+  call start_sync(p)
   
   
   
   
-  call end_sync(s%z)
-  thavx%z%bz=-Ax(s)
-  thavy%z%bz=-Ay(s)
+  call end_sync(s)
+  thavx=-Ax(s)
+  thavy=-Ay(s)
        
    
-  inthavx%z%bz=merge(0.0d0,1.0d0/thavx%z%bz,(thavx%z%bz == 0.0d0))
-  inthavy%z%bz=merge(0.0d0,1.0d0/thavy%z%bz,(thavy%z%bz == 0.0d0))
+  inthavx=merge(0.0d0,1.0d0/thavx%bz,(thavx%bz == 0.0d0))
+  inthavy=merge(0.0d0,1.0d0/thavy%bz,(thavy%bz == 0.0d0))
   
   
  end subroutine
@@ -103,10 +103,10 @@ module solver
  ! p%z%z%z%z=0.0d0
  
  
-  call end_sync(pres%z)
+  call end_sync(pres)
   
-  ap=Gx(thavx%z%bz*Gx(pres))+   &
-            Gy(thavy%z%bz*Gy(pres))
+  ap=Gx(thavx%bz*Gx(pres))+   &
+            Gy(thavy%bz*Gy(pres))
             
   
  
@@ -114,42 +114,42 @@ module solver
   
   r =  inty
   
-  call start_sync(r%z)
+  call start_sync(r)
   
    
   rdotfrac = 1.0d-16
    
   
   
-  call end_sync(r%z)
-  z=Ax(inthavx%z%bz*Ax(r))+Ay(inthavy%z%bz*Ay(r))
+  call end_sync(r)
+  z=Ax(inthavx%bz*Ax(r))+Ay(inthavy%bz*Ay(r))
   
    
  
     
-  rdotnew_tmp = sum(z%z%bz*r%z%bz)
+  rdotnew_tmp = sum(z%bz*r%bz)
   call real_allsum(rdotnew_tmp, rdotold)
   rdotfirst = rdotfrac*rdotold
 
   !if (proc_name == proc_master) print *, rdotold
 
 
-  r =  inty%z%bz - ap%z%bz
+  r =  inty%bz - ap%bz
 
-  call start_sync(r%z)
-
-
-
-  call end_sync(r%z)
-
-  z=Ax(inthavx%z%bz*Ax(r))+Ay(inthavy%z%bz*Ay(r))
+  call start_sync(r)
 
 
-  p = z%z%bz
 
-  call start_sync(p%z)
+  call end_sync(r)
 
-  rdotnew_tmp = sum(z%z%bz*r%z%bz)
+  z=Ax(inthavx%bz*Ax(r))+Ay(inthavy%bz*Ay(r))
+
+
+  p = z%bz
+
+  call start_sync(p)
+
+  rdotnew_tmp = sum(z%bz*r%bz)
   call real_allsum(rdotnew_tmp, rdotold)
 
 
@@ -164,12 +164,12 @@ module solver
    if (abs(rdotold) /= 0.0) then
    
       
-   call end_sync(p%z)
-   ap=Gx(thavx%z%bz*Gx(p))+Gy(thavy%z%bz*Gy(p))
+   call end_sync(p)
+   ap=Gx(thavx%bz*Gx(p))+Gy(thavy%bz*Gy(p))
   
    
    
-   pdotap_tmp=sum(p%z%bz*ap%z%bz)
+   pdotap_tmp=sum(p%bz*ap%bz)
    call real_allsum(pdotap_tmp, pdotap)
     
    
@@ -178,33 +178,33 @@ module solver
      
    
      
-   r%z%bz=r%z%bz-alpha*ap%z%bz
+   r=r%bz-alpha*ap%bz
    
    
    
-   call start_sync(r%z)
+   call start_sync(r)
    
    
   
-   pres%z%bz=pres%z%bz+alpha*p%z%bz
+   pres=pres%bz+alpha*p%bz
    
    
    
    
-   call end_sync(r%z)
+   call end_sync(r)
    
-   z=Ax(inthavx%z%bz*Ax(r))+Ay(inthavy%z%bz*Ay(r))
+   z=Ax(inthavx%bz*Ax(r))+Ay(inthavy%bz*Ay(r))
    
    
       
-   rdotnew_tmp = sum(z%z%bz*r%z%bz)
+   rdotnew_tmp = sum(z%bz*r%bz)
    call real_allsum(rdotnew_tmp, rdotnew)
         
         
   
-   p%z%bz=z%z%bz+(rdotnew/rdotold)*p%z%bz
+   p=z%bz+(rdotnew/rdotold)*p%bz
    
-   call start_sync(p%z)
+   call start_sync(p)
     
    
    
@@ -218,7 +218,7 @@ module solver
   
  
    !if (proc_name == ens_master) print *, ens_name, n, rdotold
-    call start_sync(pres%z)
+    call start_sync(pres)
     
     
     return
@@ -231,7 +231,7 @@ module solver
      print *, ens_name
     end if
    
-    call start_sync(pres%z)
+    call start_sync(pres)
 
     
     return
@@ -248,7 +248,7 @@ module solver
   
   
    
-    call start_sync(pres%z)
+    call start_sync(pres)
    
   return
  
@@ -280,9 +280,9 @@ module solver
      tendu => tendu1(i)
      tendv => tendv1(i)
     end if
-    call end_sync(pres%z)
-    tendu=tendu%z%bz + Gx(pres)
-    tendv=tendv%z%bz + Gy(pres)
+    call end_sync(pres)
+    tendu=tendu%bz + Gx(pres)
+    tendv=tendv%bz + Gy(pres)
    end do
   
   

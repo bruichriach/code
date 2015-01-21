@@ -214,8 +214,8 @@ module grid
    end do
    hgrid%lx=lx
    hgrid%ly=ly
-   zgrid%ox=0
-   zgrid%oy=0
+   hgrid%ox=0
+   hgrid%oy=0
    hgrid%nx=nx
    hgrid%ny=ny
    
@@ -235,8 +235,8 @@ module grid
    end do
    ugrid%lx=lx
    ugrid%ly=ly
-   zgrid%ox=1
-   zgrid%oy=0
+   ugrid%ox=1
+   ugrid%oy=0
    ugrid%nx=nx+1
    ugrid%ny=ny
    
@@ -254,8 +254,8 @@ module grid
    end do
    vgrid%lx=lx
    vgrid%ly=ly
-   zgrid%ox=0
-   zgrid%oy=1
+   vgrid%ox=0
+   vgrid%oy=1
    vgrid%nx=nx
    vgrid%ny=ny+1
    
@@ -289,7 +289,7 @@ module grid
    
    implicit none
    
-   type(var), intent(out) :: dat
+   class(var), intent(out) :: dat
    type(grd), target, intent(in) :: grid
    integer :: i,j,k,l
    logical, intent(in) :: synced
@@ -393,6 +393,7 @@ module grid
     
    end if
    
+   print *, size(dat%bz), proc_name
     
   end subroutine
   
@@ -405,8 +406,7 @@ module grid
    type(hvar), intent(out) :: dat
    logical, intent(in) :: synced
    
-   call create_var(dat%z,hgrid,synced)
-   dat%p => dat%z%p
+   call create_var(dat,hgrid,synced)
    
   end subroutine
   
@@ -419,8 +419,7 @@ module grid
    type(uvar), intent(out) :: dat
    logical, intent(in) :: synced
    
-   call create_var(dat%z,ugrid,synced)
-   dat%p => dat%z%p
+   call create_var(dat,ugrid,synced)
    
   end subroutine
   
@@ -433,8 +432,7 @@ module grid
    type(vvar), intent(out) :: dat
    logical, intent(in) :: synced
    
-   call create_var(dat%z,vgrid,synced)
-   dat%p => dat%z%p
+   call create_var(dat,vgrid,synced)
    
   end subroutine
   
@@ -447,8 +445,7 @@ module grid
    type(zvar), intent(inout) :: dat
    logical, intent(in) :: synced
    
-   call create_var(dat%z,zgrid,synced)
-   dat%p => dat%z%p
+   call create_var(dat,zgrid,synced)
    
   end subroutine
   
@@ -539,7 +536,7 @@ module sync
   
   implicit none
  
-  type(var), intent(inout) :: dat
+  class(var), intent(inout) :: dat
   integer :: i,k
   
   call end_sync(dat)
@@ -571,7 +568,7 @@ module sync
   
   implicit none
  
-  type(var), intent(inout) :: dat
+  class(var), intent(inout) :: dat
   integer :: i,k
  
   

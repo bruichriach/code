@@ -175,18 +175,18 @@ MODULE writeout
   end if
   
   do k=1,nz
-   call init_var_write(h(k)%z)
-   call init_var_write(u(k)%z)
-   call init_var_write(v(k)%z)
+   call init_var_write(h(k))
+   call init_var_write(u(k))
+   call init_var_write(v(k))
   end do
-  call init_var_write(pres%z)
+  call init_var_write(pres)
   write (filename, "(a1,i4.4)") '/', ens_name
   do k=1,nz
-   call end_var_write(h(k)%z,folder//filename,0)
-   call end_var_write(u(k)%z,folder//filename,0)
-   call end_var_write(v(k)%z,folder//filename,0)
+   call end_var_write(h(k),folder//filename,0)
+   call end_var_write(u(k),folder//filename,0)
+   call end_var_write(v(k),folder//filename,0)
   end do
-  call end_var_write(pres%z,folder//filename,0)
+  call end_var_write(pres,folder//filename,0)
   
  end subroutine 
   
@@ -231,7 +231,7 @@ MODULE writeout
 
   IMPLICIT NONE
 
-  type(var), intent(inout) :: dat
+  class(var), intent(inout) :: dat
   integer :: i,j,k
   
 
@@ -267,7 +267,7 @@ MODULE writeout
   
   character(*), intent(in) :: foldername
   character(32) :: filename
-  type(var), intent(inout) :: dat
+  class(var), intent(inout) :: dat
   integer :: i,j,k,l
   integer, intent(in) :: fmt
   
@@ -340,27 +340,27 @@ MODULE writeout
   
   
   do i=1,nz
-   q(i)%z=(f%z%bz+zeta(i)%z%bz)!*merge(0.0d0,1.0d0/h_z(i)%z%bz,(h_z(i)%z%bz == 0.0d0))
+   q(i)=(f%bz+zeta(i)%bz)!*merge(0.0d0,1.0d0/h_z(i)%z%bz,(h_z(i)%z%bz == 0.0d0))
   end do
   
-  call init_var_write(utau%z)
-  call init_var_write(vtau%z)
-  call init_var_write(pres%z)
-  call init_var_write(depth(0)%z)
+  call init_var_write(utau)
+  call init_var_write(vtau)
+  call init_var_write(pres)
+  call init_var_write(depth(0))
   do i=1,nz
-   call init_var_write(depth(i)%z)
-   call init_var_write(h(i)%z)
-   call init_var_write(u(i)%z)
-   call init_var_write(v(i)%z)
-   call init_var_write(tendh1(i)%z)
-   call init_var_write(tendu1(i)%z)
-   call init_var_write(tendv1(i)%z)
-   call init_var_write(smagu(i)%z)
-   call init_var_write(smagv(i)%z)
-   call init_var_write(ke(i)%z)
-   call init_var_write(ape(i)%z)
-   call init_var_write(q(i)%z)
-   call init_var_write(zeta(i)%z)
+   call init_var_write(depth(i))
+   call init_var_write(h(i))
+   call init_var_write(u(i))
+   call init_var_write(v(i))
+   call init_var_write(tendh1(i))
+   call init_var_write(tendu1(i))
+   call init_var_write(tendv1(i))
+   call init_var_write(smagu(i))
+   call init_var_write(smagv(i))
+   call init_var_write(ke(i))
+   call init_var_write(ape(i))
+   call init_var_write(q(i))
+   call init_var_write(zeta(i))
   end do
   
   
@@ -400,24 +400,24 @@ MODULE writeout
    end do
    
    write (filename, "(a5,i4.4,a1,i4.4)") 'data/', ens_name, '/', num
-   call end_var_write(utau%z,filename,0)
-   call end_var_write(vtau%z,filename,0)
-   call end_var_write(pres%z,filename,0)
-   call end_var_write(depth(0)%z,filename,0)   
+   call end_var_write(utau,filename,0)
+   call end_var_write(vtau,filename,0)
+   call end_var_write(pres,filename,0)
+   call end_var_write(depth(0),filename,0)   
    do i=1,nz   
-    call end_var_write(depth(i)%z,filename,0)   
-    call end_var_write(h(i)%z,filename,0)
-    call end_var_write(u(i)%z,filename,0)
-    call end_var_write(v(i)%z,filename,0)
-    call end_var_write(tendh1(i)%z,filename,0)
-    call end_var_write(tendu1(i)%z,filename,0)
-    call end_var_write(tendv1(i)%z,filename,0)
-    call end_var_write(smagu(i)%z,filename,0)
-    call end_var_write(smagv(i)%z,filename,0)
-    call end_var_write(ke(i)%z,filename,0)
-    call end_var_write(ape(i)%z,filename,0)
-    call end_var_write(q(i)%z,filename,0)
-    call end_var_write(zeta(i)%z,filename,0)
+    call end_var_write(depth(i),filename,0)   
+    call end_var_write(h(i),filename,0)
+    call end_var_write(u(i),filename,0)
+    call end_var_write(v(i),filename,0)
+    call end_var_write(tendh1(i),filename,0)
+    call end_var_write(tendu1(i),filename,0)
+    call end_var_write(tendv1(i),filename,0)
+    call end_var_write(smagu(i),filename,0)
+    call end_var_write(smagv(i),filename,0)
+    call end_var_write(ke(i),filename,0)
+    call end_var_write(ape(i),filename,0)
+    call end_var_write(q(i),filename,0)
+    call end_var_write(zeta(i),filename,0)
    
    end do
   end if

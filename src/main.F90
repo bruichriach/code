@@ -88,32 +88,42 @@ program sw
  
  
  s=-1.0d0
- call start_sync(s%z)
- call end_sync(s%z)
+ call start_sync(s)
+ call end_sync(s)
  
  h(1)=1.0d0
- call start_sync(h(1)%z)
- call end_sync(h(1)%z)
+ call start_sync(h(1))
+ call end_sync(h(1))
  
  call set_solver()
   
- v(2)=pi*v(1)%p%y/y0
- call start_sync(v(2)%z)
- call end_sync(v(2)%z)
- v(1)=cos(2.0d0*pi*v(1)%p%y/y0)
- call start_sync(v(1)%z)
- call end_sync(v(1)%z)
+ v(2)=2.0d0*pi*v(1)%p%y/y0
+ call start_sync(v(2))
+ call end_sync(v(2))
+ if (proc_name == 0) then
+  call print_var(v(2))
+ end if
+ v(1)=cos(v(2)%bz)
+ call start_sync(v(1))
+ call end_sync(v(1))
+ if (proc_name == 0) then
+  call print_var(v(1))
+ end if
  
  
  inty=Gy(v(1))
  
+ if (proc_name == 0) then
+  call print_var(inty)
+ end if
+ 
  call surfpressure(stat)
  
- call end_sync(pres%z)
+ call end_sync(pres)
  
  
- if (proc_name == 1) then
-  call print_var(pres%z)
+ if (proc_name == 0) then
+  call print_var(pres)
  end if
  
  

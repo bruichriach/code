@@ -46,24 +46,16 @@ module global
   logical :: synced
  end type
   
- type hvar
-  type(var) :: z
-  type(grd), pointer :: p
+ type, extends(var) :: hvar
  end type
  
- type uvar
-  type(var) :: z
-  type(grd), pointer :: p
+ type, extends(var) :: uvar
  end type
  
- type vvar
-  type(var) :: z
-  type(grd), pointer :: p
+ type, extends(var) :: vvar
  end type
  
- type zvar
-  type(var) :: z
-  type(grd), pointer :: p
+ type, extends(var) :: zvar
  end type
  
   
@@ -75,7 +67,7 @@ module global
   
    implicit none
    
-   type(var), intent(in) :: dat
+   class(var), intent(in) :: dat
    integer :: i,j
    
    print *
