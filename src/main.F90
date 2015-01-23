@@ -14,6 +14,8 @@ program sw
  
   implicit none
   
+  integer :: k
+  
   call mpi_init(stat)
   
   call mpi_comm_rank(mpi_comm_world, proc_name, stat)
@@ -92,11 +94,19 @@ program sw
  call start_sync(s)
  call end_sync(s)
  
+ 
+ call set_solver()
+ 
+ do k=1,nz
+  call read_var(h(k),'in')
+  call read_var(u(k),'in')
+  call read_var(v(k),'in')
+ end do
+ call read_var(pres,'in')
+ 
  h(1)=1.0d0
  call start_sync(h(1))
  call end_sync(h(1))
- 
- call set_solver()
   
  v(2)=2.0d0*pi*v(1)%p%y/y0
  call start_sync(v(2))

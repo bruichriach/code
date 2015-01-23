@@ -151,7 +151,7 @@ module allocation
       
    call create_var(dat,hgrid,synced)
    write (dat%out%name, "(a16)") trim(name)//".dat"
-   
+   dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,hgrid_out)
    
   end subroutine
@@ -172,6 +172,7 @@ module allocation
    
    call create_var(dat,ugrid,synced)
    write (dat%out%name, "(a8)") name//".dat"
+   dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,ugrid_out)
    
   end subroutine
@@ -192,6 +193,7 @@ module allocation
    
    call create_var(dat,vgrid,synced)
    write (dat%out%name, "(a8)") name//".dat"
+   dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,vgrid_out)
    
   end subroutine
@@ -212,6 +214,7 @@ module allocation
    
    call create_var(dat,zgrid,synced)
    write (dat%out%name, "(a8)") name//".dat"
+   dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,zgrid_out)
    
   end subroutine

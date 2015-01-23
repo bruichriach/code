@@ -72,7 +72,7 @@ MODULE writeout
   
  end subroutine 
  
- subroutine read_var(dat,layer,folder,x,y)
+ subroutine read_var(dat,folder)
   use writeout_grid
   use parallel
   use variables
@@ -80,10 +80,9 @@ MODULE writeout
   
   implicit none
   
-  type(var), intent(inout) :: dat
+  class(var), intent(inout) :: dat
   character(*), intent(in) :: folder
-  character(32) :: filename, format, foldername, fullname
-  integer, intent(in) :: layer,x,y
+  character(32) :: format, foldername, fullname
   integer :: i,j,k,l
   logical :: file_exist
   
@@ -91,20 +90,18 @@ MODULE writeout
   
   
   write (foldername, "(a28,i4.4)") trim(folder)//'/', ens_name
-  write (filename, "(a27,i1.1,a4)") trim(dat%out%name)//'_',layer,'.dat'
-  write (fullname, "(a32)") trim(adjustl(foldername))//'/'//adjustl(filename)
-  inquire( file=fullname, exist=file_exist)
+  write (fullname, "(a32)") trim(adjustl(foldername))//'/'//adjustl(dat%out%name)
+  inquire( file=adjustl(fullname), exist=file_exist)
   
   if (file_exist) then
    
   
-  
 
   if (proc_name == ens_master) then
    open(unit=10,form='unformatted',file=adjustl(fullname),status='unknown')
-   write (format,"(a2,i3,a8)") '( ', mx+x, 'd24.16 )'
-   do j=1,my+y
-    read(10) (dat%out%z(i,j),i=1,mx+x)
+   write (format,"(a2,i3,a8)") '( ', mx+dat%p%ox, 'd24.16 )'
+   do j=1,my+dat%p%oy
+    read(10) (dat%out%z(i,j),i=1,mx+dat%p%ox)
    end do
    close(10)
     
@@ -113,7 +110,7 @@ MODULE writeout
    do k=0,ens_images-1 
     l=0
     do j=dat%p%ly+1,dat%p%ly+dat%p%ny
-     do i=dat%p%ly+1,dat%p%ly+dat%p%ny
+     do i=dat%p%lx+1,dat%p%lx+dat%p%nx
       l=l+1
       dat%out%recv(k)%dat(l)=dat%out%z(i,j)
      end do
@@ -132,7 +129,7 @@ MODULE writeout
   k=0
   call mpi_wait(dat%out%req,mpi_status_ignore,stat)
   do j=dat%p%ly+1,dat%p%ly+dat%p%ny
-   do i=dat%p%ly+1,dat%p%ly+dat%p%ny
+   do i=dat%p%lx+1,dat%p%lx+dat%p%nx
     k=k+1
     dat%z(i,j)=dat%out%send(k)
    end do
@@ -140,7 +137,7 @@ MODULE writeout
   
   if (proc_name == ens_master) then
    call mpi_waitall(ens_images, dat%out%req_master,mpi_statuses_ignore,stat)
-   print *, 'read in complete for', filename
+   print *, 'read in complete for ', dat%out%name
   end if
   
   
@@ -276,7 +273,6 @@ MODULE writeout
   
   write (filename, "(a32)") trim(foldername)//'/'//trim(dat%out%name)
   filename=adjustl(filename)
-   print *, 'here', foldername, dat%out%name
   
   if (proc_name == ens_master) then
    do k=0,ens_images-1 
