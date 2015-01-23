@@ -10,6 +10,7 @@ program sw
  use solver_variables
  use writeout
  use allocation
+ use operations
  
  
   implicit none
@@ -33,12 +34,16 @@ program sw
 
  call create_field(s,'s',.true.)
  
- call create_field(depth,'d',.true.)
- call create_field(mindepth,.false.)
+ call create_field(d,'d',.true.)
+ call create_field(mind,.false.)
  
  call create_field(h,'h',.true.)
  call create_field(u,'u',.true.)
  call create_field(v,'v',.true.)
+ 
+ call create_field(h_u,.true.)
+ call create_field(h_v,.true.)
+ call create_field(h_z,.false.)
  
  allocate(tendh1(nz),tendh2(nz),tendh3(nz))
  allocate(tendu1(nz),tendu2(nz),tendu3(nz))
@@ -89,23 +94,101 @@ program sw
  call create_field(f,'f',.false.)
  
  
- 
- s=-1.0d0
+ s=-1.0d0+(0.25d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**2,0.0d0) - &
+            max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**2,0.0d0))
  call start_sync(s)
- call end_sync(s)
  
+ f=1.0d0
+ 
+ call end_sync(s)
  
  call set_solver()
  
+ mind(0)=s
  do k=1,nz
-  call read_var(h(k),'in')
-  call read_var(u(k),'in')
-  call read_var(v(k),'in')
+  mind(k)=(0.75d0*int2real(k-nz))/int2real(nz)
  end do
- call read_var(pres,'in')
  
- h(1)=1.0d0
- call start_sync(h(1))
+ d=mind
+ call mont(mind,minm)
+ do k=1,nz
+  h(k)=d(k)-d(k-1)
+  u(k)=0.0d0
+  v(k)=0.0d0
+ end do
+ 
+ do k=1,nz
+  call read_var(h(k),'old')
+  call read_var(u(k),'old')
+  call read_var(v(k),'old')
+ end do
+ call read_var(pres,'old')
+ 
+ do k=1,nz
+  call start_sync(h(k))
+  call start_sync(u(k))
+  call start_sync(v(k))
+ end do
+ call start_sync(pres)
+ 
+ call write_main('in')
+ 
+ call depth(h,s,d)
+ call mont(d,m)
+ do k=1,nz
+  call start_sync(m(k))
+ end do
+ 
+ do k=1,nz
+  call end_sync(h(k))
+  h_u(k)=Ax(h(k))
+  call start_sync(h_u(k))
+  h_v(k)=Ay(h(k))
+  call start_sync(h_v(k))
+ end do
+ 
+ do k=1,nz
+  ke(k)=0.5d0*(Ax(u(k)*u(k))+Ay(v(k)*v(k)))
+  call start_sync(ke(k))
+ end do
+ 
+ 
+ do k=1,nz
+  call end_sync(h_u(k))
+  call end_sync(h_v(k))
+  h_z(k)=0.5d0*(Ay(h_u(k))+Ax(h_v(k)))
+ end do
+ 
+!--------------------------------------------------------------------------!
+!--------------------------------------------------------------------------!
+!--------------------------------------------------------------------------!
+!--------------------------------------------------------------------------!
+!--------------------------------------------------------------------------!
+!--------------------------------------------------------------------------!
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  call end_sync(h(1))
   
  v(2)=2.0d0*pi*v(1)%p%y/y0
@@ -117,7 +200,6 @@ program sw
  call end_sync(v(1))
  
  
- call write_main('in')
  
  inty=Gy(v(1))
  

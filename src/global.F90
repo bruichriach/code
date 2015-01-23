@@ -87,12 +87,16 @@ module variables
 
  type(hvar) :: s
  
- type(hvar) :: depth(0:nz)
- type(hvar) :: mindepth(0:nz)
+ type(hvar) :: d(0:nz)
+ type(hvar) :: mind(0:nz)
  
  type(hvar) :: h(nz)
  type(uvar) :: u(nz)
  type(vvar) :: v(nz)
+ 
+ type(uvar) :: h_u(nz)
+ type(vvar) :: h_v(nz)
+ type(zvar) :: h_z(nz)
  
  type(hvar), pointer :: tendh0(:),tendh1(:),tendh2(:),tendh3(:)
  type(uvar), pointer :: tendu0(:),tendu1(:),tendu2(:),tendu3(:)

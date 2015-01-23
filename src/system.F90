@@ -49,6 +49,23 @@ module sys
  
 
  contains
+ 
+ 
+ 
+  elemental function lim(x,x0)
+  
+         implicit none
+
+         real(kind=db), intent(in) :: x, x0
+         real(kind=db) :: lim
+
+         lim=x
+         do while ((lim < -x0/2.0d0).or.(lim > x0/2.0d0))
+          if (lim < -x0/2.0d0) lim=lim+x0
+          if (lim > x0/2.0d0) lim=lim-x0
+         end do
+
+  end function  
   
  
   function is_factor(m,n)

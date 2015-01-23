@@ -14,6 +14,8 @@ module overload
  
  interface operator (+)
   module procedure var_add
+  module procedure realvar_add
+  module procedure realarrayvar_add
  end interface
  
  interface operator (-)
@@ -23,6 +25,7 @@ module overload
  interface operator (*)
   module procedure var_dot
   module procedure realvar_dot
+  module procedure realarrayvar_dot
  end interface
  
  
@@ -38,60 +41,106 @@ module overload
  
  
  
-  elemental function var_add(v1,v2) result (v3)
+  pure function var_add(v1,v2) result (v3)
    use global
    
    implicit none
   
    class(var), intent(in) :: v1,v2
-   type(var)  :: v3
+   real(kind=db)  :: v3(v1%p%lx+1:v1%p%lx+v1%p%nx,v1%p%ly+1:v1%p%ly+v1%p%ny)
+!   type(var)  :: v3
    
-   v3%z = v1%z + v2%z
-   
-  end function
- 
- 
- 
- 
- 
-  elemental function var_sub(v1,v2) result (v3)
-   use global
-   
-   implicit none
-  
-   class(var), intent(in) :: v1,v2
-   type(var)  :: v3
-   
-   v3%z = v1%z - v2%z
+   v3 = v1%bz + v2%bz
    
   end function
  
-  
-  
- 
- 
- 
- 
-  elemental function var_dot(v1,v2) result (v3)
-   use global
-   
-   implicit none
-  
-   class(var), intent(in) :: v1,v2
-   type(var)  :: v3
-   
-   v3 = v1%z * v2%bz
-   
-  end function
- 
-  elemental function realvar_dot(v1,v2) result (v3)
+  pure function realvar_add(v1,v2) result (v3)
    use global
    
    implicit none
   
    real(kind=db), intent(in) :: v1
    class(var), intent(in) :: v2
-   type(var)  :: v3
+   real(kind=db)  :: v3(v2%p%lx+1:v2%p%lx+v2%p%nx,v2%p%ly+1:v2%p%ly+v2%p%ny)
+!    type(var)  :: v3
+   
+   v3 = v1 + v2%bz
+   
+  end function
+ 
+  pure function realarrayvar_add(v1,v2) result (v3)
+   use global
+   
+   implicit none
+  
+   class(var), intent(in) :: v2
+   real(kind=db), intent(in) :: v1(v2%p%lx+1:v2%p%lx+v2%p%nx,v2%p%ly+1:v2%p%ly+v2%p%ny)
+   real(kind=db)  :: v3(v2%p%lx+1:v2%p%lx+v2%p%nx,v2%p%ly+1:v2%p%ly+v2%p%ny)
+!    type(var)  :: v3
+   
+   v3 = v1 + v2%bz
+   
+  end function
+ 
+ 
+ 
+ 
+ 
+  pure function var_sub(v1,v2) result (v3)
+   use global
+   
+   implicit none
+  
+   class(var), intent(in) :: v1,v2
+   real(kind=db)  :: v3(v1%p%lx+1:v1%p%lx+v1%p%nx,v1%p%ly+1:v1%p%ly+v1%p%ny)
+!   type(var)  :: v3
+   
+   v3 = v1%bz - v2%bz
+   
+  end function
+ 
+  
+  
+ 
+ 
+ 
+ 
+  pure function var_dot(v1,v2) result (v3)
+   use global
+   
+   implicit none
+  
+   class(var), intent(in) :: v1,v2
+   real(kind=db)  :: v3(v1%p%lx+1:v1%p%lx+v1%p%nx,v1%p%ly+1:v1%p%ly+v1%p%ny)
+!   type(var)  :: v3
+   
+   v3 = v1%bz * v2%bz
+   
+  end function
+ 
+  pure function realvar_dot(v1,v2) result (v3)
+   use global
+   
+   implicit none
+  
+   real(kind=db), intent(in) :: v1
+   class(var), intent(in) :: v2
+   real(kind=db)  :: v3(v2%p%lx+1:v2%p%lx+v2%p%nx,v2%p%ly+1:v2%p%ly+v2%p%ny)
+!    type(var)  :: v3
+   
+   v3 = v1 * v2%bz
+   
+  end function
+ 
+  pure function realarrayvar_dot(v1,v2) result (v3)
+   use global
+   
+   implicit none
+  
+   class(var), intent(in) :: v2
+   real(kind=db), intent(in) :: v1(v2%p%lx+1:v2%p%lx+v2%p%nx,v2%p%ly+1:v2%p%ly+v2%p%ny)
+   real(kind=db)  :: v3(v2%p%lx+1:v2%p%lx+v2%p%nx,v2%p%ly+1:v2%p%ly+v2%p%ny)
+!    type(var)  :: v3
    
    v3 = v1 * v2%bz
    
@@ -586,6 +635,70 @@ module grid_operate
   end function
   
   
+  function y_dist(a,y) result (p)
+   use sys
+   use global
+   use params
+   
+   implicit none
+   
+   class(var), intent(in) :: a
+   real(kind=db) :: y
+   real(kind=db) :: p(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+   
+   p=lim(a%p%y-y,y0)
+   
+  end function
 
 
 end module
+
+
+
+
+module operations
+ use global
+ use overload
+ 
+ implicit none
+ 
+ contains
+ 
+ subroutine depth(h,s,d)
+  use params
+  
+  type(hvar), intent(in) :: h(1:nz), s
+  type(hvar), intent(inout) :: d(0:nz)
+  integer :: k
+  
+  d(0)=s
+  do k=1,nz
+   d(k)=d(k-1)+h(k)
+  end do
+  
+ end subroutine
+ 
+ subroutine mont(d,m)
+  use params
+  
+  type(hvar), intent(in) :: d(0:nz)
+  type(hvar), intent(inout) :: m(1:nz)
+  integer :: k
+  
+#ifdef ALLOW_RIGID_LID
+  m((nz)=0.0d0
+#else
+  m(nz)=ngp(nz)*d(nz)
+#endif
+  do k=nz-1,1,-1
+   m(k)=ngp(k)*d(k)+m(k+1)
+  end do
+  
+ end subroutine
+  
+  
+  
+ end module
+ 
+ 
+

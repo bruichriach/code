@@ -341,9 +341,9 @@ MODULE writeout
   call init_var_write(utau)
   call init_var_write(vtau)
   call init_var_write(pres)
-  call init_var_write(depth(0))
+  call init_var_write(d(0))
   do i=1,nz
-   call init_var_write(depth(i))
+   call init_var_write(d(i))
    call init_var_write(h(i))
    call init_var_write(u(i))
    call init_var_write(v(i))
@@ -398,9 +398,9 @@ MODULE writeout
    call end_var_write(utau,filename,0)
    call end_var_write(vtau,filename,0)
    call end_var_write(pres,filename,0)
-   call end_var_write(depth(0),filename,0)   
+   call end_var_write(d(0),filename,0)   
    do i=1,nz   
-    call end_var_write(depth(i),filename,0)   
+    call end_var_write(d(i),filename,0)   
     call end_var_write(h(i),filename,0)
     call end_var_write(u(i),filename,0)
     call end_var_write(v(i),filename,0)
