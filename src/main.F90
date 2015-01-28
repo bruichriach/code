@@ -104,7 +104,9 @@ program sw
   minh(k)=mind(k)-mind(k-1)
  end do
  
- d=mind
+ do k=1,nz
+  d(k)=mind(k)
+ end do
  call mont(mind,minm)
  do k=1,nz
   h(k)=d(k)-d(k-1)
@@ -461,9 +463,11 @@ program sw
      
   
   if (n /= 0) then
-   call stepforward(h)
-   call stepforward(u)
-   call stepforward(v)
+   do k=1,nz
+    call stepforward(h(k))
+    call stepforward(u(k))
+    call stepforward(v(k))
+   end do
   end if
   
  end do
