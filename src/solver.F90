@@ -254,21 +254,20 @@ module solver
  
   integer :: i
   integer, intent(in) :: n
-  type(uvar), pointer :: tendu
-  type(vvar), pointer :: tendv
+  real(kind=db), pointer :: tendu(:,:), tendv(:,:)
   
   
    do i=1,nz
     if (n == 1) then
-     tendu => tendu2(i)
-     tendv => tendv2(i)
+     tendu => u(i)%tend2%bz
+     tendv => v(i)%tend2%bz
     else
-     tendu => tendu1(i)
-     tendv => tendv1(i)
+     tendu => u(i)%tend1%bz
+     tendv => v(i)%tend1%bz
     end if
     call end_sync(pres)
-    tendu=tendu%bz + Gx(pres)
-    tendv=tendv%bz + Gy(pres)
+    tendu=tendu + Gx(pres)
+    tendv=tendv + Gy(pres)
    end do
   
   

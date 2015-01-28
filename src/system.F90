@@ -80,6 +80,62 @@ module sys
     
   end function
   
+  
+  
+
+ function print_time()
+  implicit none
+  
+  real(kind=8) :: time
+  integer :: seconds, minutes, hours, days
+  character(33) :: print_time
+  
+  time=cputime()
+  days=floor(time/8.64d4)
+  time=time-dble(days)*8.64d4
+  hours=floor(time/3.6d3)
+  time=time-dble(hours)*3.6d3
+  minutes=floor(time/6.0d1)
+  time=time-dble(minutes)*6.0d1
+  seconds=floor(time)
+  
+  write(print_time, "(i2.1,a5,i3.2,a5,i3.2,a6,i3.2,a6)") &
+     days, ' dys,', &
+     hours, ' hrs,', &
+     minutes, ' mins,', &
+     seconds, ' secs.'
+
+ end function
+ 
+ 
+ function cputime()
+  implicit none
+  
+  real(kind=8) :: cputime
+    
+  call cpu_time(cputime)
+  
+ end function
+ 
+ function update(seconds)
+  implicit none
+  
+  logical :: update
+  real(kind=8), save :: oldtime=-1.0d0
+  real(kind=8), intent(in) :: seconds
+  
+  if (cputime() - oldtime >= seconds) then
+   oldtime=cputime()
+   update=.true.
+  else
+   update=.false.
+  end if
+   
+ end function
+ 
+  
+  
+  
   function int2real(n)
  
    implicit none

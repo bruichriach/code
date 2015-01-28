@@ -39,6 +39,11 @@ module global
  type var
   type(grd), pointer :: p
   real(kind=db), pointer :: z(:,:)
+  type(var), pointer :: tmp
+  type(var), pointer :: tend_out
+  type(var), pointer :: tend1
+  type(var), pointer :: tend2
+  type(var), pointer :: tend3
   real(kind=db), pointer :: bz(:,:)
   type(out_var) :: out
   type(mpi_sendrecv), allocatable :: mpi(:)
@@ -94,13 +99,11 @@ module variables
  type(uvar) :: u(nz)
  type(vvar) :: v(nz)
  
+ type(hvar) :: minh(nz)
+ 
  type(uvar) :: h_u(nz)
  type(vvar) :: h_v(nz)
  type(zvar) :: h_z(nz)
- 
- type(hvar), pointer :: tendh0(:),tendh1(:),tendh2(:),tendh3(:)
- type(uvar), pointer :: tendu0(:),tendu1(:),tendu2(:),tendu3(:)
- type(vvar), pointer :: tendv0(:),tendv1(:),tendv2(:),tendv3(:)
  
  type(hvar) :: h_tmp(nz)
  type(uvar) :: u_tmp(nz)

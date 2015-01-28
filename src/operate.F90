@@ -220,6 +220,39 @@ module grid_operate
  
  contains
  
+ 
+ 
+  pure function sGxx(a) result (b)
+   use global
+   use params
+   
+   implicit none
+   
+   class(var), intent(in) :: a
+   real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+   
+   b=(a%z(a%p%lx+2:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
+        2.0d0*a%bz + a%z(a%p%lx:a%p%lx+a%p%nx-1,a%p%ly+1:a%p%ly+a%p%ny))/(dx)**2
+ 
+  end function
+ 
+  pure function sGyy(a) result (b)
+   use global
+   use params
+   
+   implicit none
+   
+   class(var), intent(in) :: a
+   real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+   
+   
+   b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+2:a%p%ly+a%p%ny+1) - &
+        2.0d0*a%bz + a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny-1))/(dy)**2
+ 
+  end function
+  
+  
+ 
   pure function sGx(a) result (b)
    use global
    use params
@@ -649,6 +682,215 @@ module grid_operate
    p=lim(a%p%y-y,y0)
    
   end function
+  
+  
+ 
+ 
+!--------------------------------------------------------------------------!
+
+! TIMESTEPPING
+
+!--------------------------------------------------------------------------!
+ 
+ 
+ pure function fe(a) result(b)
+  use params
+  use global
+  
+  implicit none
+ 
+  class(var), intent(in) :: a
+  real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+  
+  b=a%bz + 0.5d0*dt*a%tend1%bz
+  
+  return
+  
+ end function fe
+ 
+ 
+ 
+ 
+ 
+  
+
+ 
+ pure function rk2(a) result(b)
+  use params
+  use global
+  
+  implicit none
+ 
+  class(var), intent(in) :: a
+  real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+ 
+  b = a%bz + dt*a%tend2%bz
+  
+  return
+  
+ end function rk2
+ 
+
+ 
+ 
+ 
+ 
+ 
+ pure function ab2(a) result(b)
+  use params
+  use global
+  
+  implicit none
+ 
+  class(var), intent(in) :: a
+  real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+  
+ 
+  b=a%bz+dt*(1.5d0*a%tend1%bz-0.5d0*a%tend2%bz)
+ 
+  return
+  
+ end function ab2
+ 
+
+ 
+ 
+ 
+ 
+ pure function ab3(a) result(b)
+  use params
+  use global
+  
+  implicit none
+ 
+  class(var), intent(in) :: a
+  real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+ 
+   b=a%bz+dt*((23.0d0/12.0d0)*a%tend1%bz-(4.0d0/3.0d0)*a%tend2%bz+                  &
+       (5.0d0/12.0d0)*a%tend3%bz)
+ 
+  return
+  
+ end function ab3
+ 
+ 
+ 
+ 
+ 
+!--------------------------------------------------------------------------!
+
+! TENDANCIES
+
+!--------------------------------------------------------------------------!
+
+
+ 
+ subroutine tend_h(n)
+  use global
+  use params
+  use variables
+  use sync
+  
+  implicit none
+ 
+  integer :: i
+  integer, intent(in) :: n
+  real(kind=8), pointer :: tend(:,:)
+  
+  
+   do i=1,nz
+    if (n == 1) then
+     tend => h(i)%tend2%bz
+    else
+     tend => h(i)%tend1%bz
+    end if
+    tend=-Gx(u(i)%bz*h_u(i)%bz)-Gy(v(i)%bz*h_v(i)%bz)
+   end do
+   
+   nullify(tend)
+  
+  
+ end subroutine
+ 
+ subroutine tend_u(n)
+  use global
+  use params
+  use variables
+  use sync
+  
+  implicit none
+ 
+  integer :: i
+  integer, intent(in) :: n
+  real(kind=8), pointer :: tend(:,:)
+  
+  
+   do i=1,nz
+    if (n == 1) then
+     tend => u(i)%tend2%bz
+    else
+     tend => u(i)%tend1%bz
+    end if
+   call end_sync(v(i))
+   call end_sync(m(i))
+   call end_sync(ke(i))
+    tend=0.0d0    &
+     +smagu(i)%bz  &
+     +Ay(f%bz+zeta(i)%bz)   &
+     *Ay(Ax(v(i)))    &
+     -Gx(m(i))    &
+     -Gx(ke(i))     &
+     +0.0d0
+    if (i == nz) tend = tend + utau%bz*merge(0.0d0,1.0d0/h_u(nz)%bz,  &
+        ( h_u(nz)%bz == 0.0d0)) 
+    if (i == 1) tend = tend - bfricu%bz*merge(0.0d0,   &
+          1.0d0/h_u(1)%bz,(h_u(1)%bz == 0.0d0))
+   end do
+   
+   nullify(tend)
+   
+  
+ end subroutine
+ 
+ subroutine tend_v(n)
+  use global
+  use params
+  use variables
+  use sync
+  
+  implicit none
+ 
+  integer :: i
+  integer, intent(in) :: n
+  real(kind=8), pointer :: tend(:,:)
+  
+  
+   do i=1,nz
+    if (n == 1) then
+     tend => v(i)%tend2%bz
+    else
+     tend => v(i)%tend1%bz
+    end if
+   call end_sync(u(i))
+   call end_sync(m(i))
+   call end_sync(ke(i))
+    tend=0.0d0    &
+     +smagv(i)%bz   &
+     -Ax(f%bz+zeta(i)%bz)   &
+     *Ax(Ay(u(i)))    &
+     -Gy(m(i))   &
+     -Gy(ke(i))    &
+     +0.0d0
+    if (i == nz) tend = tend + vtau%bz*merge(0.0d0,1.0d0/h_v(nz)%bz,  &
+         (h_v(nz)%bz == 0.0d0))
+    if (i == 1) tend = tend - bfricv%bz*merge(0.0d0,   &
+          1.0d0/h_v(1)%bz,(h_v(1)%bz == 0.0d0))
+  end do
+   
+   nullify(tend)
+  
+  
+ end subroutine
 
 
 end module

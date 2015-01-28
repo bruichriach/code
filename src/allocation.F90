@@ -14,6 +14,9 @@ module allocation
    module procedure create_written_hvar_layer, create_written_uvar_layer,  &
          create_written_vvar_layer, create_written_zvar_layer
   end interface
+  interface make_timestep
+   module procedure make_htimestep, make_utimestep, make_vtimestep
+  end interface
   
   contains
 
@@ -135,6 +138,109 @@ module allocation
   
   
   
+  subroutine make_htimestep(dat)
+   use global
+   use writeout
+   use writeout_grid
+   
+   implicit none
+   
+   type(hvar), intent(inout) :: dat
+   
+   
+   allocate(dat%tmp)
+   allocate(dat%tend1)
+   allocate(dat%tend2)
+   allocate(dat%tend3)
+   allocate(dat%tend_out)
+   call create_var(dat%tmp,hgrid,.false.)
+   call create_var(dat%tend1,hgrid,.false.)
+   call create_var(dat%tend2,hgrid,.false.)
+   call create_var(dat%tend3,hgrid,.false.)
+   call create_var(dat%tend_out,hgrid,.false.)
+   dat%tend_out%bz(dat%p%lx+1:,dat%p%ly+1:) => dat%tend1%bz
+   call init_writeouts(dat%tend_out,hgrid_out)
+   write (dat%tend_out%out%name, "(a16)") "tend"//adjustl(trim(dat%out%name))
+   dat%tend_out%out%name=adjustl(dat%tend_out%out%name)
+         
+         
+  end subroutine
+  
+  subroutine make_utimestep(dat)
+   use global
+   use writeout
+   use writeout_grid
+   
+   implicit none
+   
+   type(uvar), intent(inout) :: dat
+   
+   
+   allocate(dat%tmp)
+   allocate(dat%tend1)
+   allocate(dat%tend2)
+   allocate(dat%tend3)
+   allocate(dat%tend_out)
+   call create_var(dat%tmp,ugrid,.false.)
+   call create_var(dat%tend1,ugrid,.false.)
+   call create_var(dat%tend2,ugrid,.false.)
+   call create_var(dat%tend3,ugrid,.false.)
+   call create_var(dat%tend_out,ugrid,.false.)
+   dat%tend_out%bz(dat%p%lx+1:,dat%p%ly+1:) => dat%tend1%bz
+   call init_writeouts(dat%tend_out,ugrid_out)
+   write (dat%tend_out%out%name, "(a16)") "tend"//adjustl(trim(dat%out%name))
+   dat%tend_out%out%name=adjustl(dat%tend_out%out%name)
+         
+         
+  end subroutine
+  
+  subroutine make_vtimestep(dat)
+   use global
+   use writeout
+   use writeout_grid
+   
+   implicit none
+   
+   type(vvar), intent(inout) :: dat
+   
+   
+   allocate(dat%tmp)
+   allocate(dat%tend1)
+   allocate(dat%tend2)
+   allocate(dat%tend3)
+   allocate(dat%tend_out)
+   call create_var(dat%tmp,vgrid,.false.)
+   call create_var(dat%tend1,vgrid,.false.)
+   call create_var(dat%tend2,vgrid,.false.)
+   call create_var(dat%tend3,vgrid,.false.)
+   call create_var(dat%tend_out,vgrid,.false.)
+   dat%tend_out%bz(dat%p%lx+1:,dat%p%ly+1:) => dat%tend1%bz
+   call init_writeouts(dat%tend_out,vgrid_out)
+   write (dat%tend_out%out%name, "(a16)") "tend"//adjustl(trim(dat%out%name))
+   dat%tend_out%out%name=adjustl(dat%tend_out%out%name)
+         
+         
+  end subroutine
+  
+  
+ 
+ 
+ elemental subroutine stepforward(dat)
+  use global
+  
+  implicit none
+  
+  class(var), intent(inout) :: dat
+  
+  
+   dat%tmp => dat%tend3
+   dat%tend3 => dat%tend2
+   dat%tend2 => dat%tend1
+   dat%tend1 => dat%tmp
+   dat%tend_out%bz(dat%p%lx+1:,dat%p%ly+1:) => dat%tend1%bz
+  
+ end subroutine
+  
   
   
   subroutine create_written_hvar(dat,name,synced)
@@ -155,6 +261,9 @@ module allocation
    call init_writeouts(dat,hgrid_out)
    
   end subroutine
+   
+   
+  
   
   
   subroutine create_written_uvar(dat,name,synced)
