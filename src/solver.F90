@@ -38,14 +38,7 @@ module solver
   call create_field(ap,.false.)
   call create_field(z,.false.)
   
-  
-  pres=0.0d0
-  call start_sync(pres)
-  r=0.0d0
-  call start_sync(r)
-  p=0.0d0
-  call start_sync(p)
-  
+   
   
   
   
@@ -64,7 +57,7 @@ module solver
  
  
  
- subroutine surfpressure(ierr)
+ subroutine surfpressure(ierr,maxit)
   use solver_variables
   use parallel
   use grid_operate
@@ -75,6 +68,7 @@ module solver
 
   integer :: n
   integer, intent(out) :: ierr
+  integer, intent(in) :: maxit
   real (kind=8) :: alpha, rdotold, rdotnew, rdotfirst, rdotfrac
   real (kind=8) :: pdotap, p_0
   real (kind=8) :: pdotap_tmp, rdotnew_tmp
@@ -144,12 +138,10 @@ module solver
   call real_allsum(rdotnew_tmp, rdotold)
 
 
- 
-
- ! if (proc_name == proc_master) print *, rdotold
+!  if (proc_name == proc_master) print *, rdotold, rdotfirst
  
  
-  do n = 1, 1000
+  do n = 1, maxit
   
      
    if (abs(rdotold) /= 0.0) then
@@ -180,8 +172,6 @@ module solver
    pres=pres%bz+alpha*p%bz
    
    
-   
-   
    call end_sync(r)
    
    z=Ax(inthavx%bz*Ax(r))+Ay(inthavy%bz*Ay(r))
@@ -200,7 +190,7 @@ module solver
    
    
    rdotold=rdotnew
-!   if (proc_name == proc_master) print *, n, rdotold, pdotap
+  ! if (proc_name == proc_master) print *, n, rdotold, pdotap
 
 
   
@@ -236,6 +226,8 @@ module solver
    print *, rdotold, ens_name
   end if
   ierr=1
+   
+   print *, proc_name, alpha
   
   
    
@@ -284,7 +276,7 @@ module solver
  
  
 
- subroutine thickness_correct(h,s,d)
+ subroutine thickness_correct(h,s)
   use global
   use params
   use grid
@@ -292,13 +284,15 @@ module solver
   use operations
  
   type(hvar), intent(inout) :: h(nz)
-  type(hvar), intent(inout) :: d(0:nz)
-  type(hvar), intent(in) :: s   
+  type(hvar), intent(inout) :: s
+  real(kind=db) :: d(s%p%lx+1:s%p%lx+s%p%nx,s%p%ly+1:s%p%ly+s%p%ny)
+  integer :: k
   
-  call depth(h,s,d)
-  
-  h(nz)=-d(nz-1)%bz
-  d(nz)%bz=0.0d0
+  d=s%bz
+  do k=1,nz-1
+   d=d+h(k)%bz
+  end do
+  h(nz)=-d
   
  end subroutine
     

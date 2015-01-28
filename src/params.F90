@@ -82,7 +82,7 @@ module params
 
 
  REAL (KIND=db), PARAMETER :: write_time=1.0d1
- REAL (KIND=db), PARAMETER :: total_time=1.0d4
+ REAL (KIND=db), PARAMETER :: total_time=1.0d2
 #ifdef DO_TIME_AVERAGE
  REAL (KIND=db), PARAMETER :: average_time=1.0d0
  

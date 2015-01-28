@@ -121,6 +121,11 @@ program sw
  end do
  
  
+#ifdef ALLOW_RIGID_LID
+  pres=0.0d0
+  r=0.0d0
+  p=0.0d0
+#endif
  
  
  
@@ -171,7 +176,6 @@ program sw
 !--------------------------------------------------------------------------!
 !--------------------------------------------------------------------------!
  
-print *, dt
 
  
 !--------------------------------------------------------------------------------------------------------------!
@@ -181,7 +185,7 @@ print *, dt
 !--------------------------------------------------------------------------------------------------------------!
 
   
- do n=0,1!nstop
+ do n=0,nstop
  
  
   if (proc_name == proc_master) then
@@ -204,16 +208,17 @@ print *, dt
     v(k)%tmp=v(k)%bz
    end do
   end if
+  
  
   
   call tend_h(n)
   
   do k=1,nz
    call end_sync(u(k))
-   lapu(k)=sGxx(u(k))+Gy(sGy(u(k)))
+   lapu(k)=sGxx(u(k))+sGyy(u(k))
    call start_sync(lapu(k))
    call end_sync(v(k))
-   lapv(k)=Gx(sGx(v(k)))+sGyy(v(k))
+   lapv(k)=sGxx(v(k))+sGyy(v(k))
    call start_sync(lapv(k))
   end do
   
@@ -242,7 +247,7 @@ print *, dt
    call end_sync(lapu(k))
    call end_sync(lapv(k))
    call end_sync(smag(k))
-   smagu(k)=-Ax(smag(k))*(sGxx(lapu(k))+Gy(Gy(lapu(k))))
+   smagu(k)=-Ax(smag(k))*(sGxx(lapu(k))+sGyy(lapu(k)))
   end do
   call end_sync(ke(1))
   bfricu=bf*(Ax(ke(1))/(4.0d-4))*u(1)%bz
@@ -251,7 +256,7 @@ print *, dt
    call end_sync(lapu(k))
    call end_sync(lapv(k))
    call end_sync(smag(k))
-   smagv(k)=-Ay(smag(k))*(Gx(sGx(lapv(k)))+sGyy(lapv(k)))
+   smagv(k)=-Ay(smag(k))*(sGxx(lapv(k))+sGyy(lapv(k)))
   end do
   call end_sync(ke(1))
   bfricv=bf*(Ay(ke(1))/(4.0d-4))*v(1)%bz
@@ -284,7 +289,7 @@ print *, dt
     end if
    end if
   end if
-  call thickness_correct(h_tmp,s,d)
+  call thickness_correct(h_tmp,s)
    
   do k=1,nz
    call start_sync(h_tmp(k))
@@ -324,7 +329,8 @@ print *, dt
   
    inty=0.0d0
    do k=1,nz
-    y(k)=-Gx(u_tmp(k)%bz*Ax(h_tmp(k)))   &
+    call end_sync(h_tmp(k))
+    y(k)=-Gx(u_tmp(k)%bz*Ax(h_tmp(k)))  &
            -Gy(v_tmp(k)%bz*Ay(h_tmp(k)))
  !      inty%z=inty%z+y(k)%z
     if (n >= 3) then
@@ -347,11 +353,11 @@ print *, dt
   
   
    
-   call surfpressure(stat)
+   call surfpressure(stat,1000)
    call prescorrection(n)
 
 #endif
-
+ 
 
 #ifdef ALLOW_RIGID_LID
   do k=1,nz
@@ -430,7 +436,9 @@ print *, dt
   
   call mont(d,m)
   
-  
+  do k=1,nz
+   call start_sync(m(k))
+  end do
   
   
   
@@ -466,6 +474,7 @@ print *, dt
    call start_sync(v(k))
    ke(k)=0.5d0*(Ax(u(k)%bz**2)+Ay(v(k)%bz**2))
    call start_sync(ke(k))
+   call end_sync(h(k))
    h_u(k)=Ax(h(k))
    h_v(k)=Ay(h(k))
    call start_sync(h_u(k))
@@ -489,6 +498,7 @@ print *, dt
  
  
  
+ call write_main('out')
  
  
  

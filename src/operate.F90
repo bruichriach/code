@@ -184,7 +184,7 @@ module overload
   implicit none
   
   class(var), intent(inout) :: dat
-  real(kind=db), intent(in) :: field(:,:)
+  real(kind=db), intent(in) :: field(dat%p%lx+1:dat%p%lx+dat%p%nx,dat%p%ly+1:dat%p%ly+dat%p%ny)
   
   dat%bz=field
   
@@ -228,30 +228,34 @@ module grid_operate
  
  
  
-  pure function sGxx(a) result (b)
+  function sGxx(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   class(var), intent(in) :: a
+   class(var), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
    
+   call end_sync(a)
    b=(a%z(a%p%lx+2:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
         2.0d0*a%bz + a%z(a%p%lx:a%p%lx+a%p%nx-1,a%p%ly+1:a%p%ly+a%p%ny))/(dx)**2
  
   end function
  
-  pure function sGyy(a) result (b)
+  function sGyy(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   class(var), intent(in) :: a
+   class(var), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
    
    
+   call end_sync(a)
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+2:a%p%ly+a%p%ny+1) - &
         2.0d0*a%bz + a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny-1))/(dy)**2
  
@@ -437,56 +441,64 @@ module grid_operate
   end function
   
   
-  pure function hGx(a) result (b)
+  function hGx(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(hvar), intent(in) :: a
+   type(hvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
    
+   call end_sync(a)
    b=sGx(a)
    
   end function
   
   
-  pure function hGy(a) result (b)
+  function hGy(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(hvar), intent(in) :: a
+   type(hvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
    
+   call end_sync(a)
    b=sGy(a)
    
   end function
   
-  pure function hAx(a) result (b)
+  function hAx(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(hvar), intent(in) :: a
+   type(hvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
    
+   call end_sync(a)
    b=sAx(a)
    
   end function
   
   
-  pure function hAy(a) result (b)
+  function hAy(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(hvar), intent(in) :: a
+   type(hvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
    
+   call end_sync(a)
    b=sAy(a)
    
   end function
@@ -511,15 +523,17 @@ module grid_operate
   end function
   
   
-  pure function uGy(a) result (b)
+  function uGy(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(uvar), intent(in) :: a
+   type(uvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
    
+   call end_sync(a)
    b=sGy(a)
    
   end function
@@ -538,15 +552,17 @@ module grid_operate
   end function
   
   
-  pure function uAy(a) result (b)
+  function uAy(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(uvar), intent(in) :: a
+   type(uvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
    
+   call end_sync(a)
    b=sAy(a)
    
   end function 
@@ -558,15 +574,17 @@ module grid_operate
   
   
   
-  pure function vGx(a) result (b)
+  function vGx(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(vvar), intent(in) :: a
+   type(vvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
    
+   call end_sync(a)
    b=sGx(a)
    
   end function
@@ -585,15 +603,17 @@ module grid_operate
    
   end function
   
-  pure function vAx(a) result (b)
+  function vAx(a) result (b)
    use global
    use params
+   use sync
    
    implicit none
    
-   type(vvar), intent(in) :: a
+   type(vvar), intent(inout) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
    
+   call end_sync(a)
    b=sAx(a)
    
   end function
@@ -843,7 +863,7 @@ module grid_operate
     tend=0.0d0    &
      +smagu(i)%bz  &
      +Ay(f%bz+zeta(i)%bz)   &
-     *Ay(Ax(v(i)))    &
+      *Ay(Ax(v(i)))    &
      -Gx(m(i))    &
      -Gx(ke(i))     &
      +0.0d0

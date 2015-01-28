@@ -112,12 +112,15 @@ MODULE writeout
     
   
   
+  
    do k=0,ens_images-1 
     l=0
-    do j=dat%p%ly+1,dat%p%ly+dat%p%ny
-     do i=dat%p%lx+1,dat%p%lx+dat%p%nx
-      l=l+1
-      dat%out%recv(k)%dat(l)=dat%out%z(i,j)
+    do j=1,ubound(dat%out%z,2)
+     do i=1,ubound(dat%out%z,1)
+      if (dat%out%grid(i,j,k) == 1) then
+       l=l+1
+       dat%out%recv(k)%dat(l)=dat%out%z(i,j)
+      end if
      end do
     end do
     

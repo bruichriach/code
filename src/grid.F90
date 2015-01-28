@@ -318,6 +318,9 @@ module sync
     end if
    end do
    dat%synced = .false.
+  else
+   print *, "sync when aready syncing"
+   stop
   end if
   
    
@@ -393,20 +396,22 @@ module sync
    real (kind=db), intent(in) :: in
    real (kind=db), intent(out) :: out
    real (kind=db) :: out_tmp(0:ens_images-1)
-   integer :: send(0:ens_images-1), recv(0:ens_images-1), i
+   integer :: send(0:ens_images-1), recv(0:ens_images-1), i, j
    
    
    out = 0.0d0
   
-   mobile_tag=mod(mobile_tag+1,1000)
+   mobile_tag=mod(mobile_tag+1,10000)
  
    do i=0,ens_images-1
-    call mpi_irecv(out_tmp(i),1,     &
-             mpi_precision,ens_master+mod(proc_name+i,ens_images),40000+mobile_tag,    &
-             MPI_COMM_WORLD,recv(i),stat)
+    j=ens_master+mod(proc_name+i,ens_images)
+    call mpi_irecv(out_tmp(j),1,     &
+             mpi_precision,j,40000+mobile_tag,    &
+             MPI_COMM_WORLD,recv(j),stat)
+    j=ens_master+mod(proc_name+ens_images-i,ens_images)
     call mpi_isend(in,1,     &
-             mpi_precision,ens_master+mod(proc_name+ens_images-i,ens_images),40000+mobile_tag,    &
-             MPI_COMM_WORLD,send(i),stat)
+             mpi_precision,j,40000+mobile_tag,    &
+             MPI_COMM_WORLD,send(j),stat)
    end do
    
   

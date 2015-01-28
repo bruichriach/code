@@ -4,5 +4,7 @@ sw.out
 src/*~
 *~
 in
+out
+old
 data
 makefile

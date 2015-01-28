@@ -75,67 +75,79 @@ module allocation
     
     
     do j=0,proc_num-1
-     l=0
-     if (north == j) then
-      do i=1,dat%p%nx
-       dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+i,dat%p%ly+dat%p%ny-dat%p%oy))
-      end do
-      l=l+dat%p%nx
-     end if
-     if (south == j) then
-      do i=1,dat%p%nx
-       dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+i,dat%p%ly+1+dat%p%oy))
-      end do
-      l=l+dat%p%nx
-     end if
-     if (east == j) then
-      do i=1,dat%p%ny
-       dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+dat%p%nx-dat%p%ox,dat%p%ly+i))
-      end do
-      l=l+dat%p%ny
-     end if
-     if (west == j) then
-      do i=1,dat%p%ny
-       dat%mpi(j)%s(l+i) =  &
-         point_at(dat%z(dat%p%lx+1+dat%p%ox,dat%p%ly+i))
-      end do
-      l=l+dat%p%ny
+     if (allocated(dat%mpi(j)%s)) then
+      l=0
+      if (north == j) then
+       do i=1,dat%p%nx
+        dat%mpi(j)%s(l+i) =  &
+          point_at(dat%z(dat%p%lx+i,dat%p%ly+dat%p%ny-dat%p%oy))
+       end do
+       l=l+dat%p%nx
+      end if
+      if (south == j) then
+       do i=1,dat%p%nx
+        dat%mpi(j)%s(l+i) =  &
+          point_at(dat%z(dat%p%lx+i,dat%p%ly+1+dat%p%oy))
+       end do
+       l=l+dat%p%nx
+      end if
+      if (east == j) then
+       do i=1,dat%p%ny
+        dat%mpi(j)%s(l+i) =  &
+          point_at(dat%z(dat%p%lx+dat%p%nx-dat%p%ox,dat%p%ly+i))
+       end do
+       l=l+dat%p%ny
+      end if
+      if (west == j) then
+       do i=1,dat%p%ny
+        dat%mpi(j)%s(l+i) =  &
+          point_at(dat%z(dat%p%lx+1+dat%p%ox,dat%p%ly+i))
+       end do
+       l=l+dat%p%ny
+      end if
+      if (l /= ubound(dat%mpi(j)%s,1)) then
+       print *, "OMG SEND ERROR!!!"
+       stop
+      end if
      end if
     end do
    
    
     do j=0,proc_num-1
-     l=0
-     if (south == j) then
-      do i=1,dat%p%nx
-       dat%mpi(j)%r(l+i)%z =  &
-         point_at(dat%z(dat%p%lx+i,dat%p%ly))
-      end do
-      l=l+dat%p%nx
-     end if
-     if (north == j) then
-      do i=1,dat%p%nx
-       dat%mpi(j)%r(l+i)%z =  &
-         point_at(dat%z(dat%p%lx+i,dat%p%ly+dat%p%ny+1))
-      end do
-      l=l+dat%p%nx
-     end if
-     if (west == j) then
+     if (allocated(dat%mpi(j)%r)) then
+      l=0
+      if (south == j) then
+       do i=1,dat%p%nx
+        dat%mpi(j)%r(l+i)%z =  &
+          point_at(dat%z(dat%p%lx+i,dat%p%ly))
+       end do
+       l=l+dat%p%nx
+      end if
+      if (north == j) then
+       do i=1,dat%p%nx
+        dat%mpi(j)%r(l+i)%z =  &
+          point_at(dat%z(dat%p%lx+i,dat%p%ly+dat%p%ny+1))
+       end do
+       l=l+dat%p%nx
+      end if
+      if (west == j) then
+        do i=1,dat%p%ny
+          dat%mpi(j)%r(l+i)%z =  &
+           point_at(dat%z(dat%p%lx,dat%p%ly+i))
+        end do
+       l=l+dat%p%ny
+      end if
+      if (east == j) then
        do i=1,dat%p%ny
          dat%mpi(j)%r(l+i)%z =  &
-          point_at(dat%z(dat%p%lx,dat%p%ly+i))
+          point_at(dat%z(dat%p%lx+dat%p%nx+1,dat%p%ly+i))
        end do
-      l=l+dat%p%ny
-     end if
-     if (east == j) then
-      do i=1,dat%p%ny
-        dat%mpi(j)%r(l+i)%z =  &
-         point_at(dat%z(dat%p%lx+dat%p%nx+1,dat%p%ly+i))
-      end do
-      l=l+dat%p%ny
+       l=l+dat%p%ny
+      end if
+      if (l /= ubound(dat%mpi(j)%r,1)) then
+       print *, "OMG RECIEVE ERROR!!!"
+       stop
+      end if
      end if
     end do
     
