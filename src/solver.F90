@@ -1,6 +1,11 @@
 
 
+#include "include.h"
+
+#ifdef ALLOW_RIGID_LID
+
 module solver
+
  
  
  implicit none
@@ -275,7 +280,29 @@ module solver
   return
  
  end subroutine
+ 
+ 
+ 
+
+ subroutine thickness_correct(h,s,d)
+  use global
+  use params
+  use grid
+  use overload
+  use operations
+ 
+  type(hvar), intent(inout) :: h(nz)
+  type(hvar), intent(inout) :: d(0:nz)
+  type(hvar), intent(in) :: s   
+  
+  call depth(h,s,d)
+  
+  h(nz)=-d(nz-1)%bz
+  d(nz)%bz=0.0d0
+  
+ end subroutine
     
 end module
  
+#endif
 

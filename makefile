@@ -1,4 +1,4 @@
-FFLAGS=-O2 -march=native -mtune=native -ffixed-line-length-none
+FFLAGS=-O2 -pg -march=native -mtune=native -ffixed-line-length-none
 #FFLAGS= -O3 -m 3 
 precon=-I/usr/local/include -L/usr/local/lib -cpp
 #FFLAGS=-O0 -g -Wall -ffixed-line-length-none -finit-real=nan -finit-integer=666 -fbounds-check -fbacktrace

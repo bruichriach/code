@@ -1,4 +1,6 @@
 program sw
+
+#include "include.h"
  use sys
  use parallel
  use grid
@@ -6,8 +8,10 @@ program sw
  use variables
  use grid_operate
  use sync
+#ifdef ALLOW_RIGID_LID
  use solver
  use solver_variables
+#endif
  use writeout
  use allocation
  use operations
@@ -53,7 +57,7 @@ program sw
  call create_field(h_v,.true.)
  call create_field(h_z,.false.)
  
- call create_field(h_tmp,.false.)
+ call create_field(h_tmp,.true.)
  call create_field(u_tmp,.false.)
  call create_field(v_tmp,.false.)
  
@@ -94,7 +98,9 @@ program sw
  
  call end_sync(s)
  
+#ifdef ALLOW_RIGID_LID
  call set_solver()
+#endif
  
  mind(0)=s
  do k=1,nz
@@ -104,7 +110,7 @@ program sw
   minh(k)=mind(k)-mind(k-1)
  end do
  
- do k=1,nz
+ do k=0,nz
   d(k)=mind(k)
  end do
  call mont(mind,minm)
@@ -114,19 +120,27 @@ program sw
   v(k)=0.0d0
  end do
  
+ 
+ 
+ 
+ 
  do k=1,nz
   call read_var(h(k),'old')
   call read_var(u(k),'old')
   call read_var(v(k),'old')
  end do
+#ifdef ALLOW_RIGID_LID
  call read_var(pres,'old')
+#endif
  
  do k=1,nz
   call start_sync(h(k))
   call start_sync(u(k))
   call start_sync(v(k))
  end do
+#ifdef ALLOW_RIGID_LID
  call start_sync(pres)
+#endif
  
  call write_main('in')
  
@@ -157,8 +171,8 @@ program sw
 !--------------------------------------------------------------------------!
 !--------------------------------------------------------------------------!
  
- 
- 
+print *, dt
+
  
 !--------------------------------------------------------------------------------------------------------------!
 
@@ -167,7 +181,7 @@ program sw
 !--------------------------------------------------------------------------------------------------------------!
 
   
- do n=0,nstop
+ do n=0,1!nstop
  
  
   if (proc_name == proc_master) then
@@ -190,6 +204,7 @@ program sw
     v(k)%tmp=v(k)%bz
    end do
   end if
+ 
   
   call tend_h(n)
   
@@ -269,7 +284,7 @@ program sw
     end if
    end if
   end if
-  call thickness_correct(h_tmp,h,n,s)
+  call thickness_correct(h_tmp,s,d)
    
   do k=1,nz
    call start_sync(h_tmp(k))
@@ -332,7 +347,7 @@ program sw
   
   
    
-   call surfpressure(ierr)
+   call surfpressure(stat)
    call prescorrection(n)
 
 #endif
@@ -347,8 +362,6 @@ program sw
    ape(k)=(h(k)%bz-minh(k)%bz)*(m(k)%bz-minm(k)%bz)
   end do
 #endif
-
-
   
   if (mod(n,wstep) == 0) then
    if (n /= 0) then
@@ -486,34 +499,7 @@ program sw
  
  
  
- 
- 
- 
- 
- 
- call end_sync(h(1))
   
- v(2)=2.0d0*pi*v(1)%p%y/y0
- call start_sync(v(2))
- call end_sync(v(2))
- 
- v(1)=cos(v(2)%bz)
- call start_sync(v(1))
- call end_sync(v(1))
- 
- 
- 
- inty=Gy(v(1))
- 
- call surfpressure(stat)
- 
- call end_sync(pres)
- 
- 
- if (proc_name == 0) then
-  call print_var(pres)
- end if
- 
  
   
  call mpi_finalize(stat)

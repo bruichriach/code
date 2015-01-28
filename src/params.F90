@@ -1,9 +1,12 @@
 module params
+
+#include "include.h"
+
  use sys
  
  implicit none
 
- integer, parameter :: mx=2, my=8
+ integer, parameter :: mx=100, my=150
  integer, parameter :: nz=3
  real(kind=db), parameter :: dx=0.1d0, dy=0.1d0
 #ifdef DOUBLE_PRECISION
@@ -67,7 +70,7 @@ module params
 
 #ifdef ALLOW_RIGID_LID
  real (kind=db), parameter :: maxh=1.25d0!h0
- real (kind=db), parameter :: dt = (0.25d0*dx)/dsqrt(sum(ngp)*maxh)
+ real (kind=db), parameter :: dt = (0.25d0*dx)/dsqrt(sum(ngp(1:nz-1))*maxh)
 #else
  real (kind=db), parameter :: maxh=1.25d0*1.01d0
  real (kind=db), parameter :: dt = (0.25d0*dx)/dsqrt(sum(ngp)*maxh)

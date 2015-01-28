@@ -1,4 +1,9 @@
+
+
+#include "include.h"
+
 module global
+
  use sys
  use overloading
  
@@ -87,6 +92,7 @@ end module
 
 
 module variables
+
  use global
  use params
 
@@ -141,8 +147,10 @@ module variables
 
 end module
 
+#ifdef ALLOW_RIGID_LID
 
 module solver_variables
+
  use global
  use params
 
@@ -156,3 +164,5 @@ module solver_variables
  type(hvar) :: ap, z
 
 end module
+
+#endif

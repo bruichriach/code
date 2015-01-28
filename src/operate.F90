@@ -1,6 +1,9 @@
 
 module overload
 
+#include "include.h"
+
+
  implicit none
  
  
@@ -196,6 +199,9 @@ end module
 
 
 module grid_operate
+
+#include "include.h"
+
  use overload
 
  implicit none
@@ -928,7 +934,7 @@ module operations
   integer :: k
   
 #ifdef ALLOW_RIGID_LID
-  m((nz)=0.0d0
+  m(nz)=0.0d0
 #else
   m(nz)=ngp(nz)*d(nz)
 #endif

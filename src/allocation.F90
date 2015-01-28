@@ -1,4 +1,7 @@
 module allocation
+
+#include "include.h"
+
    use grid
    
    implicit none

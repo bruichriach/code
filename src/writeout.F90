@@ -1,4 +1,9 @@
+
+
+#include "include.h"
+
 module writeout_grid
+
  use params
 
  implicit none
@@ -151,7 +156,9 @@ MODULE writeout
   use writeout_grid
   use parallel
   use variables
+#ifdef ALLOW_RIGID_LID
   use solver_variables
+#endif
  
   implicit none
  
@@ -175,14 +182,18 @@ MODULE writeout
    call init_var_write(u(k))
    call init_var_write(v(k))
   end do
+#ifdef ALLOW_RIGID_LID
   call init_var_write(pres)
+#endif
   write (filename, "(a1,i4.4)") '/', ens_name
   do k=1,nz
    call end_var_write(h(k),folder//filename,0)
    call end_var_write(u(k),folder//filename,0)
    call end_var_write(v(k),folder//filename,0)
   end do
+#ifdef ALLOW_RIGID_LID
   call end_var_write(pres,folder//filename,0)
+#endif
   
  end subroutine 
   
@@ -328,7 +339,9 @@ MODULE writeout
  subroutine write()
   use writeout_grid
   use global
+#ifdef ALLOW_RIGID_LID
   use solver_variables
+#endif
   use variables
   use parallel
  
@@ -340,7 +353,9 @@ MODULE writeout
   
   call init_var_write(utau)
   call init_var_write(vtau)
+#ifdef ALLOW_RIGID_LID
   call init_var_write(pres)
+#endif
   call init_var_write(d(0))
   do i=1,nz
    call init_var_write(d(i))
@@ -366,7 +381,9 @@ MODULE writeout
  subroutine do_write(num)
   use parallel
   use variables
+#ifdef ALLOW_RIGID_LID
   use solver_variables
+#endif
  
   implicit none
   
@@ -397,7 +414,9 @@ MODULE writeout
    write (filename, "(a5,i4.4,a1,i4.4)") 'data/', ens_name, '/', num
    call end_var_write(utau,filename,0)
    call end_var_write(vtau,filename,0)
+#ifdef ALLOW_RIGID_LID
    call end_var_write(pres,filename,0)
+#endif
    call end_var_write(d(0),filename,0)   
    do i=1,nz   
     call end_var_write(d(i),filename,0)   
