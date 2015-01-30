@@ -94,6 +94,9 @@ program sw
             max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**2,0.0d0))
  call start_sync(s)
  
+ utau=0.0d0
+ vtau=0.0d0
+ 
  f=1.0d0
  
  call end_sync(s)
@@ -145,6 +148,8 @@ program sw
  end do
 #ifdef ALLOW_RIGID_LID
  call start_sync(pres)
+ call start_sync(r)
+ call start_sync(p)
 #endif
  
  call write_main('in')
@@ -355,7 +360,7 @@ program sw
    
    call surfpressure(stat,1000)
    call prescorrection(n)
-
+   
 #endif
  
 
