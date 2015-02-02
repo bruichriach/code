@@ -1,13 +1,13 @@
-FFLAGS=-O2 -pg -march=native -mtune=native -ffixed-line-length-none
+#FFLAGS=-O2 -pg -march=native -mtune=native -ffixed-line-length-none
 #FFLAGS= -O3 -m 3 
 precon=-I/usr/local/include -L/usr/local/lib -cpp
-#FFLAGS=-O0 -g -Wall -ffixed-line-length-none -finit-real=nan -finit-integer=666 -fbounds-check -fbacktrace
+FFLAGS=-O0 -g -Wall -ffixed-line-length-none -finit-real=nan -finit-integer=666 -fbounds-check -fbacktrace
 
 F90=mpif90
 
 default: all
 
-OBJS = system.o global.o params.o grid.o writeout.o allocation.o operate.o solver.o
+OBJS = system.o global.o params.o grid.o writeout.o allocation.o operate.o solver.o stochastic.o
 
 
 %.o: src/%.F90

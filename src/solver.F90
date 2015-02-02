@@ -138,7 +138,7 @@ module solver
   call real_allsum(rdotnew_tmp, rdotold)
 
 
-  if (proc_name == proc_master) print *, rdotold, rdotfirst
+!  if (proc_name == proc_master) print *, rdotold, rdotfirst
  
  
   do n = 1, maxit

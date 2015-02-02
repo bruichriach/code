@@ -577,4 +577,16 @@ module allocation
    
   end subroutine
   
+  subroutine remove_field(dat)
+   use global
+   
+   class(var), intent(inout) :: dat
+   
+   nullify(dat%p)
+   nullify(dat%bz)
+   deallocate(dat%z)
+  
+  end subroutine
+  
+  
 end module

@@ -15,6 +15,7 @@ program sw
  use writeout
  use allocation
  use operations
+ use llist_ops
  
  
   implicit none
@@ -150,6 +151,11 @@ program sw
  call start_sync(pres)
  call start_sync(r)
  call start_sync(p)
+#endif
+
+
+#ifdef ALLOW_STOCHASTIC_WIND
+  call input_llist(stochwind,'stochwind')
 #endif
  
  call write_main('in')
@@ -507,6 +513,10 @@ program sw
  
  
  
+ 
+#ifdef ALLOW_STOCHASTIC_WIND
+ call output_llist(stochwind,'stochwind')
+#endif
  
  
  

@@ -694,6 +694,22 @@ module grid_operate
   end function
   
   
+  function x_dist(a,x) result (p)
+   use sys
+   use global
+   use params
+   
+   implicit none
+   
+   class(var), intent(in) :: a
+   real(kind=db) :: x
+   real(kind=db) :: p(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+   
+   p=lim(a%p%x-x,x0)
+   
+  end function
+  
+  
   function y_dist(a,y) result (p)
    use sys
    use global
