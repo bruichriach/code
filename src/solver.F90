@@ -15,7 +15,6 @@ module solver
  contains
  
  subroutine set_solver()
-  use solver_variables
   use variables
   use params
   use grid_operate
@@ -58,7 +57,7 @@ module solver
  
  
  subroutine surfpressure(ierr,maxit)
-  use solver_variables
+  use variables
   use parallel
   use grid_operate
   use sync
@@ -89,9 +88,7 @@ module solver
  
  
   call end_sync(pres)
-  
-  ap=Gx(thavx%bz*Gx(pres))+   &
-            Gy(thavy%bz*Gy(pres))
+  ap=equation(pres)
             
   
  
@@ -107,7 +104,7 @@ module solver
   
   
   call end_sync(r)
-  z=Ax(inthavx%bz*Ax(r))+Ay(inthavy%bz*Ay(r))
+  z=precondition(r)
   
    
  
@@ -126,8 +123,7 @@ module solver
 
 
   call end_sync(r)
-
-  z=Ax(inthavx%bz*Ax(r))+Ay(inthavy%bz*Ay(r))
+  z=precondition(r)
 
 
   p = z%bz
@@ -148,7 +144,7 @@ module solver
    
       
    call end_sync(p)
-   ap=Gx(thavx%bz*Gx(p))+Gy(thavy%bz*Gy(p))
+   ap=equation(p)
   
    
    
@@ -173,8 +169,7 @@ module solver
    
    
    call end_sync(r)
-   
-   z=Ax(inthavx%bz*Ax(r))+Ay(inthavy%bz*Ay(r))
+   z=precondition(r)
    
    
       
@@ -237,8 +232,38 @@ module solver
  
  end subroutine
  
+ 
+ function equation(a) result(b)
+  use grid_operate
+  use variables
+   
+  implicit none
+   
+  type(hvar), intent(inout) :: a
+  real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+ 
+ 
+  b=Gx(thavx%bz*Gx(a))+   &
+            Gy(thavy%bz*Gy(a))
+ 
+ end function
+ 
+ 
+ function precondition(a) result(b)
+  use variables
+  use grid_operate
+   
+  implicit none
+   
+  type(hvar), intent(inout) :: a
+  real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
+ 
+ 
+  b=Ax(inthavx%bz*Ax(a))+Ay(inthavy%bz*Ay(a))
+ 
+ end function
+ 
  subroutine prescorrection(n)
-  use solver_variables
   use global
   use grid_operate
   use sync

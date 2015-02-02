@@ -41,6 +41,7 @@ module sys
  integer, parameter :: db=4
 #endif
  integer :: stat
+ character(32) :: format
  real(kind=db), parameter :: unity=1.0d0
  real(kind=db), target :: null_field=1.0d99
 
@@ -52,7 +53,33 @@ module sys
 
  contains
  
+  elemental function num_position(a) result(b)
+  
+   implicit none
+   
+   integer, intent(in) :: a
+   character(6) :: b
+   
+   select case (a)
+    case (11)
+     write(b,"(i4,a2)") a, 'th'
+    case (12)
+     write(b,"(i4,a2)") a, 'th'
+    case (:0)
+     write(b,"(i4,a2)") a, 'th'
+    case default
+     select case (mod(a,10))
+      case (1)
+       write(b,"(i4,a2)") a, 'st'
+      case (2)
+       write(b,"(i4,a2)") a, 'nd'
+      case default
+       write(b,"(i4,a2)") a, 'th'
+     end select 
+   end select
+     
  
+  end function
  
   elemental function lim(x,x0)
   

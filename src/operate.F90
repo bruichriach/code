@@ -240,7 +240,7 @@ module grid_operate
    
    call end_sync(a)
    b=(a%z(a%p%lx+2:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
-        2.0d0*a%bz + a%z(a%p%lx:a%p%lx+a%p%nx-1,a%p%ly+1:a%p%ly+a%p%ny))/(dx)**2
+        2.0d0*a%bz + a%z(a%p%lx:a%p%lx+a%p%nx-1,a%p%ly+1:a%p%ly+a%p%ny))*indx**2
  
   end function
  
@@ -257,7 +257,7 @@ module grid_operate
    
    call end_sync(a)
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+2:a%p%ly+a%p%ny+1) - &
-        2.0d0*a%bz + a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny-1))/(dy)**2
+        2.0d0*a%bz + a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny-1))*indy**2
  
   end function
   
@@ -273,7 +273,7 @@ module grid_operate
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
    
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
-        a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))/dx
+        a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))*indx
  
   end function
  
@@ -288,7 +288,7 @@ module grid_operate
    
    
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1) - &
-        a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny))/dy
+        a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny))*indy
  
   end function
  
@@ -303,7 +303,7 @@ module grid_operate
    
    
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) + &
-        a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))/2.0d0
+        a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))*0.5d0
  
   end function
  
@@ -318,7 +318,7 @@ module grid_operate
    
    
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1) + &
-        a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny))/2.0d0
+        a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny))*0.5d0
  
   end function
   
@@ -392,7 +392,7 @@ module grid_operate
    real(kind=db) :: b(ubound(a,1),ubound(a,2))
    
    b=(a(1:ubound(a,1),:) - &
-        a(0:ubound(a,1)-1,:))/dx
+        a(0:ubound(a,1)-1,:))*indx
  
   end function
   
@@ -406,7 +406,7 @@ module grid_operate
    real(kind=db) :: b(ubound(a,1),ubound(a,2))
    
    b=(a(:,1:ubound(a,2)) - &
-        a(:,0:ubound(a,2)-1))/dy
+        a(:,0:ubound(a,2)-1))*indy
  
   end function
   
@@ -422,7 +422,7 @@ module grid_operate
    real(kind=db) :: b(ubound(a,1),ubound(a,2))
    
    b=(a(1:ubound(a,1),:) + &
-        a(0:ubound(a,1)-1,:))/2.0d0
+        a(0:ubound(a,1)-1,:))*0.5d0
         
   end function
   
@@ -436,7 +436,7 @@ module grid_operate
    real(kind=db) :: b(ubound(a,1),ubound(a,2))
    
    b=(a(:,1:ubound(a,2)) + &
-        a(:,0:ubound(a,2)-1))/2.0d0
+        a(:,0:ubound(a,2)-1))*0.5d0
  
   end function
   

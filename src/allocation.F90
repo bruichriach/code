@@ -50,7 +50,7 @@ module allocation
     allocate(dat%bz(dat%p%lx+1:dat%p%lx+dat%p%nx,   &
          dat%p%ly+1:dat%p%ly+dat%p%ny))
    end if
-   
+   dat%bz=0.0d0
    
    if (synced) then
        
@@ -276,7 +276,7 @@ module allocation
    
       
    call create_var(dat,hgrid,synced)
-   write (dat%out%name, "(a16)") trim(name)//".dat"
+   write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,hgrid_out)
    
@@ -300,7 +300,7 @@ module allocation
    
    
    call create_var(dat,ugrid,synced)
-   write (dat%out%name, "(a8)") name//".dat"
+   write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,ugrid_out)
    
@@ -321,7 +321,7 @@ module allocation
    
    
    call create_var(dat,vgrid,synced)
-   write (dat%out%name, "(a8)") name//".dat"
+   write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,vgrid_out)
    
@@ -342,7 +342,7 @@ module allocation
    
    
    call create_var(dat,zgrid,synced)
-   write (dat%out%name, "(a8)") name//".dat"
+   write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,zgrid_out)
    
@@ -425,7 +425,7 @@ module allocation
    
    do k=lbound(dat,1),ubound(dat,1)
     call create_hvar(dat(k),synced)
-    write (dat(k)%out%name, "(a3,i1,a4)") name//"_",k,".dat"
+    write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),hgrid_out)
    end do
@@ -449,7 +449,7 @@ module allocation
    
    do k=lbound(dat,1),ubound(dat,1)
     call create_uvar(dat(k),synced)
-    write (dat(k)%out%name, "(a3,i1,a4)") name//"_",k,".dat"
+    write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),ugrid_out)
    end do
@@ -472,7 +472,7 @@ module allocation
    
    do k=lbound(dat,1),ubound(dat,1)
     call create_vvar(dat(k),synced)
-    write (dat(k)%out%name, "(a3,i1,a4)") name//"_",k,".dat"
+    write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),vgrid_out)
    end do
@@ -496,7 +496,7 @@ module allocation
    
    do k=lbound(dat,1),ubound(dat,1)
     call create_zvar(dat(k),synced)
-    write (dat(k)%out%name, "(a3,i1,a4)") name//"_",k,".dat"
+    write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),zgrid_out)
    end do

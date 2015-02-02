@@ -6,9 +6,10 @@ module params
  
  implicit none
 
- integer, parameter :: mx=10, my=15
+ integer, parameter :: mx=100, my=150
  integer, parameter :: nz=3
  real(kind=db), parameter :: dx=0.1d0, dy=0.1d0
+ real(kind=db), parameter :: indx=1.0d0/dx, indy=1.0d0/dy
 #ifdef DOUBLE_PRECISION
  real(kind=db), parameter :: x0=dx*dble(mx), y0=dy*dble(my)
 #else
@@ -81,8 +82,8 @@ module params
 
 
 
- REAL (KIND=db), PARAMETER :: write_time=1.0d1
- REAL (KIND=db), PARAMETER :: total_time=1.0d2
+ REAL (KIND=db), PARAMETER :: write_time=1.0d1*(4.0d0*pi*sin(deg2rad*70.0d0))
+ REAL (KIND=db), PARAMETER :: total_time=8.0d3*(4.0d0*pi*sin(deg2rad*70.0d0))
 #ifdef DO_TIME_AVERAGE
  REAL (KIND=db), PARAMETER :: average_time=1.0d0
  
@@ -116,11 +117,11 @@ module params
   character(26) :: modeltime
    
    t=(dt/f0)*dble(n)
-   yrs=floor(t/3.15576e7)
-   t=t-dble(yrs)*3.15576e7
-   days=floor(t/8.64e4)
-   t=t-dble(days)*8.64e4
-   hours=floor(t/3.6e3)
+   yrs=floor(t/3.15576d7)
+   t=t-dble(yrs)*3.15576d7
+   days=floor(t/8.64d4)
+   t=t-dble(days)*8.64d4
+   hours=floor(t/3.6d3)
    
   
   write(modeltime, "(i4.3,a5,i4.3,a5,i3.2,a5)") &

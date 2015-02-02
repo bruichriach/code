@@ -3,8 +3,12 @@ src/*.o
 sw.out
 src/*~
 *~
-in
-out
-old
-data
+in/
+out/
+old/
+data/
+gmon.out
+profile
+stochwind.dat
+timemean/
 makefile

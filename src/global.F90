@@ -38,7 +38,7 @@ module global
   type(send_dat), allocatable :: recv(:)
   real(kind=db), allocatable :: z(:,:)
   integer, pointer :: grid(:,:,:)
-  character(16) name
+  character(32) name
  end type out_var
  
  type var
@@ -105,6 +105,12 @@ module variables
  type(uvar) :: u(nz)
  type(vvar) :: v(nz)
  
+
+#ifdef DO_TIME_AVERAGE
+ type(uvar) :: hu(nz)
+ type(vvar) :: hv(nz)
+#endif
+ 
  type(hvar) :: minh(nz)
  
  type(uvar) :: h_u(nz)
@@ -143,18 +149,50 @@ module variables
  
  type(zvar) :: f
 
+#ifdef DO_TIME_AVERAGE
 
+ type(hvar) :: s_h_h(nz)
+ type(uvar) :: s_h_u(nz)
+ type(vvar) :: s_h_v(nz)
+ type(zvar) :: s_h_z(nz)
+ 
+ type(hvar) :: s_hu_h(nz)
+ type(uvar) :: s_hu_u(nz)
+ type(vvar) :: s_hu_v(nz)
+ type(zvar) :: s_hu_z(nz)
 
-end module
+ type(hvar) :: s_hv_h(nz)
+ type(uvar) :: s_hv_u(nz)
+ type(vvar) :: s_hv_v(nz)
+ type(zvar) :: s_hv_z(nz)
+ 
+ type(hvar) :: s_huu_h(nz)
+
+ type(hvar) :: s_hvv_h(nz)
+
+ type(hvar) :: s_huv_h(nz)
+ type(zvar) :: s_huv_z(nz)
+ type(zvar) :: s_huv_uz(nz)
+ type(zvar) :: s_huv_vz(nz)
+ 
+ type(uvar) :: s_hm_x_u(nz)
+ type(vvar) :: s_hm_y_v(nz)
+ 
+ type(uvar) :: s_m_h(nz)
+ 
+ type(uvar) :: s_utau_u
+ type(vvar) :: s_vtau_v
+ 
+ type(uvar) :: s_bfricu_u
+ type(vvar) :: s_bfricv_v
+ 
+ type(uvar) :: s_hsmagu_u(nz)
+ type(vvar) :: s_hsmagv_v(nz)
+ 
+
+#endif
 
 #ifdef ALLOW_RIGID_LID
-
-module solver_variables
-
- use global
- use params
-
- implicit none
 
  type(hvar) :: pres, p, r
  type(uvar) :: thavx,inthavx
@@ -163,6 +201,7 @@ module solver_variables
  type(hvar) :: y(nz)
  type(hvar) :: ap, z
 
-end module
-
 #endif
+
+
+end module

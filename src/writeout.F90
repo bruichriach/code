@@ -49,14 +49,15 @@ MODULE writeout
  
  end subroutine
  
- subroutine write_config(dat)
+ subroutine fullwrite_var(folder,dat)
   use writeout_grid
   use variables
   use parallel
   
   implicit none
  
-  type(var), intent(inout) :: dat
+  class(var), intent(inout) :: dat
+  character(*) :: folder
   character(32) :: filename
   logical :: dir_e
   
@@ -64,14 +65,19 @@ MODULE writeout
    call mpi_barrier(mpi_comm_world,stat)
    call init_var_write(dat)
    if (proc_name == ens_master) then
-    write (filename, "(a1,i4.4)") '/', ens_name
-    inquire( file='global'//filename, exist=dir_e )
+    inquire( file=folder, exist=dir_e )
     do while (.not.(dir_e))   
-     call system('mkdir -p '//'global'//filename,stat)
-     inquire( file='global'//filename, exist=dir_e )
+     call system('mkdir -p '//folder,stat)
+     inquire( file=folder, exist=dir_e )
+    end do
+    write (filename, "(a1,i4.4)") '/', ens_name
+    inquire( file=folder//filename, exist=dir_e )
+    do while (.not.(dir_e))   
+     call system('mkdir -p '//folder//filename,stat)
+     inquire( file=folder//filename, exist=dir_e )
     end do
    end if
-   write (filename, "(a14,i4.4)") 'global/', ens_name
+   write (filename, "(a32)") folder//filename
    call end_var_write(dat,adjustl(filename),0)
    call mpi_barrier(mpi_comm_world,stat)
   
@@ -87,7 +93,7 @@ MODULE writeout
   
   class(var), intent(inout) :: dat
   character(*), intent(in) :: folder
-  character(32) :: format, foldername, fullname
+  character(32) :: foldername, fullname
   integer :: i,j,k,l
   logical :: file_exist
   
@@ -159,9 +165,6 @@ MODULE writeout
   use writeout_grid
   use parallel
   use variables
-#ifdef ALLOW_RIGID_LID
-  use solver_variables
-#endif
  
   implicit none
  
@@ -342,9 +345,6 @@ MODULE writeout
  subroutine write()
   use writeout_grid
   use global
-#ifdef ALLOW_RIGID_LID
-  use solver_variables
-#endif
   use variables
   use parallel
  
@@ -384,9 +384,6 @@ MODULE writeout
  subroutine do_write(num)
   use parallel
   use variables
-#ifdef ALLOW_RIGID_LID
-  use solver_variables
-#endif
  
   implicit none
   

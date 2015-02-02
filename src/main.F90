@@ -10,12 +10,15 @@ program sw
  use sync
 #ifdef ALLOW_RIGID_LID
  use solver
- use solver_variables
 #endif
  use writeout
  use allocation
  use operations
  use llist_ops
+#ifdef DO_TIME_AVERAGE
+ use timeav
+#endif
+
  
  
   implicit none
@@ -89,6 +92,55 @@ program sw
  call create_field(vtau,'vtau',.false.)
  
  call create_field(f,'f',.false.)
+ 
+ 
+ 
+
+#ifdef DO_TIME_AVERAGE
+
+ call create_field(hu,'hu',.true.)
+ call create_field(hv,'hv',.true.)
+
+ call create_field(s_h_h,'s_h_h',.false.)
+ call create_field(s_h_u,'s_h_u',.false.)
+ call create_field(s_h_v,'s_h_v',.false.)
+ call create_field(s_h_z,'s_h_z',.false.)
+
+ call create_field(s_hu_h,'s_hu_h',.false.)
+ call create_field(s_hu_u,'s_hu_u',.false.)
+ call create_field(s_hu_v,'s_hu_v',.false.)
+ call create_field(s_hu_z,'s_hu_z',.false.)
+
+ call create_field(s_hv_h,'s_hv_h',.false.)
+ call create_field(s_hv_u,'s_hv_u',.false.)
+ call create_field(s_hv_v,'s_hv_v',.false.)
+ call create_field(s_hv_z,'s_hv_z',.false.)
+
+ call create_field(s_huu_h,'s_huu_h',.false.)
+
+ call create_field(s_hvv_h,'s_hvv_h',.false.)
+
+ call create_field(s_huv_h,'s_huv_h',.false.)
+ call create_field(s_huv_z,'s_huv_z',.false.)
+ call create_field(s_huv_uz,'s_huv_uz',.false.)
+ call create_field(s_huv_vz,'s_huv_vz',.false.)
+ 
+ call create_field(s_hm_x_u,'s_hm_x_u',.false.)
+ call create_field(s_hm_y_v,'s_hm_y_v',.false.)
+ 
+ call create_field(s_m_h,'s_m_h',.false.)
+ 
+ call create_field(s_utau_u,'s_utau_u',.false.)
+ call create_field(s_vtau_v,'s_vtau_v',.false.)
+ 
+ call create_field(s_bfricu_u,'s_bfricu_u',.false.)
+ call create_field(s_bfricv_v,'s_bfricv_v',.false.)
+ 
+ call create_field(s_hsmagu_u,'s_hsmagu_u',.false.)
+ call create_field(s_hsmagv_v,'s_hsmagv_v',.false.)
+ 
+
+#endif
  
  
  s=-1.0d0+(0.25d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**2,0.0d0) - &
@@ -201,7 +253,8 @@ program sw
  
   if (proc_name == proc_master) then
    if (update(2.0d0)) then
-    write(*,"(a33,a8,a26,a1)", ADVANCE = "NO") print_time(), ' Model: ', &
+    write(format,"(a32)") "(a33,a8,a26,a1)"
+    write(*,format, ADVANCE = "NO") print_time(), ' Model: ', &
       modeltime(n), CHAR(13)
    end if
   end if 
@@ -379,13 +432,16 @@ program sw
    ape(k)=(h(k)%bz-minh(k)%bz)*(m(k)%bz-minm(k)%bz)
   end do
 #endif
+
+  call timeav_iteratation()
   
   if (mod(n,wstep) == 0) then
    if (n /= 0) then
     call do_write(n/wstep-1)
     if (proc_name == ens_master) then
+     write(format,"(a32)") "(a6,a23,f10.1,a17,i2)"
      print *
-     print *, 'writeout done.     time:', cputime(), 'ens_name:', ens_name
+     write(*,format) num_position(n/wstep-1), ' writeout done.  time: ', cputime(), ' secs. ens_name: ', ens_name
     end if
    end if
    call write()
@@ -490,6 +546,12 @@ program sw
    h_v(k)=Ay(h(k))
    call start_sync(h_u(k))
    call start_sync(h_v(k))
+#ifdef DO_TIME_AVERAGE
+   hu(k)=h_u(k)%bz*u(k)%bz
+   hv(k)=h_v(k)%bz*v(k)%bz
+   call start_sync(hu(k))
+   call start_sync(hv(k))
+#endif
   end do
   
    
@@ -507,10 +569,17 @@ program sw
  
  
  
+ call do_write(n/wstep)
+ if (proc_name == ens_master) then
+  write(format,"(a32)") "(a6,a23,f10.1,a17,i2)"
+  print *
+  write(*,format) num_position(n/wstep), ' writeout done.  time: ', cputime(), ' secs. ens_name: ', ens_name
+ end if
  
  
  call write_main('out')
  
+ call write_timemeans()
  
  
  

@@ -8,7 +8,7 @@
 
 #define ALLOW_STOCHASTIC_WIND
 
-#undef DO_TIME_AVERAGE
+#define DO_TIME_AVERAGE
 
 
 
