@@ -68,7 +68,7 @@ module llist_ops
     call remove_field(linkedlist%next%u)
     call remove_field(linkedlist%next%v)
     if (.not.(associated(linkedlist,linkedlist%next))) then
-     if (linkedlist%first) linkedlist%next%next%first=.true.
+     if (linkedlist%next%first) linkedlist%next%next%first=.true.
      if (linkedlist%next%last) linkedlist%last=.true.
      linkedlist%tmp => linkedlist%next%next
      nullify(linkedlist%next%next)

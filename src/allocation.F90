@@ -584,8 +584,10 @@ module allocation
    
    nullify(dat%p)
    nullify(dat%bz)
-   deallocate(dat%z)
-  
+   if (associated(dat%z)) then
+    deallocate(dat%z)
+   end if
+   
   end subroutine
   
   
