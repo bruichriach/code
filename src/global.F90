@@ -180,6 +180,8 @@ module variables
  
  type(uvar) :: s_m_h(nz)
  
+ type(uvar) :: s_hm_h(nz)
+ 
  type(uvar) :: s_utau_u
  type(vvar) :: s_vtau_v
  
@@ -188,7 +190,23 @@ module variables
  
  type(uvar) :: s_hsmagu_u(nz)
  type(vvar) :: s_hsmagv_v(nz)
+
+ type(hvar) :: s_hq_h(nz)
+ type(uvar) :: s_hq_u(nz)
+ type(vvar) :: s_hq_v(nz)
+ type(zvar) :: s_hq_z(nz)
+
+ type(hvar) :: s_huq_h(nz)
+ type(uvar) :: s_huq_u(nz)
+ type(vvar) :: s_huq_v(nz)
+ type(zvar) :: s_huq_z(nz)
+
+ type(hvar) :: s_hvq_h(nz)
+ type(uvar) :: s_hvq_u(nz)
+ type(vvar) :: s_hvq_v(nz)
+ type(zvar) :: s_hvq_z(nz)
  
+ type(zvar) :: s_hqq_z(nz)
 
 #endif
 

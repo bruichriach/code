@@ -130,6 +130,8 @@ program sw
  
  call create_field(s_m_h,'s_m_h',.false.)
  
+ call create_field(s_hm_h,'s_hm_h',.false.)
+ 
  call create_field(s_utau_u,'s_utau_u',.false.)
  call create_field(s_vtau_v,'s_vtau_v',.false.)
  
@@ -138,7 +140,23 @@ program sw
  
  call create_field(s_hsmagu_u,'s_hsmagu_u',.false.)
  call create_field(s_hsmagv_v,'s_hsmagv_v',.false.)
+
+ call create_field(s_hq_h,'s_hq_h',.false.)
+ call create_field(s_hq_u,'s_hq_u',.false.)
+ call create_field(s_hq_v,'s_hq_v',.false.)
+ call create_field(s_hq_z,'s_hq_z',.false.)
+
+ call create_field(s_huq_h,'s_huq_h',.false.)
+ call create_field(s_huq_u,'s_huq_u',.false.)
+ call create_field(s_huq_v,'s_huq_v',.false.)
+ call create_field(s_huq_z,'s_huq_z',.false.)
+
+ call create_field(s_hvq_h,'s_hvq_h',.false.)
+ call create_field(s_hvq_u,'s_hvq_u',.false.)
+ call create_field(s_hvq_v,'s_hvq_v',.false.)
+ call create_field(s_hvq_z,'s_hvq_z',.false.)
  
+ call create_field(s_hqq_z,'s_hqq_z',.false.)
 
 #endif
  
@@ -263,6 +281,8 @@ program sw
    call end_sync(h_u(k))
    call end_sync(h_v(k))
    h_z(k)=0.5d0*(Ay(h_u(k))+Ax(h_v(k)))
+   zeta(k)%bz=Gx(v(k))-Gy(u(k))
+   q(k)=(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
   end do
   
   if (n == 0) then

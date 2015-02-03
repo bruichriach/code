@@ -21,8 +21,9 @@ module timeav
    integer :: k
    
    timeav_count=timeav_count+1
+   
    do k=1,nz
-    s_h_h(k)=s_h_h(k)%bz+1.0d0!h(k)%bz
+    s_h_h(k)=s_h_h(k)%bz+h(k)%bz
    end do
    do k=1,nz
     s_h_u(k)=s_h_u(k)%bz+h_u(k)%bz
@@ -95,6 +96,10 @@ module timeav
    do k=1,nz
     s_m_h(k)=s_m_h(k)%bz-pres%bz+m(k)%bz
    end do
+   
+   do k=1,nz
+    s_hm_h(k)=s_hm_h(k)%bz+h(k)%bz*(-pres%bz+m(k)%bz)
+   end do
  
    s_utau_u=s_utau_u%bz+utau%bz
    s_vtau_v=s_vtau_v%bz+vtau%bz
@@ -109,7 +114,50 @@ module timeav
    do k=1,nz
     s_hsmagv_v(k)=s_hsmagv_v(k)%bz+h_v(k)%bz*smagv(k)%bz
    end do
+   
+   do k=1,nz
+    s_hq_h(k)=s_hq_h(k)%bz+Ax(Ay(f%bz+zeta(k)%bz))
+   end do
+   do k=1,nz
+    s_hq_u(k)=s_hq_u(k)%bz+Ay(f%bz+zeta(k)%bz)
+   end do
+   do k=1,nz
+    s_hq_v(k)=s_hq_v(k)%bz+Ax(f%bz+zeta(k)%bz)
+   end do
+   do k=1,nz
+    s_hq_z(k)=s_hq_z(k)%bz+f%bz+zeta(k)%bz
+   end do
+   
+   do k=1,nz
+    s_huq_h(k)=s_huq_h(k)%bz+Ax(Ay(f%bz+zeta(k)%bz)*u(k)%bz)
+   end do
+   do k=1,nz
+    s_huq_u(k)=s_huq_u(k)%bz+Ay(f%bz+zeta(k)%bz)*u(k)%bz
+   end do
+   do k=1,nz
+    s_huq_v(k)=s_huq_v(k)%bz+Ax((f%bz+zeta(k)%bz)*Ay(u(k)))
+   end do
+   do k=1,nz
+    s_huq_z(k)=s_huq_z(k)%bz+(f%bz+zeta(k)%bz)*Ay(u(k))
+   end do
+   
+   do k=1,nz
+    s_hvq_h(k)=s_hvq_h(k)%bz+Ay(Ax(f%bz+zeta(k)%bz)*v(k)%bz)
+   end do
+   do k=1,nz
+    s_hvq_u(k)=s_hvq_u(k)%bz+Ay((f%bz+zeta(k)%bz)*Ax(v(k)))
+   end do
+   do k=1,nz
+    s_hvq_v(k)=s_hvq_v(k)%bz+Ax(f%bz+zeta(k)%bz)*v(k)%bz
+   end do
+   do k=1,nz
+    s_hvq_z(k)=s_hvq_z(k)%bz+(f%bz+zeta(k)%bz)*Ax(v(k))
+   end do
  
+   do k=1,nz
+    s_hqq_z(k)=s_hqq_z(k)%bz+(f%bz+zeta(k)%bz)**2*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
+   end do
+   
    
   end subroutine
   
@@ -229,6 +277,45 @@ module timeav
    
    do k=1,nz
     call write_timemean(s_hsmagv_v(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_hq_h(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_hq_u(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_hq_v(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_hq_z(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_huq_h(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_huq_u(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_huq_v(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_huq_z(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_hvq_h(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_hvq_u(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_hvq_v(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_hvq_z(k))
    end do
    
   end subroutine
