@@ -303,7 +303,7 @@ module llist_ops
   type(llist), pointer :: tmplist
   character(*), intent(in) :: varname 
   logical :: file_exist
-  integer :: endoffile
+  integer :: endoffile, record=0
   real(kind=db) :: r_u(utau%p%lx+1:utau%p%lx+utau%p%nx,utau%p%ly+1:utau%p%ly+utau%p%ny)
   real(kind=db) :: r_v(vtau%p%lx+1:vtau%p%lx+vtau%p%nx,vtau%p%ly+1:vtau%p%ly+vtau%p%ny)
   character(32) :: filename, foldername, fullname
@@ -312,12 +312,14 @@ module llist_ops
    write (filename, "(a32)") trim(varname)//'.dat'
    write (fullname, "(a32)") trim(adjustl(foldername))//'/'//adjustl(filename)
   inquire( file=adjustl(fullname), exist=file_exist)
-  
+  if (proc_name == proc_master) print *, "reading in wind data"
+    
   if (file_exist) then
  
-   open(unit=10,file=adjustl(filename),status='unknown',form='unformatted')
+   open(unit=10,file=adjustl(fullname),status='unknown',form='unformatted')
    allocate(tmplist)
    read(10,iostat=endoffile) tmplist%rand, tmplist%timenow, tmplist%timeend
+  if (proc_name == proc_master) print *, endoffile, tmplist%rand, tmplist%timenow, tmplist%timeend
    do while (endoffile == 0)
     if (.not.(associated(linkedlist))) then
      linkedlist => tmplist
@@ -339,55 +341,66 @@ module llist_ops
      linkedlist => linkedlist%next
    
     end if
-    call create_field(stochwind%u,.false.)
-    call create_field(stochwind%v,.false.)
+    if (proc_name == proc_master) then
+     record=record + 1
+     print *, "reading in wind data record #", record
+    end if
+    call create_field(linkedlist%u,.false.)
+    call create_field(linkedlist%v,.false.)
    
-   r_u=sqrt(x_dist(utau,lim(stochwind%rand(3)+stochwind%rand(5),x0))**2 + &
-            y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0))**2)
-   stochwind%u=-stochwind%rand(1)*merge(0.0d0,  &
-          y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0))/(r_u*stochwind%rand(2)),r_u == 0.0d0)    &
+   r_u=sqrt(x_dist(utau,lim(linkedlist%rand(3)+linkedlist%rand(5),x0))**2 + &
+            y_dist(utau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))**2)
+   linkedlist%u=-linkedlist%rand(1)*merge(0.0d0,  &
+          y_dist(utau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))/(r_u*linkedlist%rand(2)),r_u == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_u))*(1.0d0-exp(-r_u**2))*exp(-r_u**2/2.0d0)*    &
           (1.0d0-exp(-tan((pi/x0)*(x0/2.0d0-  &
-          abs(x_dist(utau,lim(stochwind%rand(3)+stochwind%rand(5),x0)))))**2/0.25d0))*   &
+          abs(x_dist(utau,lim(linkedlist%rand(3)+linkedlist%rand(5),x0)))))**2/0.25d0))*   &
           (1.0d0-exp(-tan((pi/y0)*(y0/2.0d0-  &
-          abs(y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0)))))**2/0.25d0))   
+          abs(y_dist(utau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0)))))**2/0.25d0))   
           
-   r_u=sqrt(x_dist(utau,lim(stochwind%rand(3)-stochwind%rand(5),x0))**2 + &
-            y_dist(utau,lim(stochwind%rand(4)-stochwind%rand(6),y0))**2)
-   stochwind%u= stochwind%u%bz+stochwind%rand(1)*merge(0.0d0,  &
-          y_dist(utau,lim(stochwind%rand(4)-stochwind%rand(6),y0))/(r_u*stochwind%rand(2)),r_u == 0.0d0)    &
+   r_u=sqrt(x_dist(utau,lim(linkedlist%rand(3)-linkedlist%rand(5),x0))**2 + &
+            y_dist(utau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))**2)
+   linkedlist%u= linkedlist%u%bz+linkedlist%rand(1)*merge(0.0d0,  &
+          y_dist(utau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))/(r_u*linkedlist%rand(2)),r_u == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_u))*(1.0d0-exp(-r_u**2))*exp(-r_u**2/2.0d0)*    &
           (1.0d0-exp(-tan((pi/x0)*(x0/2.0d0-  &
-          abs(x_dist(utau,lim(stochwind%rand(3)-stochwind%rand(5),x0)))))**2/0.25d0))*   &
+          abs(x_dist(utau,lim(linkedlist%rand(3)-linkedlist%rand(5),x0)))))**2/0.25d0))*   &
           (1.0d0-exp(-tan((pi/y0)*(y0/2.0d0-  &
-          abs(y_dist(utau,lim(stochwind%rand(4)-stochwind%rand(6),y0)))))**2/0.25d0))  
+          abs(y_dist(utau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0)))))**2/0.25d0))  
                       
                       
-   r_v=sqrt(x_dist(vtau,lim(stochwind%rand(3)+stochwind%rand(5),x0))**2 + &
-            y_dist(vtau,lim(stochwind%rand(4)+stochwind%rand(6),y0))**2)
-   stochwind%v=-stochwind%rand(1)*merge(0.0d0,  &
-          y_dist(vtau,lim(stochwind%rand(4)+stochwind%rand(6),y0))/(r_v*stochwind%rand(2)),r_v == 0.0d0)    &
+   r_v=sqrt(x_dist(vtau,lim(linkedlist%rand(3)+linkedlist%rand(5),x0))**2 + &
+            y_dist(vtau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))**2)
+   linkedlist%v=-linkedlist%rand(1)*merge(0.0d0,  &
+          y_dist(vtau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))/(r_v*linkedlist%rand(2)),r_v == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_v))*(1.0d0-exp(-r_v**2))*exp(-r_v**2/2.0d0)*    &
           (1.0d0-exp(-tan((pi/x0)*(x0/2.0d0-  &
-          abs(x_dist(vtau,lim(stochwind%rand(3)+stochwind%rand(5),x0)))))**2/0.25d0))*   &
+          abs(x_dist(vtau,lim(linkedlist%rand(3)+linkedlist%rand(5),x0)))))**2/0.25d0))*   &
           (1.0d0-exp(-tan((pi/y0)*(y0/2.0d0-  &
-          abs(y_dist(vtau,lim(stochwind%rand(4)+stochwind%rand(6),y0)))))**2/0.25d0))   
+          abs(y_dist(vtau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0)))))**2/0.25d0))   
           
-   r_v=sqrt(x_dist(vtau,lim(stochwind%rand(3)-stochwind%rand(5),x0))**2 + &
-            y_dist(vtau,lim(stochwind%rand(4)-stochwind%rand(6),y0))**2)
-   stochwind%v= stochwind%v%bz+stochwind%rand(1)*merge(0.0d0,  &
-          y_dist(vtau,lim(stochwind%rand(4)-stochwind%rand(6),y0))/(r_v*stochwind%rand(2)),r_v == 0.0d0)    &
+   r_v=sqrt(x_dist(vtau,lim(linkedlist%rand(3)-linkedlist%rand(5),x0))**2 + &
+            y_dist(vtau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))**2)
+   linkedlist%v= linkedlist%v%bz+linkedlist%rand(1)*merge(0.0d0,  &
+          y_dist(vtau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))/(r_v*linkedlist%rand(2)),r_v == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_v))*(1.0d0-exp(-r_v**2))*exp(-r_v**2/2.0d0)*    &
           (1.0d0-exp(-tan((pi/x0)*(x0/2.0d0-  &
-          abs(x_dist(vtau,lim(stochwind%rand(3)-stochwind%rand(5),x0)))))**2/0.25d0))*   &
+          abs(x_dist(vtau,lim(linkedlist%rand(3)-linkedlist%rand(5),x0)))))**2/0.25d0))*   &
           (1.0d0-exp(-tan((pi/y0)*(y0/2.0d0-  &
-          abs(y_dist(vtau,lim(stochwind%rand(4)-stochwind%rand(6),y0)))))**2/0.25d0))  
+          abs(y_dist(vtau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0)))))**2/0.25d0))  
 
+   utau%bz=utau%bz+   &
+        sin(min(2.0d0*pi,2.0d0*pi*linkedlist%timenow/linkedlist%timeend))*   &
+        linkedlist%u%bz
+   vtau%bz=vtau%bz+   &
+        sin(min(2.0d0*pi,2.0d0*pi*linkedlist%timenow/linkedlist%timeend))*   &
+        linkedlist%v%bz
 
 
 
     allocate(tmplist)
     read(10,iostat=endoffile) tmplist%rand, tmplist%timenow, tmplist%timeend
+  if (proc_name == proc_master) print *, endoffile
    end do 
    
    deallocate(tmplist)
