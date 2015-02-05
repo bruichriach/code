@@ -264,6 +264,11 @@ module timeav
    do k=1,nz
     call write_timemean(s_m_h(k))
    end do
+
+   do k=1,nz
+    call write_timemean(s_hm_h(k))
+   end do
+          
  
    call write_timemean(s_utau_u)
    call write_timemean(s_vtau_v)
