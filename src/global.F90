@@ -208,6 +208,23 @@ module variables
  
  type(zvar) :: s_hqq_z(nz)
 
+ type(hvar) :: s_q_h(nz)
+ type(uvar) :: s_q_u(nz)
+ type(vvar) :: s_q_v(nz)
+ type(zvar) :: s_q_z(nz)
+
+ type(hvar) :: s_uq_h(nz)
+ type(uvar) :: s_uq_u(nz)
+ type(vvar) :: s_uq_v(nz)
+ type(zvar) :: s_uq_z(nz)
+
+ type(hvar) :: s_vq_h(nz)
+ type(uvar) :: s_vq_u(nz)
+ type(vvar) :: s_vq_v(nz)
+ type(zvar) :: s_vq_z(nz)
+ 
+ type(zvar) :: s_qq_z(nz)
+
 #endif
 
 #ifdef ALLOW_RIGID_LID

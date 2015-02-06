@@ -158,6 +158,23 @@ program sw
  
  call create_field(s_hqq_z,'s_hqq_z',.false.)
 
+ call create_field(s_q_h,'s_q_h',.false.)
+ call create_field(s_q_u,'s_q_u',.false.)
+ call create_field(s_q_v,'s_q_v',.false.)
+ call create_field(s_q_z,'s_q_z',.false.)
+
+ call create_field(s_uq_h,'s_uq_h',.false.)
+ call create_field(s_uq_u,'s_uq_u',.false.)
+ call create_field(s_uq_v,'s_uq_v',.false.)
+ call create_field(s_uq_z,'s_uq_z',.false.)
+
+ call create_field(s_vq_h,'s_vq_h',.false.)
+ call create_field(s_vq_u,'s_vq_u',.false.)
+ call create_field(s_vq_v,'s_vq_v',.false.)
+ call create_field(s_vq_z,'s_vq_z',.false.)
+ 
+ call create_field(s_qq_z,'s_qq_z',.false.)
+
 #endif
  
  
