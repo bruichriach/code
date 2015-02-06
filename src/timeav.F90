@@ -157,6 +157,7 @@ module timeav
    do k=1,nz
     s_hqq_z(k)=s_hqq_z(k)%bz+(f%bz+zeta(k)%bz)**2*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
    end do
+
    
    
   end subroutine
@@ -322,7 +323,12 @@ module timeav
    do k=1,nz
     call write_timemean(s_hvq_z(k))
    end do
-   
+  
+   do k=1,nz
+    call write_timemean(s_hqq_z(k))
+   end do
+
+
   end subroutine
    
   

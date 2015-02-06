@@ -178,9 +178,9 @@ module variables
  type(uvar) :: s_hm_x_u(nz)
  type(vvar) :: s_hm_y_v(nz)
  
- type(uvar) :: s_m_h(nz)
+ type(hvar) :: s_m_h(nz)
  
- type(uvar) :: s_hm_h(nz)
+ type(hvar) :: s_hm_h(nz)
  
  type(uvar) :: s_utau_u
  type(vvar) :: s_vtau_v
