@@ -159,7 +159,7 @@ module timeav
    end do
    
    do k=1,nz
-    s_q_h(k)=s_q_h(k)%bz+Ax(Ay(f%bz+zeta(k)%bz))*merge(0.0d0,1.0d0/h_h(k)%bz,(h_h(k)%bz == 0.0d0))
+    s_q_h(k)=s_q_h(k)%bz+Ax(Ay(f%bz+zeta(k)%bz))*merge(0.0d0,1.0d0/h(k)%bz,(h(k)%bz == 0.0d0))
    end do
    do k=1,nz
     s_q_u(k)=s_q_u(k)%bz+Ay(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_u(k)%bz,(h_u(k)%bz == 0.0d0))
@@ -172,7 +172,7 @@ module timeav
    end do
    
    do k=1,nz
-    s_uq_h(k)=s_uq_h(k)%bz+Ax(Ay(f%bz+zeta(k)%bz)*u(k)%bz)*merge(0.0d0,1.0d0/h_h(k)%bz,(h_h(k)%bz == 0.0d0))
+    s_uq_h(k)=s_uq_h(k)%bz+Ax(Ay(f%bz+zeta(k)%bz)*u(k)%bz)*merge(0.0d0,1.0d0/h(k)%bz,(h(k)%bz == 0.0d0))
    end do
    do k=1,nz
     s_uq_u(k)=s_uq_u(k)%bz+Ay(f%bz+zeta(k)%bz)*u(k)%bz*merge(0.0d0,1.0d0/h_u(k)%bz,(h_u(k)%bz == 0.0d0))
@@ -185,7 +185,7 @@ module timeav
    end do
    
    do k=1,nz
-    s_vq_h(k)=s_vq_h(k)%bz+Ay(Ax(f%bz+zeta(k)%bz)*v(k)%bz)*merge(0.0d0,1.0d0/h_h(k)%bz,(h_h(k)%bz == 0.0d0))
+    s_vq_h(k)=s_vq_h(k)%bz+Ay(Ax(f%bz+zeta(k)%bz)*v(k)%bz)*merge(0.0d0,1.0d0/h(k)%bz,(h(k)%bz == 0.0d0))
    end do
    do k=1,nz
     s_vq_u(k)=s_vq_u(k)%bz+Ay((f%bz+zeta(k)%bz)*Ax(v(k)))*merge(0.0d0,1.0d0/h_u(k)%bz,(h_u(k)%bz == 0.0d0))
