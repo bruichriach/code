@@ -82,7 +82,7 @@ module timeav
    end do
    
    do k=1,nz
-    s_huv_vz(k)=s_huv_vz(k)%bz+Ay(hu(k))*Ax(v(k))
+    s_huv_vz(k)=s_huv_vz(k)%bz+Ay(u(k))*Ax(hv(k))
    end do
    
    do k=1,nz
