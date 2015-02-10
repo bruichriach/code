@@ -82,8 +82,8 @@ module params
 
 
 
- REAL (KIND=db), PARAMETER :: write_time=1.0d1*(4.0d0*pi*sin(deg2rad*70.0d0))
- REAL (KIND=db), PARAMETER :: total_time=8.0d3*(4.0d0*pi*sin(deg2rad*70.0d0))
+ REAL (KIND=db), PARAMETER :: write_time=3.0d1*(4.0d0*pi*sin(deg2rad*70.0d0))
+ REAL (KIND=db), PARAMETER :: total_time=2.0d4*(4.0d0*pi*sin(deg2rad*70.0d0))
 #ifdef DO_TIME_AVERAGE
  REAL (KIND=db), PARAMETER :: average_time=1.0d0
  
