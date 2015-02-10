@@ -82,7 +82,7 @@ module timeav
    end do
    
    do k=1,nz
-    s_huv_vz(k)=s_huv_vz(k)%bz+Ay(hu(k))*Ax(v(k))
+    s_huv_vz(k)=s_huv_vz(k)%bz+Ay(u(k))*Ax(hv(k))
    end do
    
    do k=1,nz
@@ -201,7 +201,19 @@ module timeav
     s_qq_z(k)=s_qq_z(k)%bz+(f%bz+zeta(k)%bz)**2*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))**2
    end do
 
-   
+   do k=1,nz
+    s_tendh_h(k)=s_tendh_h(k)%bz+h(k)%tend1%bz
+   end do
+
+   do k=1,nz
+    s_htendu_u(k)=s_htendu_u(k)%bz+h_u(k)%bz*u(k)%tend1%bz
+   end do
+
+   do k=1,nz
+    s_htendv_v(k)=s_htendv_v(k)%bz+h_v(k)%bz*v(k)%tend1%bz
+   end do
+
+ 
    
   end subroutine
   
@@ -413,6 +425,17 @@ module timeav
    do k=1,nz
     call write_timemean(s_qq_z(k))
    end do
+
+   do k=1,nz
+    call write_timemean(s_tendh_h(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_htendu_u(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_htendv_v(k))
+   end do
+
 
 
 

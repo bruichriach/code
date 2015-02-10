@@ -225,6 +225,12 @@ module variables
  
  type(zvar) :: s_qq_z(nz)
 
+ type(hvar) :: s_tendh_h(nz)
+
+ type(uvar) :: s_htendu_u(nz)
+
+ type(vvar) :: s_htendv_v(nz)
+
 #endif
 
 #ifdef ALLOW_RIGID_LID
