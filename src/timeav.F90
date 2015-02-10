@@ -168,7 +168,7 @@ module timeav
     s_q_v(k)=s_q_v(k)%bz+Ax(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_v(k)%bz,(h_v(k)%bz == 0.0d0))
    end do
    do k=1,nz
-    s_q_z(k)=s_q_z(k)%bz+f%bz+zeta(k)%bz*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
+    s_q_z(k)=s_q_z(k)%bz+(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
    end do
    
    do k=1,nz
