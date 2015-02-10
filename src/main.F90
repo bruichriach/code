@@ -204,19 +204,32 @@ program sw
  do k=0,nz
   d(k)=mind(k)
  end do
+ d(1)=d(1)%bz+(0.125d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**2,0.0d0) - &
+            max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**2,0.0d0))
  call mont(mind,minm)
  do k=1,nz
   h(k)=d(k)-d(k-1)
   u(k)=0.0d0
   v(k)=0.0d0
  end do
- 
- 
+
+
 #ifdef ALLOW_RIGID_LID
   pres=0.0d0
   r=0.0d0
   p=0.0d0
 #endif
+
+
+
+ 
+ call depth(h,s,d)
+ call mont(d,m)
+ do k=1,nz
+  call start_sync(m(k))
+ end do
+ call geostrophic_balance() 
+
  
  
  

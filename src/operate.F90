@@ -980,7 +980,40 @@ module operations
   
  end subroutine
   
-  
+ subroutine geostrophic_balance()
+  use variables
+  use grid_operate
+  use allocation
+  use sync
+
+  implicit none
+
+  type(uvar) :: m_u(nz)
+  type(vvar) :: m_v(nz)
+  type(zvar) :: m_z(nz)
+  integer :: k
+
+  call create_field(m_u,.true.)
+  call create_field(m_v,.true.)
+  call create_field(m_z,.false.)
+
+  do k=1,nz
+   m_u(k)=Ax(m(k))
+   call start_sync(m_u(k))
+   m_v(k)=Ay(m(k))
+   call start_sync(m_v(k))
+  end do
+
+  do k=1,nz
+   call end_sync(m_u(k))
+   call end_sync(m_v(k))
+   m_z(k)=0.5*(Ay(m_u(k))+Ax(m_v(k)))
+   u(k)=-Gy(m_z(k)%bz/f%bz)
+   v(k)=Gx(m_z(k)%bz/f%bz)
+  end do
+
+ end subroutine
+
   
  end module
  
