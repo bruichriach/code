@@ -41,7 +41,7 @@ module sys
  integer, parameter :: db=4
 #endif
  integer :: stat
- character(32) :: format
+ character(64) :: format
  real(kind=db), parameter :: unity=1.0d0
  real(kind=db), target :: null_field=1.0d99
 
