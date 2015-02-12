@@ -145,7 +145,7 @@ MODULE writeout
   do j=dat%p%ly+1,dat%p%ly+dat%p%ny
    do i=dat%p%lx+1,dat%p%lx+dat%p%nx
     k=k+1
-    dat%z(i,j)=dat%out%send(k)
+    dat%bz(i,j)=dat%out%send(k)
    end do
   end do
   
