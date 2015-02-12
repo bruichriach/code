@@ -472,7 +472,7 @@ module timeav
    
    
    
-  write (filename, "(a7,i4.4,a2)") './timemean/', ens_name, '/.'
+  write (filename, "(a11,i4.4,a2)") './timemean/', ens_name, '/.'
   inquire( file=filename, exist=dir_e )
   if (dir_e) then
    
