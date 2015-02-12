@@ -6,7 +6,7 @@ module timeav
 
  implicit none
 
- integer, parameter :: initial_timeav_count=0
+ integer, parameter :: initial_timeav_count=10563
  integer :: timeav_count=0
  
  contains
@@ -476,6 +476,7 @@ module timeav
   inquire( file=filename, exist=dir_e )
   if (dir_e) then
    
+   timeav_count=initial_timeav_count
    if (proc_name == ens_master) then
     write(format,'(a64)') '(a20,i10,a11,i4)'
     write(*,format) 'Starting Mean from: ', timeav_count, ' ens_name: ', ens_name
