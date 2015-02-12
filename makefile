@@ -3,7 +3,7 @@ FFLAGS=-Ofast -march=native -mtune=native -ffixed-line-length-none
 precon=-I/usr/local/include -L/usr/local/lib -cpp
 #FFLAGS=-O0 -g -Wall -ffixed-line-length-none -finit-real=nan -finit-integer=666 -fbounds-check -fbacktrace
 
-F90=ftn
+F90=mpif90
 
 default: all
 

@@ -7,7 +7,7 @@ module timeav
  implicit none
 
  integer, parameter :: initial_timeav_count=0
- integer :: timeav_count=initial_timeav_count
+ integer :: timeav_count=0
  
  contains
  
@@ -232,6 +232,21 @@ module timeav
    
   end subroutine
   
+  subroutine read_timemean(dat)
+   use global
+   use overload
+   use writeout
+   
+   implicit none
+   
+   class(var), intent(inout) :: dat
+   
+   
+   call read_var(dat,'timemean')
+   dat=dat%bz*int2real(timeav_count)
+   
+  end subroutine
+  
   subroutine write_timemeans()
    use variables
    use parallel
@@ -442,6 +457,224 @@ module timeav
   end subroutine
    
   
+  
+  
+  
+  subroutine read_timemeans()
+   use variables
+   use parallel
+   
+   implicit none
+   
+   integer :: k
+   character(32) :: filename
+   logical :: dir_e
+   
+   
+   
+  write (filename, "(a7,i4.4,a2)") './timemean/', ens_name, '/.'
+  inquire( file=filename, exist=dir_e )
+  if (dir_e) then
+   
+   if (proc_name == ens_master) then
+    write(format,'(a64)') '(a20,i10,a11,i4)'
+    write(*,format) 'Starting Mean from: ', timeav_count, ' ens_name: ', ens_name
+   end if 
+   
+   do k=1,nz
+    call read_timemean(s_h_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_h_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_h_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_h_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hu_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hu_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hu_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hu_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hv_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hv_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hv_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hv_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_huu_h(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hvv_h(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_huv_h(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_huv_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_huv_uz(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_huv_vz(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_m_h(k))
+   end do
+
+   do k=1,nz
+    call read_timemean(s_hm_h(k))
+   end do
+          
+ 
+   call read_timemean(s_utau_u)
+   call read_timemean(s_vtau_v)
+ 
+   call read_timemean(s_bfricu_u)
+   call read_timemean(s_bfricv_v)
+   
+   do k=1,nz
+    call read_timemean(s_hsmagu_u(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hsmagv_v(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hq_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hq_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hq_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hq_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_huq_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_huq_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_huq_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_huq_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_hvq_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hvq_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hvq_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_hvq_z(k))
+   end do
+  
+   do k=1,nz
+    call read_timemean(s_hqq_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_q_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_q_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_q_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_q_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_uq_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_uq_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_uq_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_uq_z(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_vq_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_vq_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_vq_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_vq_z(k))
+   end do
+  
+   do k=1,nz
+    call read_timemean(s_qq_z(k))
+   end do
+
+   do k=1,nz
+    call read_timemean(s_tendh_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_htendu_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_htendv_v(k))
+   end do
+
+   end if
+
+
+  end subroutine
   
 
 end module
