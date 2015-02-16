@@ -329,9 +329,7 @@ MODULE writeout
    close(10)
   else
    open(unit=10,file=trim(filename),form='unformatted',status='unknown')
-     do j=1,ubound(variable,2)
-      write(10) (variable(i,j),i=1,ubound(variable,1))
-     end do
+     write(10) variable
    close(10)
   end if
 

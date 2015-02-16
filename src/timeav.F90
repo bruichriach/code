@@ -6,7 +6,7 @@ module timeav
 
  implicit none
 
- integer, parameter :: initial_timeav_count=10563
+ integer, parameter :: initial_timeav_count=0
  integer :: timeav_count=0
  
  contains
