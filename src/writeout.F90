@@ -111,9 +111,7 @@ MODULE writeout
   if (proc_name == ens_master) then
    open(unit=10,form='unformatted',file=adjustl(fullname),status='unknown')
    write (format,"(a2,i3,a8)") '( ', mx+dat%p%ox, 'd24.16 )'
-   do j=1,my+dat%p%oy
-    read(10) (dat%out%z(i,j),i=1,mx+dat%p%ox)
-   end do
+   read(10) ((dat%out%z(i,j),i=1,mx+dat%p%ox),j=1,my+dat%p%oy)
    close(10)
     
   
@@ -310,14 +308,14 @@ MODULE writeout
  end subroutine
  
  subroutine datawrite(type,filename, variable)
+  use sys
 
   IMPLICIT NONE
  
   integer i, j
   integer :: type
   character(*), intent(in) :: filename
-  real (kind=8), intent(in), dimension(:,:) :: variable
-  character(32) :: format
+  real (kind=db), intent(in), dimension(:,:) :: variable
   
   write (format,"(a2,i3,a8)") '( ', ubound(variable,1), 'd24.16 )'
 
@@ -329,7 +327,7 @@ MODULE writeout
    close(10)
   else
    open(unit=10,file=trim(filename),form='unformatted',status='unknown')
-     write(10) variable
+     write(10) ((variable(i,j),i=1,ubound(variable,1)),j=1,ubound(variable,2))
    close(10)
   end if
 

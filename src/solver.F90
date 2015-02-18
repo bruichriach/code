@@ -99,7 +99,7 @@ module solver
   call start_sync(r)
   
    
-  rdotfrac = 1.0d-16
+  rdotfrac = 1.0d-12
    
   
   
