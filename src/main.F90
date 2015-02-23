@@ -117,8 +117,11 @@ program sw
  call create_field(s_hv_z,'s_hv_z',.false.)
 
  call create_field(s_huu_h,'s_huu_h',.false.)
+ call create_field(s_huu_z,'s_huu_z',.false.)
 
  call create_field(s_hvv_h,'s_hvv_h',.false.)
+ call create_field(s_hvv_z,'s_hvv_z',.false.)
+
 
  call create_field(s_huv_h,'s_huv_h',.false.)
  call create_field(s_huv_z,'s_huv_z',.false.)

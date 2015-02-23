@@ -6,7 +6,7 @@ module timeav
 
  implicit none
 
- integer, parameter :: initial_timeav_count=0
+ integer, parameter :: initial_timeav_count=10561868
  integer :: timeav_count=0
  
  contains
@@ -64,9 +64,17 @@ module timeav
    do k=1,nz
     s_huu_h(k)=s_huu_h(k)%bz+h(k)%bz*Ax(u(k)%bz**2)
    end do
+
+   do k=1,nz
+    s_huu_z(k)=s_huu_z(k)%bz+h_z(k)%bz*Ay(u(k))**2
+   end do
    
    do k=1,nz
     s_hvv_h(k)=s_hvv_h(k)%bz+h(k)%bz*Ay(v(k)%bz**2)
+   end do
+
+   do k=1,nz
+    s_hvv_z(k)=s_hvv_z(k)%bz+h_z(k)%bz*Ax(v(k))**2
    end do
    
    do k=1,nz
@@ -303,9 +311,17 @@ module timeav
    do k=1,nz
     call write_timemean(s_huu_h(k))
    end do
-   
+
+   do k=1,nz
+    call write_timemean(s_huu_z(k))
+   end do
+
    do k=1,nz
     call write_timemean(s_hvv_h(k))
+   end do
+
+   do k=1,nz
+    call write_timemean(s_hvv_z(k))
    end do
    
    do k=1,nz
@@ -524,9 +540,17 @@ module timeav
    do k=1,nz
     call read_timemean(s_huu_h(k))
    end do
+
+   do k=1,nz
+    call read_timemean(s_huu_z(k))
+   end do
    
    do k=1,nz
     call read_timemean(s_hvv_h(k))
+   end do
+
+   do k=1,nz
+    call read_timemean(s_hvv_z(k))
    end do
    
    do k=1,nz
