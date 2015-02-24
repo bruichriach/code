@@ -181,6 +181,9 @@ program sw
  call create_field(s_tendh_h,'s_tendh_h',.false.) 
  call create_field(s_htendu_u,'s_htendu_u',.false.)
  call create_field(s_htendv_v,'s_htendv_v',.false.)
+ call create_field(s_utendh_h,'s_utendh_h',.false.)
+ call create_field(s_vtendh_h,'s_vtendh_h',.false.)
+
 
 
 

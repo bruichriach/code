@@ -233,6 +233,10 @@ module variables
 
  type(vvar) :: s_htendv_v(nz)
 
+ type(hvar) :: s_utendh_h(nz)
+
+ type(hvar) :: s_vtendh_h(nz)
+
 #endif
 
 #ifdef ALLOW_RIGID_LID
