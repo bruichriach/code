@@ -165,6 +165,16 @@ module variables
  type(uvar) :: s_hv_u(nz)
  type(vvar) :: s_hv_v(nz)
  type(zvar) :: s_hv_z(nz)
+
+ type(hvar) :: s_u_h(nz)
+ type(uvar) :: s_u_u(nz)
+ type(vvar) :: s_u_v(nz)
+ type(zvar) :: s_u_z(nz)
+
+ type(hvar) :: s_v_h(nz)
+ type(uvar) :: s_v_u(nz)
+ type(vvar) :: s_v_v(nz)
+ type(zvar) :: s_v_z(nz)
  
  type(hvar) :: s_huu_h(nz)
  type(zvar) :: s_huu_z(nz)
