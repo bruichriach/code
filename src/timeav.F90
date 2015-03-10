@@ -6,7 +6,7 @@ module timeav
 
  implicit none
 
- integer, parameter :: initial_timeav_count=0
+ integer, parameter :: initial_timeav_count=10561868
  integer :: timeav_count=0
  
  contains
@@ -49,16 +49,16 @@ module timeav
    end do
    
    do k=1,nz
-    s_hv_h(k)=s_v_h(k)%bz+Ay(v(k))
+    s_hv_h(k)=s_hv_h(k)%bz+Ay(v(k))
    end do
    do k=1,nz
-    s_hv_u(k)=s_v_u(k)%bz+Ay(Ax(v(k)))
+    s_hv_u(k)=s_hv_u(k)%bz+Ay(Ax(v(k)))
    end do
    do k=1,nz
-    s_hv_v(k)=s_v_v(k)%bz+v(k)%bz
+    s_hv_v(k)=s_hv_v(k)%bz+v(k)%bz
    end do
    do k=1,nz
-    s_hv_z(k)=s_v_z(k)%bz+Ax(v(k))
+    s_hv_z(k)=s_hv_z(k)%bz+Ax(v(k))
    end do
 
    do k=1,nz
