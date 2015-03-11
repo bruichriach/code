@@ -6,7 +6,7 @@ module timeav
 
  implicit none
 
- integer, parameter :: initial_timeav_count=10563
+ integer, parameter :: initial_timeav_count=10561868
  integer :: timeav_count=0
  
  contains
@@ -49,24 +49,59 @@ module timeav
    end do
    
    do k=1,nz
-    s_hv_h(k)=s_hv_h(k)%bz+h(k)%bz*Ay(v(k))
+    s_hv_h(k)=s_hv_h(k)%bz+Ay(v(k))
    end do
    do k=1,nz
-    s_hv_u(k)=s_hv_u(k)%bz+h_u(k)%bz*Ay(Ax(v(k)))
+    s_hv_u(k)=s_hv_u(k)%bz+Ay(Ax(v(k)))
    end do
    do k=1,nz
-    s_hv_v(k)=s_hv_v(k)%bz+h_v(k)%bz*v(k)%bz
+    s_hv_v(k)=s_hv_v(k)%bz+v(k)%bz
    end do
    do k=1,nz
-    s_hv_z(k)=s_hv_z(k)%bz+h_z(k)%bz*Ax(v(k))
+    s_hv_z(k)=s_hv_z(k)%bz+Ax(v(k))
    end do
+
+   do k=1,nz
+    s_u_h(k)=s_u_h(k)%bz+Ax(u(k))
+   end do
+   do k=1,nz
+    s_u_u(k)=s_u_u(k)%bz+u(k)%bz
+   end do
+   do k=1,nz
+    s_u_v(k)=s_u_v(k)%bz+Ax(Ay(u(k)))
+   end do
+   do k=1,nz
+    s_u_z(k)=s_u_z(k)%bz+Ay(u(k))
+   end do
+
+   do k=1,nz
+    s_v_h(k)=s_v_h(k)%bz+Ay(v(k))
+   end do
+   do k=1,nz
+    s_v_u(k)=s_v_u(k)%bz+Ay(Ax(v(k)))
+   end do
+   do k=1,nz
+    s_v_v(k)=s_v_v(k)%bz+v(k)%bz
+   end do
+   do k=1,nz
+    s_v_z(k)=s_v_z(k)%bz+Ax(v(k))
+   end do
+
    
    do k=1,nz
     s_huu_h(k)=s_huu_h(k)%bz+h(k)%bz*Ax(u(k)%bz**2)
    end do
+
+   do k=1,nz
+    s_huu_z(k)=s_huu_z(k)%bz+h_z(k)%bz*Ay(u(k))**2
+   end do
    
    do k=1,nz
     s_hvv_h(k)=s_hvv_h(k)%bz+h(k)%bz*Ay(v(k)%bz**2)
+   end do
+
+   do k=1,nz
+    s_hvv_z(k)=s_hvv_z(k)%bz+h_z(k)%bz*Ax(v(k))**2
    end do
    
    do k=1,nz
@@ -213,8 +248,17 @@ module timeav
     s_htendv_v(k)=s_htendv_v(k)%bz+h_v(k)%bz*v(k)%tend1%bz
    end do
 
- 
-   
+
+
+   do k=1,nz
+    s_utendh_h(k)=s_utendh_h(k)%bz+Ax(u(k))*h(k)%tend1%bz
+   end do
+
+   do k=1,nz
+    s_vtendh_h(k)=s_vtendh_h(k)%bz+Ay(v(k))*h(k)%tend1%bz
+   end do
+
+
   end subroutine
   
   subroutine write_timemean(dat)
@@ -299,13 +343,48 @@ module timeav
    do k=1,nz
     call write_timemean(s_hv_z(k))
    end do
-   
+
+   do k=1,nz
+    call write_timemean(s_u_h(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_u_u(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_u_v(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_u_z(k))
+   end do
+
+   do k=1,nz
+    call write_timemean(s_v_h(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_v_u(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_v_v(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_v_z(k))
+   end do
+
+ 
    do k=1,nz
     call write_timemean(s_huu_h(k))
    end do
-   
+
+   do k=1,nz
+    call write_timemean(s_huu_z(k))
+   end do
+
    do k=1,nz
     call write_timemean(s_hvv_h(k))
+   end do
+
+   do k=1,nz
+    call write_timemean(s_hvv_z(k))
    end do
    
    do k=1,nz
@@ -450,6 +529,13 @@ module timeav
    do k=1,nz
     call write_timemean(s_htendv_v(k))
    end do
+   do k=1,nz
+    call write_timemean(s_utendh_h(k))
+   end do
+   do k=1,nz
+    call write_timemean(s_vtendh_h(k))
+   end do
+
 
 
 
@@ -520,13 +606,48 @@ module timeav
    do k=1,nz
     call read_timemean(s_hv_z(k))
    end do
+
+   do k=1,nz
+    call read_timemean(s_u_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_u_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_u_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_u_z(k))
+   end do
+
+   do k=1,nz
+    call read_timemean(s_v_h(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_v_u(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_v_v(k))
+   end do
+   do k=1,nz
+    call read_timemean(s_v_z(k))
+   end do
+
    
    do k=1,nz
     call read_timemean(s_huu_h(k))
    end do
+
+   do k=1,nz
+    call read_timemean(s_huu_z(k))
+   end do
    
    do k=1,nz
     call read_timemean(s_hvv_h(k))
+   end do
+
+   do k=1,nz
+    call read_timemean(s_hvv_z(k))
    end do
    
    do k=1,nz
