@@ -988,14 +988,14 @@ module operations
 
   implicit none
 
-  type(uvar) :: m_u(nz)
-  type(vvar) :: m_v(nz)
-  type(zvar) :: m_z(nz)
+  type(uvar), allocatable :: m_u(:)
+  type(vvar), allocatable :: m_v(:)
+  type(zvar), allocatable :: m_z(:)
   integer :: k
 
-  call create_field(m_u,.true.)
-  call create_field(m_v,.true.)
-  call create_field(m_z,.false.)
+  call create_field(m_u,.true.,1)
+  call create_field(m_v,.true.,1)
+  call create_field(m_z,.false.,1)
 
   do k=1,nz
    m_u(k)=Ax(m(k))

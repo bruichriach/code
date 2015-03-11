@@ -3,7 +3,7 @@
 #include "include.h"
 
 module global
-
+ use params
  use sys
  use overloading
  
@@ -98,48 +98,48 @@ module variables
 
  type(hvar) :: s
  
- type(hvar) :: d(0:nz)
- type(hvar) :: mind(0:nz)
+ type(hvar), allocatable :: d(:)
+ type(hvar), allocatable :: mind(:)
  
- type(hvar) :: h(nz)
- type(uvar) :: u(nz)
- type(vvar) :: v(nz)
+ type(hvar), allocatable :: h(:)
+ type(uvar), allocatable :: u(:)
+ type(vvar), allocatable :: v(:)
  
 
 #ifdef DO_TIME_AVERAGE
- type(uvar) :: hu(nz)
- type(vvar) :: hv(nz)
+ type(uvar), allocatable :: hu(:)
+ type(vvar), allocatable :: hv(:)
 #endif
  
- type(hvar) :: minh(nz)
+ type(hvar), allocatable :: minh(:)
  
- type(uvar) :: h_u(nz)
- type(vvar) :: h_v(nz)
- type(zvar) :: h_z(nz)
+ type(uvar), allocatable :: h_u(:)
+ type(vvar), allocatable :: h_v(:)
+ type(zvar), allocatable :: h_z(:)
  
- type(hvar) :: h_tmp(nz)
- type(uvar) :: u_tmp(nz)
- type(vvar) :: v_tmp(nz)
+ type(hvar), allocatable :: h_tmp(:)
+ type(uvar), allocatable :: u_tmp(:)
+ type(vvar), allocatable :: v_tmp(:)
  
- type(hvar) :: ke(nz)
- type(hvar) :: ape(nz)
+ type(hvar), allocatable :: ke(:)
+ type(hvar), allocatable :: ape(:)
  
- type(zvar) :: zeta(nz)
+ type(zvar), allocatable :: zeta(:)
  
- type(uvar) :: lapu(nz)
- type(vvar) :: lapv(nz)
+ type(uvar), allocatable :: lapu(:)
+ type(vvar), allocatable :: lapv(:)
  
- type(hvar) :: smag(nz)
- type(hvar) :: tension(nz)
- type(zvar) :: strain(nz)
+ type(hvar), allocatable :: smag(:)
+ type(hvar), allocatable :: tension(:)
+ type(zvar), allocatable :: strain(:)
  
- type(uvar) :: smagu(nz)
- type(vvar) :: smagv(nz)
+ type(uvar), allocatable :: smagu(:)
+ type(vvar), allocatable :: smagv(:)
  
- type(zvar) :: q(nz)
+ type(zvar), allocatable :: q(:)
   
- type(hvar) :: m(nz)
- type(hvar) :: minm(nz)
+ type(hvar), allocatable :: m(:)
+ type(hvar), allocatable :: minm(:)
  
  type(uvar) :: bfricu
  type(vvar) :: bfricv
@@ -151,48 +151,48 @@ module variables
 
 #ifdef DO_TIME_AVERAGE
 
- type(hvar) :: s_h_h(nz)
- type(uvar) :: s_h_u(nz)
- type(vvar) :: s_h_v(nz)
- type(zvar) :: s_h_z(nz)
+ type(hvar), allocatable :: s_h_h(:)
+ type(uvar), allocatable :: s_h_u(:)
+ type(vvar), allocatable :: s_h_v(:)
+ type(zvar), allocatable :: s_h_z(:)
  
- type(hvar) :: s_hu_h(nz)
- type(uvar) :: s_hu_u(nz)
- type(vvar) :: s_hu_v(nz)
- type(zvar) :: s_hu_z(nz)
+ type(hvar), allocatable :: s_hu_h(:)
+ type(uvar), allocatable :: s_hu_u(:)
+ type(vvar), allocatable :: s_hu_v(:)
+ type(zvar), allocatable :: s_hu_z(:)
 
- type(hvar) :: s_hv_h(nz)
- type(uvar) :: s_hv_u(nz)
- type(vvar) :: s_hv_v(nz)
- type(zvar) :: s_hv_z(nz)
+ type(hvar), allocatable :: s_hv_h(:)
+ type(uvar), allocatable :: s_hv_u(:)
+ type(vvar), allocatable :: s_hv_v(:)
+ type(zvar), allocatable :: s_hv_z(:)
 
- type(hvar) :: s_u_h(nz)
- type(uvar) :: s_u_u(nz)
- type(vvar) :: s_u_v(nz)
- type(zvar) :: s_u_z(nz)
+ type(hvar), allocatable :: s_u_h(:)
+ type(uvar), allocatable :: s_u_u(:)
+ type(vvar), allocatable :: s_u_v(:)
+ type(zvar), allocatable :: s_u_z(:)
 
- type(hvar) :: s_v_h(nz)
- type(uvar) :: s_v_u(nz)
- type(vvar) :: s_v_v(nz)
- type(zvar) :: s_v_z(nz)
+ type(hvar), allocatable :: s_v_h(:)
+ type(uvar), allocatable :: s_v_u(:)
+ type(vvar), allocatable :: s_v_v(:)
+ type(zvar), allocatable :: s_v_z(:)
  
- type(hvar) :: s_huu_h(nz)
- type(zvar) :: s_huu_z(nz)
+ type(hvar), allocatable :: s_huu_h(:)
+ type(zvar), allocatable :: s_huu_z(:)
 
- type(hvar) :: s_hvv_h(nz)
- type(zvar) :: s_hvv_z(nz)
+ type(hvar), allocatable :: s_hvv_h(:)
+ type(zvar), allocatable :: s_hvv_z(:)
 
- type(hvar) :: s_huv_h(nz)
- type(zvar) :: s_huv_z(nz)
- type(zvar) :: s_huv_uz(nz)
- type(zvar) :: s_huv_vz(nz)
+ type(hvar), allocatable :: s_huv_h(:)
+ type(zvar), allocatable :: s_huv_z(:)
+ type(zvar), allocatable :: s_huv_uz(:)
+ type(zvar), allocatable :: s_huv_vz(:)
  
- type(uvar) :: s_hm_x_u(nz)
- type(vvar) :: s_hm_y_v(nz)
+ type(uvar), allocatable :: s_hm_x_u(:)
+ type(vvar), allocatable :: s_hm_y_v(:)
  
- type(hvar) :: s_m_h(nz)
+ type(hvar), allocatable :: s_m_h(:)
  
- type(hvar) :: s_hm_h(nz)
+ type(hvar), allocatable :: s_hm_h(:)
  
  type(uvar) :: s_utau_u
  type(vvar) :: s_vtau_v
@@ -200,52 +200,52 @@ module variables
  type(uvar) :: s_bfricu_u
  type(vvar) :: s_bfricv_v
  
- type(uvar) :: s_hsmagu_u(nz)
- type(vvar) :: s_hsmagv_v(nz)
+ type(uvar), allocatable :: s_hsmagu_u(:)
+ type(vvar), allocatable :: s_hsmagv_v(:)
 
- type(hvar) :: s_hq_h(nz)
- type(uvar) :: s_hq_u(nz)
- type(vvar) :: s_hq_v(nz)
- type(zvar) :: s_hq_z(nz)
+ type(hvar), allocatable :: s_hq_h(:)
+ type(uvar), allocatable :: s_hq_u(:)
+ type(vvar), allocatable :: s_hq_v(:)
+ type(zvar), allocatable :: s_hq_z(:)
 
- type(hvar) :: s_huq_h(nz)
- type(uvar) :: s_huq_u(nz)
- type(vvar) :: s_huq_v(nz)
- type(zvar) :: s_huq_z(nz)
+ type(hvar), allocatable :: s_huq_h(:)
+ type(uvar), allocatable :: s_huq_u(:)
+ type(vvar), allocatable :: s_huq_v(:)
+ type(zvar), allocatable :: s_huq_z(:)
 
- type(hvar) :: s_hvq_h(nz)
- type(uvar) :: s_hvq_u(nz)
- type(vvar) :: s_hvq_v(nz)
- type(zvar) :: s_hvq_z(nz)
+ type(hvar), allocatable :: s_hvq_h(:)
+ type(uvar), allocatable :: s_hvq_u(:)
+ type(vvar), allocatable :: s_hvq_v(:)
+ type(zvar), allocatable :: s_hvq_z(:)
  
- type(zvar) :: s_hqq_z(nz)
+ type(zvar), allocatable :: s_hqq_z(:)
 
- type(hvar) :: s_q_h(nz)
- type(uvar) :: s_q_u(nz)
- type(vvar) :: s_q_v(nz)
- type(zvar) :: s_q_z(nz)
+ type(hvar), allocatable :: s_q_h(:)
+ type(uvar), allocatable :: s_q_u(:)
+ type(vvar), allocatable :: s_q_v(:)
+ type(zvar), allocatable :: s_q_z(:)
 
- type(hvar) :: s_uq_h(nz)
- type(uvar) :: s_uq_u(nz)
- type(vvar) :: s_uq_v(nz)
- type(zvar) :: s_uq_z(nz)
+ type(hvar), allocatable :: s_uq_h(:)
+ type(uvar), allocatable :: s_uq_u(:)
+ type(vvar), allocatable :: s_uq_v(:)
+ type(zvar), allocatable :: s_uq_z(:)
 
- type(hvar) :: s_vq_h(nz)
- type(uvar) :: s_vq_u(nz)
- type(vvar) :: s_vq_v(nz)
- type(zvar) :: s_vq_z(nz)
+ type(hvar), allocatable :: s_vq_h(:)
+ type(uvar), allocatable :: s_vq_u(:)
+ type(vvar), allocatable :: s_vq_v(:)
+ type(zvar), allocatable :: s_vq_z(:)
  
- type(zvar) :: s_qq_z(nz)
+ type(zvar), allocatable :: s_qq_z(:)
 
- type(hvar) :: s_tendh_h(nz)
+ type(hvar), allocatable :: s_tendh_h(:)
 
- type(uvar) :: s_htendu_u(nz)
+ type(uvar), allocatable :: s_htendu_u(:)
 
- type(vvar) :: s_htendv_v(nz)
+ type(vvar), allocatable :: s_htendv_v(:)
 
- type(hvar) :: s_utendh_h(nz)
+ type(hvar), allocatable :: s_utendh_h(:)
 
- type(hvar) :: s_vtendh_h(nz)
+ type(hvar), allocatable :: s_vtendh_h(:)
 
 #endif
 
@@ -255,7 +255,7 @@ module variables
  type(uvar) :: thavx,inthavx
  type(vvar) :: thavy,inthavy
  type(hvar) :: inty
- type(hvar) :: y(nz)
+ type(hvar), allocatable :: y(:)
  type(hvar) :: ap, z
 
 #endif

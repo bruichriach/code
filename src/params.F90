@@ -6,104 +6,263 @@ module params
  
  implicit none
 
- integer, parameter :: mx=100, my=150
- integer, parameter :: nz=3
- real(kind=db), parameter :: dx=0.1d0, dy=0.1d0
- real(kind=db), parameter :: indx=1.0d0/dx, indy=1.0d0/dy
+ integer :: mx, my
+ integer :: nz
+ real(kind=db) :: dx, dy
+ real(kind=db) :: indx, indy
 #ifdef DOUBLE_PRECISION
- real(kind=db), parameter :: x0=dx*dble(mx), y0=dy*dble(my)
+ real(kind=db) :: x0, y0
 #else
- real(kind=db), parameter :: x0=dx*real(mx), y0=dy*real(my)
+ real(kind=db) :: x0, y0
 #endif
  
  
  integer :: lx, ly, nx, ny, north, south, east, west
  
- logical :: noslip = .true.
+ logical :: noslip
  
  
  
  
  real (kind=db), parameter :: pi=4.0d0*atan(1.0d0)
- real (kind=db), parameter :: omega=2.0d0*pi/8.64d4
- real (kind=db), parameter :: g=9.81d0
+ real (kind=db) :: omega
+ real (kind=db) :: g
  
   ! Degree/radian conversion parameters
  real (kind=db), parameter :: deg2rad=pi/180.0d0, rad2deg=180.0d0/pi
  
- integer :: ii
-
-#ifndef ALLOW_STATIC_LAYER
-#ifdef ALLOW_RIGID_LID
- real (kind=db), parameter :: gp(nz-1) = (/ 3.0d-3 , 7.0d-3 /)
- real (kind=db), parameter :: ngp(nz) = (/ gp(1:nz-1) , g /)/sum(gp(1:nz-1))
+ real (kind=db), allocatable :: gp(:) 
+ real (kind=db), allocatable :: ngp(:)
 #ifdef DO_TIME_AVERAGE
- real (kind=db), parameter :: ng(nz) =  &
-         (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
+ real (kind=db), allocatable :: ng(:)
 #endif
-#else
- real (kind=db), parameter :: gp(nz) = (/ 3.0d-3 , 7.0d-3, 9.81d0 /)
- real (kind=db), parameter :: ngp(nz) = gp(1:nz)/sum(gp(1:nz-1))
+
+ real (kind=db) :: f0
+ real (kind=db) :: h0
+ real (kind=db) :: ld
+
+
+ real (kind=db) :: maxh
+ real (kind=db) :: dt
+
+
+
+
+
+
+ REAL (KIND=db) :: write_time
+ REAL (KIND=db) :: total_time
 #ifdef DO_TIME_AVERAGE
- real (kind=db), parameter :: ng(nz) =  &
-         (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
-#endif
-#endif
-#else
- real (kind=db), parameter :: gp(nz) = (/ 3.0d-3 , 7.0d-3 /)
- real (kind=db), parameter :: ngp(nz) = gp(1:nz)/sum(gp(1:nz))
-#ifdef DO_TIME_AVERAGE
- real (kind=db), parameter :: ng(nz) =  &
-         (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
-#endif
-#endif
-
- real (kind=db), parameter :: f0=2.0d0*omega*sin(deg2rad*70.0d0)
- real (kind=db), parameter :: h0=1.0d3
-#ifndef ALLOW_STATIC_LAYER
- real (kind=db), parameter :: ld=sqrt(sum(gp(1:nz-1))*h0)/f0
-#else
- real (kind=db), parameter :: ld=sqrt(sum(gp(1:nz))*h0)/f0
-#endif
-
-
-
-
-#ifdef ALLOW_RIGID_LID
- real (kind=db), parameter :: maxh=1.25d0!h0
- real (kind=db), parameter :: dt = (0.25d0*dx)/dsqrt(sum(ngp(1:nz-1))*maxh)
-#else
- real (kind=db), parameter :: maxh=1.25d0*1.01d0
- real (kind=db), parameter :: dt = (0.25d0*dx)/dsqrt(sum(ngp)*maxh)
-#endif
-
-
-
-
-
-
- REAL (KIND=db), PARAMETER :: write_time=3.0d1*(4.0d0*pi*sin(deg2rad*70.0d0))
- REAL (KIND=db), PARAMETER :: total_time=2.0d4*(4.0d0*pi*sin(deg2rad*70.0d0))
-#ifdef DO_TIME_AVERAGE
- REAL (KIND=db), PARAMETER :: average_time=1.0d0
+ REAL (KIND=db) :: average_time
  
- INTEGER, PARAMETER :: nsteps=floor(write_time/average_time)
+ INTEGER :: nsteps
 #endif
  
- INTEGER, PARAMETER :: nstop=ceiling(total_time/dt)
- INTEGER, PARAMETER :: wstep=floor(write_time/dt)
+ INTEGER :: nstop
+ INTEGER :: wstep
 #ifdef DO_TIME_AVERAGE
- INTEGER, PARAMETER :: nstep=0
+ INTEGER :: nstep
 #endif
 
 
      
- REAL (kind=db), PARAMETER :: bf=2.0d-2
- real (kind=db), parameter :: res=0.0d0/(f0**2*ld*h0) 
- REAL (kind=db), PARAMETER :: tau=2.0e-1/(f0**2*ld*h0*1026.0d0)      
- real (kind=db), parameter :: cvar=(1.0d0/pi**2)  
+ REAL (kind=db) :: bf
+ real (kind=db) :: res
+ REAL (kind=db) :: tau    
+ real (kind=db) :: cvar
  
  contains
+ 
+ subroutine init_params()
+ 
+  implicit none
+  
+  integer :: ii
+
+  mx=100
+  my=150
+  nz=3
+  dx=0.1d0
+  dy=0.1d0
+  indx=1.0d0/dx
+  indy=1.0d0/dy
+#ifdef DOUBLE_PRECISION
+  x0=dx*dble(mx)
+  y0=dy*dble(my)
+#else
+  x0=dx*real(mx)
+  y0=dy*real(my)
+#endif
+
+  noslip = .true.
+ 
+  omega=2.0d0*pi/8.64d4
+  g=9.81d0
+ 
+
+#ifndef ALLOW_STATIC_LAYER
+#ifdef ALLOW_RIGID_LID
+  allocate(gp(nz-1),ngp(nz))
+  gp = (/ 3.0d-3 , 7.0d-3 /)
+  ngp = (/ gp(1:nz-1) , g /)/sum(gp(1:nz-1))
+#ifdef DO_TIME_AVERAGE
+  allocate(ng(nz))
+  ng =  (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
+#endif
+#else
+  allocate(gp(nz),ngp(nz))
+  gp = (/ 3.0d-3 , 7.0d-3, 9.81d0 /)
+  ngp = gp(1:nz)/sum(gp(1:nz-1))
+#ifdef DO_TIME_AVERAGE
+  allocate(ng(nz))
+  ng =  (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
+#endif
+#endif
+#else
+  allocate(gp(nz),ngp(nz))
+  gp = (/ 3.0d-3 , 7.0d-3 /)
+  ngp = gp(1:nz)/sum(gp(1:nz))
+#ifdef DO_TIME_AVERAGE
+  allocate(ng(nz))
+  ng = (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
+#endif
+#endif
+
+  f0=2.0d0*omega*sin(deg2rad*70.0d0)
+  h0=1.0d3
+#ifndef ALLOW_STATIC_LAYER
+  ld=sqrt(sum(gp(1:nz-1))*h0)/f0
+#else
+  ld=sqrt(sum(gp(1:nz))*h0)/f0
+#endif
+
+
+
+
+#ifdef ALLOW_RIGID_LID
+  maxh=1.25d0!h0
+  dt = (0.25d0*dx)/dsqrt(sum(ngp(1:nz-1))*maxh)
+#else
+  maxh=1.25d0*1.01d0
+  dt = (0.25d0*dx)/dsqrt(sum(ngp)*maxh)
+#endif
+
+
+
+
+
+
+  write_time=3.0d1*(4.0d0*pi*sin(deg2rad*70.0d0))
+  total_time=2.0d4*(4.0d0*pi*sin(deg2rad*70.0d0))
+#ifdef DO_TIME_AVERAGE
+  average_time=1.0d0
+ 
+  nsteps=floor(write_time/average_time)
+#endif
+ 
+  nstop=ceiling(total_time/dt)
+  wstep=floor(write_time/dt)
+#ifdef DO_TIME_AVERAGE
+  nstep=0
+#endif
+
+
+     
+  bf=2.0d-2
+  res=0.0d0/(f0**2*ld*h0) 
+  tau=2.0d-1/(f0**2*ld*h0*1026.0d0)      
+  cvar=(1.0d0/pi**2)  
+ 
+ 
+ end subroutine
+ 
+ 
+ subroutine write_params()
+  use sys
+ 
+  implicit none
+  
+  integer :: ii
+  character(32) :: desc
+
+  open(unit=10,file='params.txt',status='unknown',form='formatted')
+  
+  desc='x-direction grid spaces:'
+  format="(a32,i4)"
+  write(10,format) desc, mx
+  
+  desc='y-direction grid spaces:'
+  format="(a32,i4)"
+  write(10,format) desc, my
+  
+  desc='z-direction # of layers:'
+  format="(a32,i4)"
+  write(10,format) desc, nz
+  
+  desc='x-direction grid width:'
+  format="(a32,e23.16)"
+  write(10,format) desc, dx
+  
+  desc='y-direction grid width:'
+  format="(a32,e23.16)"
+  write(10,format) desc, dy
+  
+  desc='no slip:'
+  format="(a32,l3)"
+  write(10,format) desc, noslip
+  
+  desc='planetary rotational frequency:'
+  format="(a32,e23.16)"
+  write(10,format) desc, omega
+  
+  desc='gravitational acceleration:'
+  format="(a32,e23.16)"
+  write(10,format) desc, g
+  
+  desc='reduced gravitational acceleration:'
+  write(format,"(a5,i1,a7)") '(a32,',ubound(gp,1)-lbound(gp,1)+1,'e23.16)'
+  write(10,format) desc, (gp(ii) , ii=lbound(gp,1),ubound(gp,1))
+  
+  desc='dimentional coriolis:'
+  format="(a32,e23.16)"
+  write(10,format) desc, f0
+  
+  desc='dimentional depth:'
+  format="(a32,e23.16)"
+  write(10,format) desc, h0
+  
+  desc='dimentional deformation radius:'
+  format="(a32,e23.16)"
+  write(10,format) desc, ld
+
+  desc='timestep:'
+  format="(a32,e23.16)"
+  write(10,format) desc, dt
+
+  desc='runtime:'
+  format="(a32,e23.16)"
+  write(10,format) desc, total_time
+
+  desc='writetime:'
+  format="(a32,e23.16)"
+  write(10,format) desc, write_time
+
+  desc='bottom friction:'
+  format="(a32,e23.16)"
+  write(10,format) desc, bf
+
+  desc='wind stess:'
+  format="(a32,e23.16)"
+  write(10,format) desc, tau
+
+  desc='viscosity:'
+  format="(a32,e23.16)"
+  write(10,format) desc, cvar
+
+ 
+ end subroutine
+ 
+  
  
  
  

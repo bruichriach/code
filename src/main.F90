@@ -33,6 +33,9 @@ program sw
   ens_images = proc_num/ens_num
   ens_name = proc_name/ens_images
   ens_master = ens_name*ens_images
+
+  call init_params()
+  call write_params()
   
   call split_domain(mx, my, lx, nx, ly, ny, north, south, east, west)
   
@@ -42,14 +45,14 @@ program sw
 
  call create_field(s,'s',.true.)
  
- call create_field(d,'d',.true.)
- call create_field(mind,.false.)
+ call create_field(d,'d',.true.,0)
+ call create_field(mind,.false.,0)
  
- call create_field(h,'h',.true.)
- call create_field(u,'u',.true.)
- call create_field(v,'v',.true.)
+ call create_field(h,'h',.true.,1)
+ call create_field(u,'u',.true.,1)
+ call create_field(v,'v',.true.,1)
  
- call create_field(minh,.false.)
+ call create_field(minh,.false.,1)
  
  do k=1,nz
   call make_timestep(h(k))
@@ -57,33 +60,33 @@ program sw
   call make_timestep(v(k))
  end do
  
- call create_field(h_u,.true.)
- call create_field(h_v,.true.)
- call create_field(h_z,.false.)
+ call create_field(h_u,.true.,1)
+ call create_field(h_v,.true.,1)
+ call create_field(h_z,.false.,1)
  
- call create_field(h_tmp,.true.)
- call create_field(u_tmp,.false.)
- call create_field(v_tmp,.false.)
+ call create_field(h_tmp,.true.,1)
+ call create_field(u_tmp,.false.,1)
+ call create_field(v_tmp,.false.,1)
  
- call create_field(ke,'ke',.true.)
- call create_field(ape,'ape',.false.)
+ call create_field(ke,'ke',.true.,1)
+ call create_field(ape,'ape',.false.,1)
  
- call create_field(zeta,'z',.false.)
+ call create_field(zeta,'z',.false.,1)
  
- call create_field(lapu,'lapu',.true.)
- call create_field(lapv,'lapv',.true.)
+ call create_field(lapu,'lapu',.true.,1)
+ call create_field(lapv,'lapv',.true.,1)
  
- call create_field(smag,'smag',.true.)
- call create_field(tension,'tension',.true.)
- call create_field(strain,'strain',.false.)
+ call create_field(smag,'smag',.true.,1)
+ call create_field(tension,'tension',.true.,1)
+ call create_field(strain,'strain',.false.,1)
  
- call create_field(smagu,'smagu',.false.)
- call create_field(smagv,'smagv',.false.)
+ call create_field(smagu,'smagu',.false.,1)
+ call create_field(smagv,'smagv',.false.,1)
  
- call create_field(q,'q',.false.)
+ call create_field(q,'q',.false.,1)
   
- call create_field(m,'m',.true.)
- call create_field(minm,.false.)
+ call create_field(m,'m',.true.,1)
+ call create_field(minm,.false.,1)
  
  call create_field(bfricu,'bfricu',.false.)
  call create_field(bfricv,'bfricv',.false.)
@@ -98,52 +101,52 @@ program sw
 
 #ifdef DO_TIME_AVERAGE
 
- call create_field(hu,'hu',.true.)
- call create_field(hv,'hv',.true.)
+ call create_field(hu,'hu',.true.,1)
+ call create_field(hv,'hv',.true.,1)
 
- call create_field(s_h_h,'s_h_h',.false.)
- call create_field(s_h_u,'s_h_u',.false.)
- call create_field(s_h_v,'s_h_v',.false.)
- call create_field(s_h_z,'s_h_z',.false.)
+ call create_field(s_h_h,'s_h_h',.false.,1)
+ call create_field(s_h_u,'s_h_u',.false.,1)
+ call create_field(s_h_v,'s_h_v',.false.,1)
+ call create_field(s_h_z,'s_h_z',.false.,1)
 
- call create_field(s_hu_h,'s_hu_h',.false.)
- call create_field(s_hu_u,'s_hu_u',.false.)
- call create_field(s_hu_v,'s_hu_v',.false.)
- call create_field(s_hu_z,'s_hu_z',.false.)
+ call create_field(s_hu_h,'s_hu_h',.false.,1)
+ call create_field(s_hu_u,'s_hu_u',.false.,1)
+ call create_field(s_hu_v,'s_hu_v',.false.,1)
+ call create_field(s_hu_z,'s_hu_z',.false.,1)
 
- call create_field(s_hv_h,'s_hv_h',.false.)
- call create_field(s_hv_u,'s_hv_u',.false.)
- call create_field(s_hv_v,'s_hv_v',.false.)
- call create_field(s_hv_z,'s_hv_z',.false.)
+ call create_field(s_hv_h,'s_hv_h',.false.,1)
+ call create_field(s_hv_u,'s_hv_u',.false.,1)
+ call create_field(s_hv_v,'s_hv_v',.false.,1)
+ call create_field(s_hv_z,'s_hv_z',.false.,1)
 
- call create_field(s_u_h,'s_u_h',.false.)
- call create_field(s_u_u,'s_u_u',.false.)
- call create_field(s_u_v,'s_u_v',.false.)
- call create_field(s_u_z,'s_u_z',.false.)
+ call create_field(s_u_h,'s_u_h',.false.,1)
+ call create_field(s_u_u,'s_u_u',.false.,1)
+ call create_field(s_u_v,'s_u_v',.false.,1)
+ call create_field(s_u_z,'s_u_z',.false.,1)
 
- call create_field(s_v_h,'s_v_h',.false.)
- call create_field(s_v_u,'s_v_u',.false.)
- call create_field(s_v_v,'s_v_v',.false.)
- call create_field(s_v_z,'s_v_z',.false.)
+ call create_field(s_v_h,'s_v_h',.false.,1)
+ call create_field(s_v_u,'s_v_u',.false.,1)
+ call create_field(s_v_v,'s_v_v',.false.,1)
+ call create_field(s_v_z,'s_v_z',.false.,1)
 
- call create_field(s_huu_h,'s_huu_h',.false.)
- call create_field(s_huu_z,'s_huu_z',.false.)
+ call create_field(s_huu_h,'s_huu_h',.false.,1)
+ call create_field(s_huu_z,'s_huu_z',.false.,1)
 
- call create_field(s_hvv_h,'s_hvv_h',.false.)
- call create_field(s_hvv_z,'s_hvv_z',.false.)
+ call create_field(s_hvv_h,'s_hvv_h',.false.,1)
+ call create_field(s_hvv_z,'s_hvv_z',.false.,1)
 
 
- call create_field(s_huv_h,'s_huv_h',.false.)
- call create_field(s_huv_z,'s_huv_z',.false.)
- call create_field(s_huv_uz,'s_huv_uz',.false.)
- call create_field(s_huv_vz,'s_huv_vz',.false.)
+ call create_field(s_huv_h,'s_huv_h',.false.,1)
+ call create_field(s_huv_z,'s_huv_z',.false.,1)
+ call create_field(s_huv_uz,'s_huv_uz',.false.,1)
+ call create_field(s_huv_vz,'s_huv_vz',.false.,1)
  
- call create_field(s_hm_x_u,'s_hm_x_u',.false.)
- call create_field(s_hm_y_v,'s_hm_y_v',.false.)
+ call create_field(s_hm_x_u,'s_hm_x_u',.false.,1)
+ call create_field(s_hm_y_v,'s_hm_y_v',.false.,1)
  
- call create_field(s_m_h,'s_m_h',.false.)
+ call create_field(s_m_h,'s_m_h',.false.,1)
  
- call create_field(s_hm_h,'s_hm_h',.false.)
+ call create_field(s_hm_h,'s_hm_h',.false.,1)
  
  call create_field(s_utau_u,'s_utau_u',.false.)
  call create_field(s_vtau_v,'s_vtau_v',.false.)
@@ -151,48 +154,48 @@ program sw
  call create_field(s_bfricu_u,'s_bfricu_u',.false.)
  call create_field(s_bfricv_v,'s_bfricv_v',.false.)
  
- call create_field(s_hsmagu_u,'s_hsmagu_u',.false.)
- call create_field(s_hsmagv_v,'s_hsmagv_v',.false.)
+ call create_field(s_hsmagu_u,'s_hsmagu_u',.false.,1)
+ call create_field(s_hsmagv_v,'s_hsmagv_v',.false.,1)
 
- call create_field(s_hq_h,'s_hq_h',.false.)
- call create_field(s_hq_u,'s_hq_u',.false.)
- call create_field(s_hq_v,'s_hq_v',.false.)
- call create_field(s_hq_z,'s_hq_z',.false.)
+ call create_field(s_hq_h,'s_hq_h',.false.,1)
+ call create_field(s_hq_u,'s_hq_u',.false.,1)
+ call create_field(s_hq_v,'s_hq_v',.false.,1)
+ call create_field(s_hq_z,'s_hq_z',.false.,1)
 
- call create_field(s_huq_h,'s_huq_h',.false.)
- call create_field(s_huq_u,'s_huq_u',.false.)
- call create_field(s_huq_v,'s_huq_v',.false.)
- call create_field(s_huq_z,'s_huq_z',.false.)
+ call create_field(s_huq_h,'s_huq_h',.false.,1)
+ call create_field(s_huq_u,'s_huq_u',.false.,1)
+ call create_field(s_huq_v,'s_huq_v',.false.,1)
+ call create_field(s_huq_z,'s_huq_z',.false.,1)
 
- call create_field(s_hvq_h,'s_hvq_h',.false.)
- call create_field(s_hvq_u,'s_hvq_u',.false.)
- call create_field(s_hvq_v,'s_hvq_v',.false.)
- call create_field(s_hvq_z,'s_hvq_z',.false.)
+ call create_field(s_hvq_h,'s_hvq_h',.false.,1)
+ call create_field(s_hvq_u,'s_hvq_u',.false.,1)
+ call create_field(s_hvq_v,'s_hvq_v',.false.,1)
+ call create_field(s_hvq_z,'s_hvq_z',.false.,1)
  
- call create_field(s_hqq_z,'s_hqq_z',.false.)
+ call create_field(s_hqq_z,'s_hqq_z',.false.,1)
 
- call create_field(s_q_h,'s_q_h',.false.)
- call create_field(s_q_u,'s_q_u',.false.)
- call create_field(s_q_v,'s_q_v',.false.)
- call create_field(s_q_z,'s_q_z',.false.)
+ call create_field(s_q_h,'s_q_h',.false.,1)
+ call create_field(s_q_u,'s_q_u',.false.,1)
+ call create_field(s_q_v,'s_q_v',.false.,1)
+ call create_field(s_q_z,'s_q_z',.false.,1)
 
- call create_field(s_uq_h,'s_uq_h',.false.)
- call create_field(s_uq_u,'s_uq_u',.false.)
- call create_field(s_uq_v,'s_uq_v',.false.)
- call create_field(s_uq_z,'s_uq_z',.false.)
+ call create_field(s_uq_h,'s_uq_h',.false.,1)
+ call create_field(s_uq_u,'s_uq_u',.false.,1)
+ call create_field(s_uq_v,'s_uq_v',.false.,1)
+ call create_field(s_uq_z,'s_uq_z',.false.,1)
 
- call create_field(s_vq_h,'s_vq_h',.false.)
- call create_field(s_vq_u,'s_vq_u',.false.)
- call create_field(s_vq_v,'s_vq_v',.false.)
- call create_field(s_vq_z,'s_vq_z',.false.)
+ call create_field(s_vq_h,'s_vq_h',.false.,1)
+ call create_field(s_vq_u,'s_vq_u',.false.,1)
+ call create_field(s_vq_v,'s_vq_v',.false.,1)
+ call create_field(s_vq_z,'s_vq_z',.false.,1)
  
- call create_field(s_qq_z,'s_qq_z',.false.)
+ call create_field(s_qq_z,'s_qq_z',.false.,1)
 
- call create_field(s_tendh_h,'s_tendh_h',.false.) 
- call create_field(s_htendu_u,'s_htendu_u',.false.)
- call create_field(s_htendv_v,'s_htendv_v',.false.)
- call create_field(s_utendh_h,'s_utendh_h',.false.)
- call create_field(s_vtendh_h,'s_vtendh_h',.false.)
+ call create_field(s_tendh_h,'s_tendh_h',.false.,1) 
+ call create_field(s_htendu_u,'s_htendu_u',.false.,1)
+ call create_field(s_htendv_v,'s_htendv_v',.false.,1)
+ call create_field(s_utendh_h,'s_utendh_h',.false.,1)
+ call create_field(s_vtendh_h,'s_vtendh_h',.false.,1)
 
 
 

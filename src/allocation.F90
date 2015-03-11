@@ -409,20 +409,22 @@ module allocation
   
   
   
-  subroutine create_written_hvar_layer(dat,name,synced)
+  subroutine create_written_hvar_layer(dat,name,synced,i)
    use global
    use writeout_grid
    use writeout
    
    implicit none
    
-   type(hvar), intent(inout) :: dat(:)
+   type(hvar), allocatable, intent(inout) :: dat(:)
    logical, intent(in) :: synced
+   integer, intent(in) :: i
    integer :: k
    character(*), intent(in) :: name
    
    
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_hvar(dat(k),synced)
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
@@ -433,20 +435,22 @@ module allocation
   end subroutine
   
   
-  subroutine create_written_uvar_layer(dat,name,synced)
+  subroutine create_written_uvar_layer(dat,name,synced,i)
    use global
    use writeout_grid
    use writeout
    
    implicit none
    
-   type(uvar), intent(inout) :: dat(:)
+   type(uvar), allocatable, intent(inout) :: dat(:)
    logical, intent(in) :: synced
+   integer, intent(in) :: i
    integer :: k
    character(*), intent(in) :: name
    
    
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_uvar(dat(k),synced)
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
@@ -457,19 +461,21 @@ module allocation
   end subroutine
   
   
-  subroutine create_written_vvar_layer(dat,name,synced)
+  subroutine create_written_vvar_layer(dat,name,synced,i)
    use global
    use writeout_grid
    use writeout
    
    implicit none
    
-   type(vvar), intent(inout) :: dat(:)
+   type(vvar), allocatable, intent(inout) :: dat(:)
    logical, intent(in) :: synced
+   integer, intent(in) :: i
    integer :: k
    character(*), intent(in) :: name
    
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_vvar(dat(k),synced)
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
@@ -480,20 +486,22 @@ module allocation
   end subroutine
   
   
-  subroutine create_written_zvar_layer(dat,name,synced)
+  subroutine create_written_zvar_layer(dat,name,synced,i)
    use global
    use writeout_grid
    use writeout
    
    implicit none
    
-   type(zvar), intent(inout) :: dat(:)
+   type(zvar), allocatable, intent(inout) :: dat(:)
    logical, intent(in) :: synced
+   integer, intent(in) :: i
    integer :: k
    character(*), intent(in) :: name
    
    
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_zvar(dat(k),synced)
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
@@ -514,15 +522,17 @@ module allocation
   
   
   
-  subroutine create_hvar_layer(dat,synced)
+  subroutine create_hvar_layer(dat,synced,i)
    use global
    
    implicit none
    
-   type(hvar), intent(inout) :: dat(:)
+   type(hvar), allocatable, intent(inout) :: dat(:)
+   integer, intent(in) :: i
    logical, intent(in) :: synced
    integer :: k
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_hvar(dat(k),synced)
    end do
@@ -530,15 +540,17 @@ module allocation
   end subroutine
   
   
-  subroutine create_uvar_layer(dat,synced)
+  subroutine create_uvar_layer(dat,synced,i)
    use global
    
    implicit none
    
-   type(uvar), intent(inout) :: dat(:)
+   type(uvar), allocatable, intent(inout) :: dat(:)
+   integer, intent(in) :: i
    logical, intent(in) :: synced
    integer :: k
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_uvar(dat(k),synced)
    end do
@@ -546,15 +558,17 @@ module allocation
   end subroutine
   
   
-  subroutine create_vvar_layer(dat,synced)
+  subroutine create_vvar_layer(dat,synced,i)
    use global
    
    implicit none
    
-   type(vvar), intent(inout) :: dat(:)
+   type(vvar), allocatable, intent(inout) :: dat(:)
+   integer, intent(in) :: i
    logical, intent(in) :: synced
    integer :: k
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_vvar(dat(k),synced)
    end do
@@ -562,15 +576,17 @@ module allocation
   end subroutine
   
   
-  subroutine create_zvar_layer(dat,synced)
+  subroutine create_zvar_layer(dat,synced,i)
    use global
    
    implicit none
    
-   type(zvar), intent(inout) :: dat(:)
+   type(zvar), allocatable, intent(inout) :: dat(:)
+   integer, intent(in) :: i
    logical, intent(in) :: synced
    integer :: k
    
+   allocate(dat(i:nz))
    do k=lbound(dat,1),ubound(dat,1)
     call create_zvar(dat(k),synced)
    end do

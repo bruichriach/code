@@ -28,7 +28,7 @@ module solver
   call create_field(pres,'pres',.true.)
   call create_field(p,.true.)
   call create_field(r,.true.)
-  call create_field(y,.false.)
+  call create_field(y,.false.,1)
   call create_field(inty,.false.)
   call create_field(thavx,.false.)
   call create_field(thavy,.false.)
