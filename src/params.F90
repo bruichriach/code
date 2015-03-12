@@ -71,6 +71,13 @@ module params
  REAL (kind=db) :: tau    
  real (kind=db) :: cvar
  
+ 
+
+#ifdef DO_TIME_AVERAGE
+ integer :: initial_timeav_count
+ integer :: timeav_count=0
+#endif
+ 
  contains
  
  subroutine init_params()
@@ -179,6 +186,10 @@ module params
   cvar=(1.0d0/pi**2)  
   
   
+
+#ifdef DO_TIME_AVERAGE
+ initial_timeav_count=10561868
+#endif
   
   
   inquire( file='params.txt', exist=file_exist)
@@ -280,11 +291,19 @@ module params
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') cvar     
       
+#ifdef DO_TIME_AVERAGE
+     case ('initial time sum itereation')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(i32)"
+      read(10,format,iostat=endoffile,advance='YES') initial_timeav_count
+#endif
       
      case default
       if (proc_name == proc_master) print *, 'No param for record: ', desc
       read(10,"(a1)",iostat=endoffile,advance='YES')
       endoffile=0
+      
+
       
     end select
     if (endoffile == -2) then
@@ -381,6 +400,11 @@ module params
   format="(a32,a1,e23.16)"
   write(10,format) desc, ':', cvar
 
+#ifdef DO_TIME_AVERAGE
+  desc='initial time sum itereation'
+  format="(a32,a1,i32)"
+  write(10,format) desc, ':', initial_timeav_count
+#endif
  
  end subroutine
  
