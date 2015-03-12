@@ -85,7 +85,7 @@ module params
  
   implicit none
   
-  integer :: ii, length
+  integer :: ii
   character(32) :: desc
   character(1) :: colon
   logical :: file_exist
@@ -294,7 +294,7 @@ module params
 #ifdef DO_TIME_AVERAGE
      case ('initial time sum itereation')
       if (proc_name == proc_master) print *, 'Reading record: ', desc
-      format="(i32)"
+      format="(i16)"
       read(10,format,iostat=endoffile,advance='YES') initial_timeav_count
 #endif
       
@@ -402,7 +402,7 @@ module params
 
 #ifdef DO_TIME_AVERAGE
   desc='initial time sum itereation'
-  format="(a32,a1,i32)"
+  format="(a32,a1,i16)"
   write(10,format) desc, ':', initial_timeav_count
 #endif
  
