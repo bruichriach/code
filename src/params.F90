@@ -74,10 +74,15 @@ module params
  contains
  
  subroutine init_params()
+  use parallel
  
   implicit none
   
-  integer :: ii
+  integer :: ii, length
+  character(32) :: desc
+  character(1) :: colon
+  logical :: file_exist
+  integer :: endoffile
 
   mx=100
   my=150
@@ -172,6 +177,123 @@ module params
   res=0.0d0/(f0**2*ld*h0) 
   tau=2.0d-1/(f0**2*ld*h0*1026.0d0)      
   cvar=(1.0d0/pi**2)  
+  
+  
+  
+  
+  inquire( file='params.txt', exist=file_exist)
+    
+  if (file_exist) then
+   open(unit=10,action='read',file='params.txt',   &
+        status='unknown',form='formatted')
+   read(10,"(a32,a1)",iostat=endoffile,advance='NO') desc, colon 
+   do while (endoffile /= -1)
+    select case (desc)
+    
+     case ('x-direction grid spaces')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(i4)"
+      read(10,format,iostat=endoffile,advance='YES') mx
+      
+     case ('y-direction grid spaces')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(i4)"
+      read(10,format,iostat=endoffile,advance='YES') my
+      
+     case ('z-direction # of layers')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(i4)"
+      read(10,format,iostat=endoffile,advance='YES') nz
+      
+     case ('x-direction grid width')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') dx
+      
+     case ('y-direction grid width')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') dy
+      
+     case ('no slip')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(l3)"
+      read(10,format,iostat=endoffile,advance='YES') noslip
+      
+     case ('planetary rotational frequency')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') omega
+      
+     case ('gravitational acceleration')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') g
+      
+     case ('reduced gravitational accel')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      write(format,"(a1,i1,a7)") '(',ubound(gp,1)-lbound(gp,1)+1,'e23.16)'
+      read(10,format,iostat=endoffile,advance='YES')  (gp(ii) , ii=lbound(gp,1),ubound(gp,1))
+      
+     case ('dimensional coriolis')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') f0
+      
+     case ('dimensional depth')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') h0
+      
+     case ('dimensional deformation radius')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') ld
+      
+     case ('timestep')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') dt
+      
+     case ('runtime')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') total_time
+      
+     case ('writetime')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') write_time
+      
+     case ('bottom friction')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') bf
+      
+     case ('wind stress')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') tau
+      
+     case ('viscosity')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') cvar     
+      
+      
+     case default
+      if (proc_name == proc_master) print *, 'No param for record: ', desc
+      read(10,"(a1)",iostat=endoffile,advance='YES')
+      endoffile=0
+      
+    end select
+    if (endoffile == -2) then
+     if (proc_name == proc_master) print *, 'Read error for record: ', desc
+    end if
+    read(10,"(a32,a1)",iostat=endoffile,advance='NO') desc, colon
+   end do
+   close(10)
+  end if
  
  
  end subroutine
@@ -187,77 +309,77 @@ module params
 
   open(unit=10,file='params.txt',status='unknown',form='formatted')
   
-  desc='x-direction grid spaces:'
-  format="(a32,i4)"
-  write(10,format) desc, mx
+  desc='x-direction grid spaces'
+  format="(a32,a1,i4)"
+  write(10,format) desc, ':', mx
   
-  desc='y-direction grid spaces:'
-  format="(a32,i4)"
-  write(10,format) desc, my
+  desc='y-direction grid spaces'
+  format="(a32,a1,i4)"
+  write(10,format) desc, ':', my
   
-  desc='z-direction # of layers:'
-  format="(a32,i4)"
-  write(10,format) desc, nz
+  desc='z-direction # of layers'
+  format="(a32,a1,i4)"
+  write(10,format) desc, ':', nz
   
-  desc='x-direction grid width:'
-  format="(a32,e23.16)"
-  write(10,format) desc, dx
+  desc='x-direction grid width'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', dx
   
-  desc='y-direction grid width:'
-  format="(a32,e23.16)"
-  write(10,format) desc, dy
+  desc='y-direction grid width'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', dy
   
-  desc='no slip:'
-  format="(a32,l3)"
-  write(10,format) desc, noslip
+  desc='no slip'
+  format="(a32,a1,l3)"
+  write(10,format) desc, ':', noslip
   
-  desc='planetary rotational frequency:'
-  format="(a32,e23.16)"
-  write(10,format) desc, omega
+  desc='planetary rotational frequency'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', omega
   
-  desc='gravitational acceleration:'
-  format="(a32,e23.16)"
-  write(10,format) desc, g
+  desc='gravitational acceleration'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', g
   
-  desc='reduced gravitational acceleration:'
-  write(format,"(a5,i1,a7)") '(a32,',ubound(gp,1)-lbound(gp,1)+1,'e23.16)'
-  write(10,format) desc, (gp(ii) , ii=lbound(gp,1),ubound(gp,1))
+  desc='reduced gravitational accel'
+  write(format,"(a8,i1,a7)") '(a32,a1,',ubound(gp,1)-lbound(gp,1)+1,'e23.16)'
+  write(10,format) desc, ':', (gp(ii) , ii=lbound(gp,1),ubound(gp,1))
   
-  desc='dimentional coriolis:'
-  format="(a32,e23.16)"
-  write(10,format) desc, f0
+  desc='dimensional coriolis'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', f0
   
-  desc='dimentional depth:'
-  format="(a32,e23.16)"
-  write(10,format) desc, h0
+  desc='dimensional depth'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', h0
   
-  desc='dimentional deformation radius:'
-  format="(a32,e23.16)"
-  write(10,format) desc, ld
+  desc='dimensional deformation radius'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', ld
 
-  desc='timestep:'
-  format="(a32,e23.16)"
-  write(10,format) desc, dt
+  desc='timestep'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', dt
 
-  desc='runtime:'
-  format="(a32,e23.16)"
-  write(10,format) desc, total_time
+  desc='runtime'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', total_time
 
-  desc='writetime:'
-  format="(a32,e23.16)"
-  write(10,format) desc, write_time
+  desc='writetime'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', write_time
 
-  desc='bottom friction:'
-  format="(a32,e23.16)"
-  write(10,format) desc, bf
+  desc='bottom friction'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', bf
 
-  desc='wind stess:'
-  format="(a32,e23.16)"
-  write(10,format) desc, tau
+  desc='wind stress'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', tau
 
-  desc='viscosity:'
-  format="(a32,e23.16)"
-  write(10,format) desc, cvar
+  desc='viscosity'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', cvar
 
  
  end subroutine

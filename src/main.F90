@@ -35,8 +35,9 @@ program sw
   ens_master = ens_name*ens_images
 
   call init_params()
-  call write_params()
-  
+  call mpi_barrier(mpi_comm_world,stat)
+  if (proc_name == proc_master) call write_params()
+   
   call split_domain(mx, my, lx, nx, ly, ny, north, south, east, west)
   
   call set_grids
