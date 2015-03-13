@@ -557,9 +557,12 @@ module timeav
    
   write (filename, "(a11,i4.4,a2)") './timemean/', ens_name, '/.'
   inquire( file=filename, exist=dir_e )
-  if (dir_e) then
+  if (.not.(dir_e)) then
+  
+   timeav_count = 0
    
-   timeav_count=initial_timeav_count
+  else
+  
    if (proc_name == ens_master) then
     write(format,'(a64)') '(a20,i10,a11,i4)'
     write(*,format) 'Starting Mean from: ', timeav_count, ' ens_name: ', ens_name

@@ -74,8 +74,7 @@ module params
  
 
 #ifdef DO_TIME_AVERAGE
- integer :: initial_timeav_count
- integer :: timeav_count=0
+ integer :: timeav_count
 #endif
  
  contains
@@ -188,7 +187,7 @@ module params
   
 
 #ifdef DO_TIME_AVERAGE
- initial_timeav_count=10561868
+ timeav_count=10561868
 #endif
   
   
@@ -295,7 +294,7 @@ module params
      case ('initial time sum itereation')
       if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(i16)"
-      read(10,format,iostat=endoffile,advance='YES') initial_timeav_count
+      read(10,format,iostat=endoffile,advance='YES') timeav_count
 #endif
       
      case default
@@ -403,7 +402,7 @@ module params
 #ifdef DO_TIME_AVERAGE
   desc='initial time sum itereation'
   format="(a32,a1,i16)"
-  write(10,format) desc, ':', initial_timeav_count
+  write(10,format) desc, ':', timeav_count
 #endif
  
  end subroutine

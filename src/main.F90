@@ -646,6 +646,8 @@ program sw
   
  end do
  
+ call mpi_barrier(mpi_comm_world,stat)
+ if (proc_name == proc_master) call write_params()
  
  
  call do_write(n/wstep)
