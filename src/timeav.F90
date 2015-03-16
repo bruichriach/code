@@ -46,16 +46,16 @@ module timeav
    end do
    
    do k=1,nz
-    s_hv_h(k)=s_hv_h(k)%bz+Ay(v(k))
+    s_hv_h(k)=s_hv_h(k)%bz+h(k)%bz*Ay(v(k))
    end do
    do k=1,nz
-    s_hv_u(k)=s_hv_u(k)%bz+Ay(Ax(v(k)))
+    s_hv_u(k)=s_hv_u(k)%bz+h_u(k)%bz*Ay(Ax(v(k)))
    end do
    do k=1,nz
-    s_hv_v(k)=s_hv_v(k)%bz+v(k)%bz
+    s_hv_v(k)=s_hv_v(k)%bz+h_v(k)%bz*v(k)%bz
    end do
    do k=1,nz
-    s_hv_z(k)=s_hv_z(k)%bz+Ax(v(k))
+    s_hv_z(k)=s_hv_z(k)%bz+h_z(k)%bz*Ax(v(k))
    end do
 
    do k=1,nz
