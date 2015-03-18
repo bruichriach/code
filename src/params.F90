@@ -311,7 +311,52 @@ module params
     read(10,"(a32,a1)",iostat=endoffile,advance='NO') desc, colon
    end do
    close(10)
+   
+   
+  indx=1.0d0/dx
+  indy=1.0d0/dy
+#ifdef DOUBLE_PRECISION
+  x0=dx*dble(mx)
+  y0=dy*dble(my)
+#else
+  x0=dx*real(mx)
+  y0=dy*real(my)
+#endif
+ 
+
+#ifndef ALLOW_STATIC_LAYER
+#ifdef ALLOW_RIGID_LID
+  ngp = (/ gp(1:nz-1) , g /)/sum(gp(1:nz-1))
+#ifdef DO_TIME_AVERAGE
+  ng =  (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
+#endif
+#else
+  ngp = gp(1:nz)/sum(gp(1:nz-1))
+#ifdef DO_TIME_AVERAGE
+  ng =  (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
+#endif
+#endif
+#else
+  ngp = gp(1:nz)/sum(gp(1:nz))
+#ifdef DO_TIME_AVERAGE
+  ng = (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
+#endif
+#endif
+
+
+#ifdef DO_TIME_AVERAGE 
+  nsteps=floor(write_time/average_time)
+#endif
+ 
+  nstop=ceiling(total_time/dt)
+  wstep=floor(write_time/dt)
+#ifdef DO_TIME_AVERAGE
+  nstep=0
+#endif
+
   end if
+  
+  
  
  
  end subroutine
@@ -403,47 +448,6 @@ module params
   desc='initial time sum itereation'
   format="(a32,a1,i16)"
   write(10,format) desc, ':', timeav_count
-#endif
-
-  indx=1.0d0/dx
-  indy=1.0d0/dy
-#ifdef DOUBLE_PRECISION
-  x0=dx*dble(mx)
-  y0=dy*dble(my)
-#else
-  x0=dx*real(mx)
-  y0=dy*real(my)
-#endif
- 
-
-#ifndef ALLOW_STATIC_LAYER
-#ifdef ALLOW_RIGID_LID
-  ngp = (/ gp(1:nz-1) , g /)/sum(gp(1:nz-1))
-#ifdef DO_TIME_AVERAGE
-  ng =  (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
-#endif
-#else
-  ngp = gp(1:nz)/sum(gp(1:nz-1))
-#ifdef DO_TIME_AVERAGE
-  ng =  (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
-#endif
-#endif
-#else
-  ngp = gp(1:nz)/sum(gp(1:nz))
-#ifdef DO_TIME_AVERAGE
-  ng = (/ (  sum(ngp(ii:nz) )  , ii = 1,nz) /)
-#endif
-#endif
-
-
-#ifdef DO_TIME_AVERAGE 
-  nsteps=floor(write_time/average_time)
-#endif
- 
-  nstop=ceiling(total_time/dt)
-  wstep=floor(write_time/dt)
-#ifdef DO_TIME_AVERAGE
-  nstep=0
 #endif
 
  
