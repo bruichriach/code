@@ -35,15 +35,15 @@ MODULE writeout
       zgrid_out(mx+1,my+1,0:ens_images-1))
       
   do k=0,ens_images-1
-   hgrid_out(:,:,k)=merge(1,0,(proc_grid(1:mx,1:my) == k))
-   ugrid_out(:,:,k)=merge(1,0,((proc_grid(1:mx+1,1:my) == k).or.&
-                           (proc_grid(0:mx,1:my) == k)))
-   vgrid_out(:,:,k)=merge(1,0,((proc_grid(1:mx,1:my+1) == k).or.&
-                           (proc_grid(1:mx,0:my) == k)))
-   zgrid_out(:,:,k)=merge(1,0,(((proc_grid(1:mx+1,1:my+1) == k).or.&
-                           (proc_grid(0:mx,1:my+1) == k)).or. &
-                           ((proc_grid(1:mx+1,0:my) == k).or. &
-                           (proc_grid(0:mx,0:my) == k))))
+   hgrid_out(:,:,k)=merge(1,0,(proc_grid(1:mx,1:my) == ens_master+k))
+   ugrid_out(:,:,k)=merge(1,0,((proc_grid(1:mx+1,1:my) == ens_master+k).or.&
+                           (proc_grid(0:mx,1:my) == ens_master+k)))
+   vgrid_out(:,:,k)=merge(1,0,((proc_grid(1:mx,1:my+1) == ens_master+k).or.&
+                           (proc_grid(1:mx,0:my) == ens_master+k)))
+   zgrid_out(:,:,k)=merge(1,0,(((proc_grid(1:mx+1,1:my+1) == ens_master+k).or.&
+                           (proc_grid(0:mx,1:my+1) == ens_master+k)).or. &
+                           ((proc_grid(1:mx+1,0:my) == ens_master+k).or. &
+                           (proc_grid(0:mx,0:my) == ens_master+k))))
   end do
    
  
@@ -78,6 +78,7 @@ MODULE writeout
     end do
    end if
    write (filename, "(a32)") folder//filename
+   call mpi_barrier(mpi_comm_world,stat)
    call end_var_write(dat,adjustl(filename),0)
    call mpi_barrier(mpi_comm_world,stat)
   
@@ -149,7 +150,7 @@ MODULE writeout
   
   if (proc_name == ens_master) then
    call mpi_waitall(ens_images, dat%out%req_master,mpi_statuses_ignore,stat)
-   print *, 'read in complete for ', dat%out%name
+   print *, 'read in complete for ', dat%out%name, ' on image ', ens_name
   end if
   
   

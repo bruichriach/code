@@ -97,7 +97,8 @@ module grid
    names(node_x*core_x+1,1:node_y*core_y)=names(1,1:node_y*core_y)
    names(1:node_x*core_x,0)=names(1:node_x*core_x,node_y*core_y)
    names(1:node_x*core_x,node_y*core_y+1)=names(1:node_x*core_x,1)
-         
+   names=ens_master + names
+      
 !   if (proc_name == proc_master) print *, names
    
 !   if (proc_name == proc_master) print *, shape(names)
@@ -404,13 +405,13 @@ module sync
    mobile_tag=mod(mobile_tag+1,10000)
  
    do i=0,ens_images-1
-    j=ens_master+mod(proc_name+i,ens_images)
+    j=mod(proc_name-ens_master+i,ens_images)
     call mpi_irecv(out_tmp(j),1,     &
-             mpi_precision,j,40000+mobile_tag,    &
+             mpi_precision,ens_master+j,40000+mobile_tag,    &
              MPI_COMM_WORLD,recv(j),stat)
-    j=ens_master+mod(proc_name+ens_images-i,ens_images)
+    j=mod(proc_name-ens_master+ens_images-i,ens_images)
     call mpi_isend(in,1,     &
-             mpi_precision,j,40000+mobile_tag,    &
+             mpi_precision,ens_master+j,40000+mobile_tag,    &
              MPI_COMM_WORLD,send(j),stat)
    end do
    

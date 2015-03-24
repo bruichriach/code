@@ -12,6 +12,7 @@ profile
 stochwind.dat
 timemean/
 makefile
+params.txt
 *.ipynb
 *.py
 *.pyc
