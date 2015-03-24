@@ -69,6 +69,8 @@ module params
  REAL (kind=db) :: bf
  real (kind=db) :: res
  REAL (kind=db) :: tau    
+ real (kind=db) :: umax
+ integer :: bfricpoly
  real (kind=db) :: cvar
  
  
@@ -182,6 +184,8 @@ module params
   bf=2.0d-2
   res=0.0d0/(f0**2*ld*h0) 
   tau=2.0d-1/(f0**2*ld*h0*1026.0d0)      
+  umax=2.0d-2
+  bfricpoly=2
   cvar=(1.0d0/pi**2)  
   
   
@@ -279,7 +283,17 @@ module params
       if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') bf
-      
+
+     case ('bottom friction velocity')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(e23.16)"
+      read(10,format,iostat=endoffile,advance='YES') umax
+
+     case ('bottom friction polynomial')
+      if (proc_name == proc_master) print *, 'Reading record: ', desc
+      format="(i4)"
+      read(10,format,iostat=endoffile,advance='YES') bfricpoly
+ 
      case ('wind stress')
       if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
@@ -435,6 +449,14 @@ module params
   desc='bottom friction'
   format="(a32,a1,e23.16)"
   write(10,format) desc, ':', bf
+
+  desc='bottom friction velocity'
+  format="(a32,a1,e23.16)"
+  write(10,format) desc, ':', umax
+
+  desc='bottom friction polynomial'
+  format="(a32,a1,i4)"
+  write(10,format) desc, ':', bfricpoly
 
   desc='wind stress'
   format="(a32,a1,e23.16)"

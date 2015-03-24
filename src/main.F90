@@ -393,7 +393,7 @@ program sw
    smagu(k)=-Ax(smag(k))*(sGxx(lapu(k))+sGyy(lapu(k)))
   end do
   call end_sync(ke(1))
-  bfricu=bf*(Ax(ke(1))/(4.0d-4))*u(1)%bz
+  bfricu=bf*sqrt(Ax(ke(1))/umax)**bfricpoly*u(1)%bz
   call tend_u(n)
   do k=1,nz
    call end_sync(lapu(k))
@@ -402,7 +402,7 @@ program sw
    smagv(k)=-Ay(smag(k))*(sGxx(lapv(k))+sGyy(lapv(k)))
   end do
   call end_sync(ke(1))
-  bfricv=bf*(Ay(ke(1))/(4.0d-4))*v(1)%bz
+  bfricv=bf*sqrt(Ay(ke(1))/umax)**bfricpoly*v(1)%bz
   call tend_v(n)
 
 
