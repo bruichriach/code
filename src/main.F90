@@ -230,8 +230,8 @@ program sw
  do k=0,nz
   d(k)=mind(k)
  end do
- d(1)=d(1)%bz+(0.125d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**2,0.0d0) - &
-            max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**2,0.0d0))
+! d(1)=d(1)%bz+(0.125d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**2,0.0d0) - &
+!            max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**2,0.0d0))
  call mont(mind,minm)
  do k=1,nz
   h(k)=d(k)-d(k-1)
