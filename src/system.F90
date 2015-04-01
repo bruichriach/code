@@ -8,7 +8,7 @@ module parallel
 include 'mpif.h'
  
  integer, parameter :: max_core=24
- integer, parameter :: ens_num=2
+ integer, parameter :: ens_num=1
  integer, parameter :: proc_master=0
  integer :: proc_name, proc_num
  integer :: ens_name, ens_images, ens_master
