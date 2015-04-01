@@ -136,7 +136,8 @@ module llist_ops
    stochwind%rand(6)=0.25d0*y0*(stochwind%rand(6))
    stochwind%rand(2)=(1.5d0+(x0/4.0d0-1.5d0)*(stochwind%rand(2)))
    r_u=sqrt(x_dist(utau,lim(stochwind%rand(3)+stochwind%rand(5),x0))**2 + &
-            y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0))**2)
+            y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    stochwind%u=-stochwind%rand(1)*merge(0.0d0,  &
           y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0))/(r_u*stochwind%rand(2)),r_u == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_u))*(1.0d0-exp(-r_u**2))*exp(-r_u**2/2.0d0)*    &
@@ -146,7 +147,8 @@ module llist_ops
           abs(y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0)))))**2/0.25d0))   
           
    r_u=sqrt(x_dist(utau,lim(stochwind%rand(3)-stochwind%rand(5),x0))**2 + &
-            y_dist(utau,lim(stochwind%rand(4)-stochwind%rand(6),y0))**2)
+            y_dist(utau,lim(stochwind%rand(4)-stochwind%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    stochwind%u= stochwind%u%bz+stochwind%rand(1)*merge(0.0d0,  &
           y_dist(utau,lim(stochwind%rand(4)-stochwind%rand(6),y0))/(r_u*stochwind%rand(2)),r_u == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_u))*(1.0d0-exp(-r_u**2))*exp(-r_u**2/2.0d0)*    &
@@ -157,7 +159,8 @@ module llist_ops
                       
                       
    r_v=sqrt(x_dist(vtau,lim(stochwind%rand(3)+stochwind%rand(5),x0))**2 + &
-            y_dist(vtau,lim(stochwind%rand(4)+stochwind%rand(6),y0))**2)
+            y_dist(vtau,lim(stochwind%rand(4)+stochwind%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    stochwind%v=stochwind%rand(1)*merge(0.0d0,  &
           x_dist(vtau,lim(stochwind%rand(3)+stochwind%rand(5),x0))/(r_v*stochwind%rand(2)),r_v == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_v))*(1.0d0-exp(-r_v**2))*exp(-r_v**2/2.0d0)*    &
@@ -167,7 +170,8 @@ module llist_ops
           abs(y_dist(vtau,lim(stochwind%rand(4)+stochwind%rand(6),y0)))))**2/0.25d0))   
           
    r_v=sqrt(x_dist(vtau,lim(stochwind%rand(3)-stochwind%rand(5),x0))**2 + &
-            y_dist(vtau,lim(stochwind%rand(4)-stochwind%rand(6),y0))**2)
+            y_dist(vtau,lim(stochwind%rand(4)-stochwind%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    stochwind%v= stochwind%v%bz-stochwind%rand(1)*merge(0.0d0,  &
           x_dist(vtau,lim(stochwind%rand(3)-stochwind%rand(5),x0))/(r_v*stochwind%rand(2)),r_v == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_v))*(1.0d0-exp(-r_v**2))*exp(-r_v**2/2.0d0)*    &
@@ -349,7 +353,8 @@ module llist_ops
     call create_field(linkedlist%v,.false.)
    
    r_u=sqrt(x_dist(utau,lim(linkedlist%rand(3)+linkedlist%rand(5),x0))**2 + &
-            y_dist(utau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))**2)
+            y_dist(utau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    linkedlist%u=-linkedlist%rand(1)*merge(0.0d0,  &
           y_dist(utau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))/(r_u*linkedlist%rand(2)),r_u == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_u))*(1.0d0-exp(-r_u**2))*exp(-r_u**2/2.0d0)*    &
@@ -359,7 +364,8 @@ module llist_ops
           abs(y_dist(utau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0)))))**2/0.25d0))   
           
    r_u=sqrt(x_dist(utau,lim(linkedlist%rand(3)-linkedlist%rand(5),x0))**2 + &
-            y_dist(utau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))**2)
+            y_dist(utau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    linkedlist%u= linkedlist%u%bz+linkedlist%rand(1)*merge(0.0d0,  &
           y_dist(utau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))/(r_u*linkedlist%rand(2)),r_u == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_u))*(1.0d0-exp(-r_u**2))*exp(-r_u**2/2.0d0)*    &
@@ -370,7 +376,8 @@ module llist_ops
                       
                       
    r_v=sqrt(x_dist(vtau,lim(linkedlist%rand(3)+linkedlist%rand(5),x0))**2 + &
-            y_dist(vtau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))**2)
+            y_dist(vtau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    linkedlist%v=linkedlist%rand(1)*merge(0.0d0,  &
           x_dist(vtau,lim(linkedlist%rand(3)+linkedlist%rand(5),x0))/(r_v*linkedlist%rand(2)),r_v == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_v))*(1.0d0-exp(-r_v**2))*exp(-r_v**2/2.0d0)*    &
@@ -380,7 +387,8 @@ module llist_ops
           abs(y_dist(vtau,lim(linkedlist%rand(4)+linkedlist%rand(6),y0)))))**2/0.25d0))   
           
    r_v=sqrt(x_dist(vtau,lim(linkedlist%rand(3)-linkedlist%rand(5),x0))**2 + &
-            y_dist(vtau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))**2)
+            y_dist(vtau,lim(linkedlist%rand(4)-linkedlist%rand(6),y0))**2)   &
+            /stochwind%rand(2)
    linkedlist%v= linkedlist%v%bz-linkedlist%rand(1)*merge(0.0d0,  &
           x_dist(vtau,lim(linkedlist%rand(3)-linkedlist%rand(5),x0))/(r_v*linkedlist%rand(2)),r_v == 0.0d0)    &
           *(1.0d0/(2.0d0*pi*r_v))*(1.0d0-exp(-r_v**2))*exp(-r_v**2/2.0d0)*    &
