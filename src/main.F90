@@ -48,6 +48,8 @@ program sw
  
  call create_field(d,'d',.true.,0)
  call create_field(mind,.false.,0)
+ call create_field(d_u,'d',.true.,0)
+ call create_field(d_v,'d',.true.,0)
  
  call create_field(h,'h',.true.,1)
  call create_field(u,'u',.true.,1)
@@ -144,6 +146,16 @@ program sw
  
  call create_field(s_hm_x_u,'s_hm_x_u',.false.,1)
  call create_field(s_hm_y_v,'s_hm_y_v',.false.,1)
+ 
+ call create_field(s_up_dm_x_u,'s_up_dm_x_u',.false.,1)
+ call create_field(s_up_dm_y_v,'s_up_dm_y_v',.false.,1)
+ 
+ call create_field(s_dn_dm_x_u,'s_dn_dm_x_u',.false.,1)
+ call create_field(s_dn_dm_y_v,'s_dn_dm_y_v',.false.,1)
+ 
+ call create_field(s_dd_h,'s_dd_h',.false.,0)
+ 
+ call create_field(s_d_h,'s_d_h',.false.,0)
  
  call create_field(s_m_h,'s_m_h',.false.,1)
  
@@ -249,7 +261,7 @@ program sw
 
 
  
- call depth(h,s,d)
+ call depth(h,s%bz,d)
  call mont(d,m)
  do k=1,nz
   call start_sync(m(k))
@@ -286,7 +298,7 @@ program sw
  
  call write_main('in')
  
- call depth(h,s,d)
+ call depth(h,s%bz,d)
  call mont(d,m)
  do k=1,nz
   call start_sync(m(k))
@@ -339,6 +351,8 @@ program sw
   do k=1,nz
    call end_sync(h_u(k))
    call end_sync(h_v(k))
+   call depth(h_u,Ax(s),d_u)
+   call depth(h_v,Ay(s),d_v)
    h_z(k)=0.5d0*(Ay(h_u(k))+Ax(h_v(k)))
    zeta(k)%bz=Gx(v(k))-Gy(u(k))
    q(k)=(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
@@ -578,7 +592,7 @@ program sw
   
   
     
-  call depth(h,s,d)
+  call depth(h,s%bz,d)
   
   call mont(d,m)
   

@@ -946,18 +946,53 @@ module operations
  
  implicit none
  
+ interface depth
+  module procedure :: h_depth, u_depth, v_depth
+ end interface
+ 
  contains
  
- subroutine depth(h,s,d)
+ subroutine h_depth(h,s,d)
   use params
   
-  type(hvar), intent(in) :: h(1:nz), s
+  type(hvar), intent(in) :: h(1:nz)
+  real(kind = db), intent(in) :: s(1:h(1)%p%nx,1:h(1)%p%ny)
   type(hvar), intent(inout) :: d(0:nz)
   integer :: k
   
   d(0)=s
   do k=1,nz
    d(k)=d(k-1)+h(k)
+  end do
+  
+ end subroutine
+ 
+ subroutine u_depth(h,s,d)
+  use params
+  
+  type(uvar), intent(in) :: h(1:nz)
+  real(kind = db), intent(in) :: s(1:h(1)%p%nx,1:h(1)%p%ny)
+  type(uvar), intent(inout) :: d(0:nz)
+  integer :: k
+  
+  d(0)=s
+  do k=1,nz
+   d(k)%bz=d(k-1)%bz+h(k)%bz
+  end do
+  
+ end subroutine
+ 
+ subroutine v_depth(h,s,d)
+  use params
+  
+  type(vvar), intent(in) :: h(1:nz)
+  real(kind = db), intent(in) :: s(1:h(1)%p%nx,1:h(1)%p%ny)
+  type(vvar), intent(inout) :: d(0:nz)
+  integer :: k
+  
+  d(0)=s
+  do k=1,nz
+   d(k)%bz=d(k-1)%bz+h(k)%bz
   end do
   
  end subroutine

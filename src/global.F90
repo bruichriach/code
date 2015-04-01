@@ -100,6 +100,8 @@ module variables
  
  type(hvar), allocatable :: d(:)
  type(hvar), allocatable :: mind(:)
+ type(uvar), allocatable :: d_u(:)
+ type(vvar), allocatable :: d_v(:)
  
  type(hvar), allocatable :: h(:)
  type(uvar), allocatable :: u(:)
@@ -189,6 +191,16 @@ module variables
  
  type(uvar), allocatable :: s_hm_x_u(:)
  type(vvar), allocatable :: s_hm_y_v(:)
+ 
+ type(uvar), allocatable :: s_up_dm_x_u(:)
+ type(vvar), allocatable :: s_up_dm_y_v(:)
+ 
+ type(uvar), allocatable :: s_dn_dm_x_u(:)
+ type(vvar), allocatable :: s_dn_dm_y_v(:)
+ 
+ type(hvar), allocatable :: s_dd_h(:)
+ 
+ type(hvar), allocatable :: s_d_h(:)
  
  type(hvar), allocatable :: s_m_h(:)
  

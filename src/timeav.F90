@@ -116,7 +116,7 @@ module timeav
    do k=1,nz
     s_huv_vz(k)=s_huv_vz(k)%bz+Ay(u(k))*Ax(hv(k))
    end do
-   
+      
    do k=1,nz
     s_hm_x_u(k)=s_hm_x_u(k)%bz+h_u(k)%bz*(-Gx(pres)+Gx(m(k)))
    end do
@@ -125,6 +125,30 @@ module timeav
     s_hm_y_v(k)=s_hm_y_v(k)%bz+h_v(k)%bz*(-Gy(pres)+Gy(m(k)))
    end do
    
+   do k=1,nz
+    s_up_dm_x_u(k)=s_up_dm_x_u(k)%bz+d_u(k)%bz*(-Gx(pres)+Gx(m(k)))
+   end do
+   
+   do k=1,nz
+    s_up_dm_y_v(k)=s_up_dm_y_v(k)%bz+d_v(k)%bz*(-Gy(pres)+Gy(m(k)))
+   end do
+   
+   do k=1,nz
+    s_dn_dm_x_u(k)=s_dn_dm_x_u(k)%bz+d_u(k-1)%bz*(-Gx(pres)+Gx(m(k)))
+   end do
+   
+   do k=1,nz
+    s_dn_dm_y_v(k)=s_dn_dm_y_v(k)%bz+d_v(k-1)%bz*(-Gy(pres)+Gy(m(k)))
+   end do
+   
+   do k=0,nz
+    s_dd_h(k)=s_dd_h(k)%bz+d(k)%bz**2
+   end do
+   
+   do k=0,nz
+    s_d_h(k)=s_d_h(k)%bz+d(k)%bz
+   end do
+      
    do k=1,nz
     s_m_h(k)=s_m_h(k)%bz-pres%bz+m(k)%bz
    end do
@@ -409,6 +433,30 @@ module timeav
    end do
    
    do k=1,nz
+    call write_timemean(s_up_dm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_up_dm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_dn_dm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_dn_dm_y_v(k))
+   end do
+   
+   do k=0,nz
+    call write_timemean(s_dd_h(k))
+   end do
+   
+   do k=0,nz
+    call write_timemean(s_d_h(k))
+   end do
+      
+   do k=1,nz
     call write_timemean(s_m_h(k))
    end do
 
@@ -672,6 +720,30 @@ module timeav
    
    do k=1,nz
     call read_timemean(s_hm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_up_dm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_up_dm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_dn_dm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_dn_dm_y_v(k))
+   end do
+   
+   do k=0,nz
+    call read_timemean(s_dd_h(k))
+   end do
+   
+   do k=0,nz
+    call read_timemean(s_d_h(k))
    end do
    
    do k=1,nz
