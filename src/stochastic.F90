@@ -108,6 +108,7 @@ module llist_ops
   use grid_operate
   use grid
   use allocation
+  use parallel
  
   implicit none
   
@@ -121,7 +122,7 @@ module llist_ops
    end do
    call remove_link(stochwind)
   end if
-  if (mod(n,ceiling(1.0d0*8.64d4/(dt/f0))) == 0.0d0) then
+  if (mod(n,ceiling((2.0d0**ens_name)/dt)) == 0.0d0) then
    call create_link(stochwind)
    call create_field(stochwind%u,.false.)
    call create_field(stochwind%v,.false.)
@@ -185,27 +186,29 @@ module llist_ops
 
   utau%bz=0.0d0
   vtau%bz=0.0d0
-  call step_link(stochwind,dt)
-  utau%bz=utau%bz+   &
-        sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
-        stochwind%u%bz
-  vtau%bz=vtau%bz+   &
-        sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
-        stochwind%v%bz
-!  print *, ceiling(stochwind%rand), ceiling(stochwind%timenow), &
-!        ceiling(stochwind%timeend)
-  do while (.not.(stochwind%last))
+  if (associated(stochwind)) then
    call step_link(stochwind,dt)
    utau%bz=utau%bz+   &
-        sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
-        stochwind%u%bz
+         sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
+         stochwind%u%bz
    vtau%bz=vtau%bz+   &
-        sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
-        stochwind%v%bz
+         sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
+         stochwind%v%bz
+!  print *, ceiling(stochwind%rand), ceiling(stochwind%timenow), &
+!        ceiling(stochwind%timeend)
+   do while (.not.(stochwind%last))
+    call step_link(stochwind,dt)
+    utau%bz=utau%bz+   &
+         sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
+         stochwind%u%bz
+    vtau%bz=vtau%bz+   &
+         sin(min(2.0d0*pi,2.0d0*pi*stochwind%timenow/stochwind%timeend))*   &
+         stochwind%v%bz
 !   print *, ceiling(stochwind%rand), ceiling(stochwind%timenow), &
 !        ceiling(stochwind%timeend)
-  end do
-  
+   end do
+  end if  
+
  end subroutine
   
   
