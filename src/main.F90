@@ -27,13 +27,9 @@ program sw
   
   call mpi_init(stat)
   
-  call mpi_comm_rank(mpi_comm_world, proc_name, stat)
-  call mpi_comm_size(mpi_comm_world, proc_num, stat)
+  call init_parallel()
   
-  ens_images = proc_num/ens_num
-  ens_name = proc_name/ens_images
-  ens_master = ens_name*ens_images
-
+  
   call init_params()
   call mpi_barrier(mpi_comm_world,stat)
   if (proc_name == proc_master) call write_params()

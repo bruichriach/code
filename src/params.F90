@@ -205,110 +205,110 @@ module params
     select case (desc)
     
      case ('x-direction grid spaces')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(i4)"
       read(10,format,iostat=endoffile,advance='YES') mx
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', mx
       
      case ('y-direction grid spaces')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(i4)"
       read(10,format,iostat=endoffile,advance='YES') my
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', my
       
      case ('z-direction # of layers')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(i4)"
       read(10,format,iostat=endoffile,advance='YES') nz
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', nz
       
      case ('x-direction grid width')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') dx
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', dx
       
      case ('y-direction grid width')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') dy
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', dy
       
      case ('no slip')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(l3)"
       read(10,format,iostat=endoffile,advance='YES') noslip
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', noslip
       
      case ('planetary rotational frequency')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') omega
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', omega
       
      case ('gravitational acceleration')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') g
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', g
       
      case ('reduced gravitational accel')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       write(format,"(a1,i1,a7)") '(',ubound(gp,1)-lbound(gp,1)+1,'e23.16)'
       read(10,format,iostat=endoffile,advance='YES')  (gp(ii) , ii=lbound(gp,1),ubound(gp,1))
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', gp
       
      case ('dimensional coriolis')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') f0
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', f0
       
      case ('dimensional depth')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') h0
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', h0
       
      case ('dimensional deformation radius')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') ld
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', ld
       
      case ('timestep')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') dt
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', dt
       
      case ('runtime')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') total_time
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', total_time
       
      case ('writetime')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') write_time
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', write_time
       
      case ('bottom friction')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') bf
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', bf
 
      case ('bottom friction velocity')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') umax
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', umax
 
      case ('bottom friction polynomial')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(i4)"
       read(10,format,iostat=endoffile,advance='YES') bfricpoly
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', bfricpoly
  
      case ('wind stress')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') tau
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', tau
       
      case ('viscosity')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(e23.16)"
-      read(10,format,iostat=endoffile,advance='YES') cvar     
+      read(10,format,iostat=endoffile,advance='YES') cvar   
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', cvar  
       
 #ifdef DO_TIME_AVERAGE
      case ('initial time sum itereation')
-      if (proc_name == proc_master) print *, 'Reading record: ', desc
       format="(i16)"
       read(10,format,iostat=endoffile,advance='YES') timeav_count
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', timeav_count
 #endif
       
      case default

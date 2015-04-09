@@ -1,32 +1,3 @@
-module parallel
-
-#include "include.h"
-
- 
- implicit none
-
-include 'mpif.h'
- 
- integer :: max_core=24
- integer :: ens_num=1
- integer :: proc_master=0
- integer :: proc_name, proc_num
- integer :: ens_name, ens_images, ens_master
- integer :: max_tag=0
- integer :: mobile_tag=0
- integer, allocatable :: proc_grid(:,:)
-#ifdef DOUBLE_PRECISION
- integer :: mpi_precision=mpi_double_precision
-#else
- integer ::  mpi_precision=mpi_real
-#endif
- 
- 
-end module
-
-
-
-
 
 
 module sys
@@ -192,6 +163,111 @@ module sys
 
 end module
 
+
+
+module parallel
+
+#include "include.h"
+
+ 
+ implicit none
+
+include 'mpif.h'
+ 
+ integer :: max_core=24
+ integer :: ens_num=1
+ integer :: proc_master=0
+ integer :: proc_name, proc_num
+ integer :: ens_name, ens_images, ens_master
+ integer :: max_tag=0
+ integer :: mobile_tag=0
+ integer, allocatable :: proc_grid(:,:)
+#ifdef DOUBLE_PRECISION
+ integer :: mpi_precision=mpi_double_precision
+#else
+ integer ::  mpi_precision=mpi_real
+#endif
+
+ contains
+ 
+ 
+ subroutine init_parallel()
+  use sys
+ 
+  implicit none
+  
+  character(32) :: desc
+  character(1) :: colon
+  logical :: file_exist
+  integer :: endoffile
+
+
+  proc_master=0
+  call mpi_comm_rank(mpi_comm_world, proc_name, stat)
+  call mpi_comm_size(mpi_comm_world, proc_num, stat)
+
+  max_tag=0
+  mobile_tag=0
+ 
+  max_core=24
+  ens_num=1
+#ifdef DOUBLE_PRECISION
+  mpi_precision=mpi_double_precision
+#else
+  mpi_precision=mpi_real
+#endif
+ 
+  ens_images = proc_num/ens_num
+  ens_name = proc_name/ens_images
+  ens_master = ens_name*ens_images
+
+  
+  inquire( file='parallel.txt', exist=file_exist)
+    
+  if (file_exist) then
+   open(unit=10,action='read',file='parallel.txt',   &
+        status='unknown',form='formatted')
+   read(10,"(a32,a1)",iostat=endoffile,advance='NO') desc, colon 
+   do while (endoffile /= -1)
+    select case (desc)
+    
+     case ('maximum cores per node')
+      format="(i4)"
+      read(10,format,iostat=endoffile,advance='YES') max_core
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', max_core
+    
+     case ('number of ensemble members')
+      format="(i4)"
+      read(10,format,iostat=endoffile,advance='YES') ens_num
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', ens_num
+      
+     case default
+      if (proc_name == proc_master) print *, 'No param for record: ', desc
+      read(10,"(a1)",iostat=endoffile,advance='YES')
+      endoffile=0
+      
+
+      
+    end select
+    if (endoffile == -2) then
+     if (proc_name == proc_master) print *, 'Read error for record: ', desc
+    end if
+    read(10,"(a32,a1)",iostat=endoffile,advance='NO') desc, colon
+   end do
+   close(10)
+   
+   
+ 
+   ens_images = proc_num/ens_num
+   ens_name = proc_name/ens_images
+   ens_master = ens_name*ens_images
+
+  end if
+  
+ end subroutine
+ 
+ 
+end module
 
 
 
