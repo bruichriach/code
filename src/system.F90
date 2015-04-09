@@ -7,18 +7,18 @@ module parallel
 
 include 'mpif.h'
  
- integer, parameter :: max_core=24
- integer, parameter :: ens_num=16
- integer, parameter :: proc_master=0
+ integer :: max_core=24
+ integer :: ens_num=1
+ integer :: proc_master=0
  integer :: proc_name, proc_num
  integer :: ens_name, ens_images, ens_master
  integer :: max_tag=0
  integer :: mobile_tag=0
  integer, allocatable :: proc_grid(:,:)
 #ifdef DOUBLE_PRECISION
- integer, parameter :: mpi_precision=mpi_double_precision
+ integer :: mpi_precision=mpi_double_precision
 #else
- integer, parameter ::  mpi_precision=mpi_real
+ integer ::  mpi_precision=mpi_real
 #endif
  
  
