@@ -11,11 +11,11 @@ dimensional coriolis            : 0.1366727515784050E-03
 dimensional depth               : 0.1000000000000000E+04
 dimensional deformation radius  : 0.2313758685361856E+05
 timestep                        : 0.2236067977499790E-01
-runtime                         : 0.5000000000000000E+06
+runtime                         : 0.5000000000000000E+05
 writetime                       : 0.1000000000000000E+03
 bottom friction                 : 0.2000000000000000E-01
 bottom friction velocity        : 0.2000000000000000E-01
 bottom friction polynomial      :   2
 wind stress                     : 0.4000000000000000E-03
 viscosity                       : 0.1013211836423378E+00
-initial time sum itereation     :               0
+initial time sum itereation     :         6708207
