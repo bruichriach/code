@@ -122,11 +122,11 @@ module llist_ops
    end do
    call remove_link(stochwind)
   end if
-  if (mod(n,ceiling((4.0d0*2.0d0**(ens_name/25))/dt)) == 0.0d0) then
+  if (mod(n,ceiling(16.0d0/dt)) == 0.0d0) then
    call create_link(stochwind)
    call create_field(stochwind%u,.false.)
    call create_field(stochwind%v,.false.)
-   stochwind%timeend=10.0d0*(1.0d0+2.0d0*stochwind%timeend)*2.0d0**(mod(ens_name/5,5))
+   stochwind%timeend=80.0d0*(1.0d0+2.0d0*stochwind%timeend)
    stochwind%rand(1)=sign(tau*0.5d0,stochwind%rand(1))+  &
               tau*0.5d0*(stochwind%rand(1))*2.0d0**(mod(ens_name,5))
    stochwind%rand(3)=x0*(stochwind%rand(3))

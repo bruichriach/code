@@ -16,6 +16,6 @@ writetime                       : 0.1000000000000000E+03
 bottom friction                 : 0.2000000000000000E-01
 bottom friction velocity        : 0.2000000000000000E-01
 bottom friction polynomial      :   2
-wind stress                     : 0.4000000000000000E-03
+wind stress                     : 0.1000000000000000E-03
 viscosity                       : 0.1013211836423378E+00
 initial time sum itereation     :         6708207
