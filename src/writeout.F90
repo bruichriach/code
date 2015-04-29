@@ -353,6 +353,8 @@ MODULE writeout
   
   call init_var_write(utau)
   call init_var_write(vtau)
+  call init_var_write(bfricu)
+  call init_var_write(bfricv)
 #ifdef ALLOW_RIGID_LID
   call init_var_write(pres)
 #endif
@@ -385,7 +387,7 @@ MODULE writeout
   implicit none
   
   integer, intent(in) :: num
-  character(32) :: filename
+  character(32) :: filename, desc
   integer :: i
   logical :: dir_e
   
@@ -411,6 +413,8 @@ MODULE writeout
    write (filename, "(a5,i4.4,a1,i4.4)") 'data/', ens_name, '/', num
    call end_var_write(utau,filename,0)
    call end_var_write(vtau,filename,0)
+    call end_var_write(bfricu,filename,0)
+    call end_var_write(bfricv,filename,0)
 #ifdef ALLOW_RIGID_LID
    call end_var_write(pres,filename,0)
 #endif
@@ -431,6 +435,33 @@ MODULE writeout
     call end_var_write(zeta(i),filename,0)
    
    end do
+   
+   open(unit=10,file=trim(filename)//'/params.txt',status='unknown',form='formatted')
+   
+   write(desc,"(a32)") 'wind energy flux'
+   format="(a32,a1,e23.16)"
+   write(10,format) adjustl(desc), ':', sum(0.5d0*(utau%out%z(1:mx,1:my)*u(3)%out%z(1:mx,1:my)+ &
+              utau%out%z(2:mx+1,1:my)*u(3)%out%z(2:mx+1,1:my))+  &
+              0.5d0*(vtau%out%z(1:mx,1:my)*v(3)%out%z(1:mx,1:my)+  &
+              vtau%out%z(1:mx,2:my+1)*v(3)%out%z(1:mx,2:my+1)))
+   
+   write(desc,"(a32)") 'bottom friction energy flux'
+   format="(a32,a1,e23.16)"
+   write(10,format) adjustl(desc), ':', -sum(0.5d0*(bfricu%out%z(1:mx,1:my)*u(1)%out%z(1:mx,1:my)+ &
+              bfricu%out%z(2:mx+1,1:my)*u(1)%out%z(2:mx+1,1:my))+  &
+              0.5d0*(bfricv%out%z(1:mx,1:my)*v(1)%out%z(1:mx,1:my)+  &
+              bfricv%out%z(1:mx,2:my+1)*v(1)%out%z(1:mx,2:my+1)))
+   
+   do i=1,nz
+    write(desc,"(a31,i1)") 'smagorisky energy flux, layer ', i
+    format="(a32,a1,e23.16)"
+    write(10,format) adjustl(desc), ':', sum(0.5d0*(smagu(i)%out%z(1:mx,1:my)*u(i)%out%z(1:mx,1:my)+ &
+              smagu(i)%out%z(2:mx+1,1:my)*u(i)%out%z(2:mx+1,1:my))+  &
+              0.5d0*(smagv(i)%out%z(1:mx,1:my)*v(i)%out%z(1:mx,1:my)+  &
+              smagv(i)%out%z(1:mx,2:my+1)*v(i)%out%z(1:mx,2:my+1)))
+   end do
+              
+   close(10)
   end if
   
  end subroutine
