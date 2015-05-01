@@ -455,11 +455,16 @@ MODULE writeout
    do i=1,nz
     write(desc,"(a31,i1)") 'smagorisky energy flux, layer ', i
     format="(a32,a1,e23.16)"
-    write(10,format) adjustl(desc), ':', sum(0.5d0*(smagu(i)%out%z(1:mx,1:my)*u(i)%out%z(1:mx,1:my)+ &
+    write(10,format) adjustl(desc), ':', sum(h(i)%out%z(1:mx,1:my)*(&
+              0.5d0*(smagu(i)%out%z(1:mx,1:my)*u(i)%out%z(1:mx,1:my)+ &
               smagu(i)%out%z(2:mx+1,1:my)*u(i)%out%z(2:mx+1,1:my))+  &
               0.5d0*(smagv(i)%out%z(1:mx,1:my)*v(i)%out%z(1:mx,1:my)+  &
-              smagv(i)%out%z(1:mx,2:my+1)*v(i)%out%z(1:mx,2:my+1)))
+              smagv(i)%out%z(1:mx,2:my+1)*v(i)%out%z(1:mx,2:my+1))))
    end do
+   
+   write(desc,"(a32)") 'minimum layer thickness'
+   format="(a32,a1,e23.16)"
+   write(10,format) adjustl(desc), ':', min(minval(h(i)%out%z(1:mx,1:my)), i=1,nz)
               
    close(10)
   end if
