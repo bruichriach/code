@@ -202,10 +202,10 @@ module solver
    
    else
    
-    if (proc_name == ens_master) then
-     print *, 'exact solve'
-     print *, ens_name
-    end if
+!    if (proc_name == ens_master) then
+!     print *, 'exact solve'
+!     print *, ens_name
+!    end if
    
     call start_sync(pres)
 
