@@ -134,11 +134,27 @@ module timeav
    end do
    
    do k=1,nz
+    s_up_du_u(k)=s_up_du_u(k)%bz+d_u(k)%bz*u(k)%bz
+   end do
+   
+   do k=1,nz
+    s_up_dv_v(k)=s_up_dv_v(k)%bz+d_v(k)%bz*v(k)%bz
+   end do
+   
+   do k=1,nz
     s_dn_dm_x_u(k)=s_dn_dm_x_u(k)%bz+d_u(k-1)%bz*(-Gx(pres)+Gx(m(k)))
    end do
    
    do k=1,nz
     s_dn_dm_y_v(k)=s_dn_dm_y_v(k)%bz+d_v(k-1)%bz*(-Gy(pres)+Gy(m(k)))
+   end do
+   
+   do k=1,nz
+    s_dn_du_u(k)=s_dn_du_u(k)%bz+d_u(k-1)%bz*u(k)%bz
+   end do
+   
+   do k=1,nz
+    s_dn_dv_v(k)=s_dn_dv_v(k)%bz+d_v(k-1)%bz*v(k)%bz
    end do
    
    do k=0,nz
@@ -441,11 +457,27 @@ module timeav
    end do
    
    do k=1,nz
+    call write_timemean(s_up_du_u(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_up_dv_v(k))
+   end do
+   
+   do k=1,nz
     call write_timemean(s_dn_dm_x_u(k))
    end do
    
    do k=1,nz
     call write_timemean(s_dn_dm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_dn_du_u(k))
+   end do
+   
+   do k=1,nz
+    call write_timemean(s_dn_dv_v(k))
    end do
    
    do k=0,nz
@@ -731,11 +763,27 @@ module timeav
    end do
    
    do k=1,nz
+    call read_timemean(s_up_du_u(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_up_dv_v(k))
+   end do
+   
+   do k=1,nz
     call read_timemean(s_dn_dm_x_u(k))
    end do
    
    do k=1,nz
     call read_timemean(s_dn_dm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_dn_du_u(k))
+   end do
+   
+   do k=1,nz
+    call read_timemean(s_dn_dv_v(k))
    end do
    
    do k=0,nz

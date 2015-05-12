@@ -146,8 +146,14 @@ program sw
  call create_field(s_up_dm_x_u,'s_up_dm_x_u',.false.,1)
  call create_field(s_up_dm_y_v,'s_up_dm_y_v',.false.,1)
  
+ call create_field(s_up_du_u,'s_up_du_u',.false.,1)
+ call create_field(s_up_dv_v,'s_up_dv_v',.false.,1)
+ 
  call create_field(s_dn_dm_x_u,'s_dn_dm_x_u',.false.,1)
  call create_field(s_dn_dm_y_v,'s_dn_dm_y_v',.false.,1)
+ 
+ call create_field(s_dn_du_u,'s_dn_du_u',.false.,1)
+ call create_field(s_dn_dv_v,'s_dn_dv_v',.false.,1)
  
  call create_field(s_dd_h,'s_dd_h',.false.,0)
  

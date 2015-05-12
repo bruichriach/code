@@ -198,6 +198,12 @@ module variables
  type(uvar), allocatable :: s_dn_dm_x_u(:)
  type(vvar), allocatable :: s_dn_dm_y_v(:)
  
+ type(uvar), allocatable :: s_up_du_u(:)
+ type(vvar), allocatable :: s_up_dv_v(:)
+ 
+ type(uvar), allocatable :: s_dn_du_u(:)
+ type(vvar), allocatable :: s_dn_dv_v(:)
+ 
  type(hvar), allocatable :: s_dd_h(:)
  
  type(hvar), allocatable :: s_d_h(:)
