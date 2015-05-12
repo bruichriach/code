@@ -128,7 +128,7 @@ module llist_ops
    call create_field(stochwind%v,.false.)
    stochwind%timeend=80.0d0*(1.0d0+2.0d0*stochwind%timeend)
    stochwind%rand(1)=sign(tau*0.5d0,stochwind%rand(1))+  &
-              tau*0.5d0*(stochwind%rand(1))*2.0d0**(ens_name)
+              tau*0.5d0*(stochwind%rand(1))!*2.0d0**(ens_name)
    stochwind%rand(3)=x0*(stochwind%rand(3))
    stochwind%rand(4)=y0*(stochwind%rand(4))
    stochwind%rand(5)=2.0d0*(stochwind%rand(5)-0.5d0)
