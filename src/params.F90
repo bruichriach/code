@@ -15,7 +15,9 @@ module params
 #else
  real(kind=db) :: x0, y0
 #endif
- 
+
+ integer :: seed, seed_size
+ integer, allocatable :: put_seed(:) 
  
  integer :: lx, ly, nx, ny, north, south, east, west
  
@@ -303,6 +305,12 @@ module params
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') cvar   
       if (proc_name == proc_master) print *, 'Reading record: ', desc//':', cvar  
+
+     case ('random seed')
+      format="(i16)"
+      read(10,format,iostat=endoffile,advance='YES') cvar
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', seed
+
       
 #ifdef DO_TIME_AVERAGE
      case ('initial time sum itereation')
@@ -357,6 +365,10 @@ module params
 #endif
 #endif
 
+  call random_seed(SIZE=seed_size)
+  allocate(put_seed(seed_size))
+  put_seed = seed + 37 * (/ (ii - 1, ii = 1, seed_size) /)
+  call random_seed(PUT=put_seed)
 
 #ifdef DO_TIME_AVERAGE 
   nsteps=floor(write_time/average_time)
@@ -465,6 +477,10 @@ module params
   desc='viscosity'
   format="(a32,a1,e23.16)"
   write(10,format) desc, ':', cvar
+
+  desc='random seed'
+  format="(a32,a1,i16)"
+  write(10,format) desc, ':', seed
 
 #ifdef DO_TIME_AVERAGE
   desc='initial time sum itereation'

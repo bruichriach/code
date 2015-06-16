@@ -18,4 +18,5 @@ bottom friction velocity        : 0.2000000000000000E-01
 bottom friction polynomial      :   2
 wind stress                     : 0.1000000000000000E-02
 viscosity                       : 0.1013211836423378E+00
-initial time sum itereation     :         1788858
+random seed                     :               0
+initial time sum itereation     :        10561868

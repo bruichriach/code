@@ -135,7 +135,7 @@ module llist_ops
    stochwind%rand(5)=0.25d0*x0*(stochwind%rand(5))
    stochwind%rand(6)=2.0d0*(stochwind%rand(6)-0.5d0)
    stochwind%rand(6)=0.25d0*y0*(stochwind%rand(6))
-   stochwind%rand(2)=(1.5d0+(x0/4.0d0-1.5d0)*(stochwind%rand(2)))
+   stochwind%rand(2)=(5.0d0+(x0/4.0d0-5.0d0)*(stochwind%rand(2)))
    r_u=sqrt(x_dist(utau,lim(stochwind%rand(3)+stochwind%rand(5),x0))**2 + &
             y_dist(utau,lim(stochwind%rand(4)+stochwind%rand(6),y0))**2)   &
             /stochwind%rand(2)

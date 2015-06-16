@@ -663,6 +663,8 @@ program sw
  end do
  
  call mpi_barrier(mpi_comm_world,stat)
+ call random_seed(GET=put_seed)
+ seed=put_seed(1)
  if (proc_name == proc_master) call write_params()
  
  
