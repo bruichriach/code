@@ -1,2 +1,2 @@
 maximum cores per node          :  24
-number of ensemble members      :   8
+number of ensemble members      :   1

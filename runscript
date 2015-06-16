@@ -1,17 +1,18 @@
 #!/bin/bash --login
-#PBS -N sc3lr
-#PBS -l select=8
+#PBS -N t3l
+#PBS -l select=1
 
 
-#PBS -l walltime=23:30:00
+#PBS -l walltime=47:30:00
+#PBS -q long
 
 
 #PBS -A n01-Marshall3
 
-export PBS_O_WORKDIR=$(readlink -f /work/n01/n01/forshaw/dat/sc3lr)
+export PBS_O_WORKDIR=$(readlink -f /work/n01/n01/forshaw/dat/t3l)
 
 
-cd /work/n01/n01/forshaw/dat/sc3lr
+cd /work/n01/n01/forshaw/dat/t3l
 
 export OMP_NUM_THREADS=1
 
@@ -24,6 +25,6 @@ export MPICH_ENV_DISPLAY=1
 
 #module add perftools
 
-aprun -n 192  -N 24 ./sw.out
+aprun -n 24  -N 24 ./sw.out
 
 #qsub copyscript

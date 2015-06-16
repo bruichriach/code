@@ -218,8 +218,8 @@ program sw
 #endif
  
  
- s=-1.0d0+(0.25d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**2,0.0d0) - &
-            max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**2,0.0d0))
+ s=-1.0d0+(0.25d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**8,0.0d0) - &
+            max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**8,0.0d0))
  call start_sync(s)
  
  utau=0.0d0

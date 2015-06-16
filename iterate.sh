@@ -17,5 +17,5 @@ cp -r out/* old
 mv data $(printf "%04u" $newdir)
 mv in $(printf "%04u" $newdir)
 mv out $(printf "%04u" $newdir)
-cp timemean $(printf "%04u" $newdir)
+cp -r timemean $(printf "%04u" $newdir)
 
