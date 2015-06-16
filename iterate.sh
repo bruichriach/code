@@ -18,4 +18,5 @@ mv data $(printf "%04u" $newdir)
 mv in $(printf "%04u" $newdir)
 mv out $(printf "%04u" $newdir)
 cp -r timemean $(printf "%04u" $newdir)
+cp params.txt $(printf "%04u" $newdir)
 
