@@ -308,7 +308,7 @@ module params
 
      case ('random seed')
       format="(i16)"
-      read(10,format,iostat=endoffile,advance='YES') cvar
+      read(10,format,iostat=endoffile,advance='YES') seed
       if (proc_name == proc_master) print *, 'Reading record: ', desc//':', seed
 
       
