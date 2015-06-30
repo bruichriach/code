@@ -34,7 +34,7 @@ program sw
   call mpi_barrier(mpi_comm_world,stat)
   if (proc_name == proc_master) call write_params()
    
-  call split_domain(mx, my, lx, nx, ly, ny, north, south, east, west)
+  call split_domain()
   
   call set_grids
   call init_write_grids

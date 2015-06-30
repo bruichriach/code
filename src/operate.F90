@@ -705,7 +705,7 @@ module grid_operate
    real(kind=db) :: x
    real(kind=db) :: p(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
    
-   p=lim(a%p%x-x,x0)
+   p=lim(a%p%x-x,x0,zona_loop)
    
   end function
   
@@ -721,7 +721,7 @@ module grid_operate
    real(kind=db) :: y
    real(kind=db) :: p(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny)
    
-   p=lim(a%p%y-y,y0)
+   p=lim(a%p%y-y,y0,meri_loop)
    
   end function
   

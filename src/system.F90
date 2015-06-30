@@ -15,6 +15,7 @@ module sys
  character(64) :: format
  real(kind=db), parameter :: unity=1.0d0
  real(kind=db), target :: null_field=1.0d99
+ logical :: meri_loop, zona_loop
 
  
  type use
@@ -52,20 +53,57 @@ module sys
  
   end function
  
-  elemental function lim(x,x0)
+  elemental function lim(x,x0,loop)
   
          implicit none
 
          real(kind=db), intent(in) :: x, x0
          real(kind=db) :: lim
-
+         logical, intent(in) :: loop
+         
          lim=x
-         do while ((lim < -x0/2.0d0).or.(lim > x0/2.0d0))
-          if (lim < -x0/2.0d0) lim=lim+x0
-          if (lim > x0/2.0d0) lim=lim-x0
-         end do
+         if (loop) then
+          do while ((lim < -x0/2.0d0).or.(lim > x0/2.0d0))
+           if (lim < -x0/2.0d0) lim=lim+x0
+           if (lim > x0/2.0d0) lim=lim-x0
+          end do
+         end if
 
   end function  
+ 
+  elemental function x_lim(x,x0) result (lim)
+  
+         implicit none
+
+         real(kind=db), intent(in) :: x, x0
+         real(kind=db) :: lim
+         
+         lim=x
+         if (zona_loop) then
+          do while ((lim < -x0/2.0d0).or.(lim > x0/2.0d0))
+           if (lim < -x0/2.0d0) lim=lim+x0
+           if (lim > x0/2.0d0) lim=lim-x0
+          end do
+         end if
+
+  end function 
+ 
+  elemental function y_lim(x,x0) result (lim)
+  
+         implicit none
+
+         real(kind=db), intent(in) :: x, x0
+         real(kind=db) :: lim
+         
+         lim=x
+         if (meri_loop) then
+          do while ((lim < -x0/2.0d0).or.(lim > x0/2.0d0))
+           if (lim < -x0/2.0d0) lim=lim+x0
+           if (lim > x0/2.0d0) lim=lim-x0
+          end do
+         end if
+
+  end function 
   
  
   function is_factor(m,n)
@@ -166,6 +204,7 @@ end module
 
 
 module parallel
+ use sys
 
 #include "include.h"
 
@@ -240,6 +279,16 @@ include 'mpif.h'
       format="(i4)"
       read(10,format,iostat=endoffile,advance='YES') ens_num
       if (proc_name == proc_master) print *, 'Reading record: ', desc//':', ens_num
+    
+     case ('meridonal reentrant')
+      format="(l3)"
+      read(10,format,iostat=endoffile,advance='YES') meri_loop
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', meri_loop
+    
+     case ('zonal reentrant')
+      format="(l3)"
+      read(10,format,iostat=endoffile,advance='YES') zona_loop
+      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', zona_loop
       
      case default
       if (proc_name == proc_master) print *, 'No param for record: ', desc

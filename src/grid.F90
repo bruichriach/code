@@ -8,18 +8,17 @@ module grid
  
  contains
  
-  subroutine split_domain(mx, my, lx, nx, ly, ny, north, south, east, west)
+  subroutine split_domain()
    use parallel
+   use params
    
    implicit none
       
    integer :: core_x, core_y, node_x, node_y
-   integer, intent(in) :: mx, my
    integer :: kx, ky, centre(2)
-   integer, intent(out) :: lx, ly, nx, ny
-   integer, intent(out) :: north, south, east, west
    integer :: core, node
    integer :: grid_core, grid_node
+   logical, allocatable :: ocean_mask(:,:), land_mask(:,:)
    integer, allocatable :: node_names(:,:), core_names(:,:), names(:,:)
    integer :: node_grid(mx,my)
    integer :: i, j, k, i1, j1
@@ -39,6 +38,11 @@ module grid
     grid_node = 1
     grid_core = ens_images
    end if
+   
+   allocate(ocean_mask(0:mx+1,0:my+1),land_mask(0:mx+1,0:my+1))
+   ocean_mask=.false.
+   ocean_mask(1:mx,1:my)=.true.
+   land_mask=.not.(ocean_mask)
    
    call split_axes(mx, my, grid_node, node_x, node_y)
    
@@ -106,8 +110,16 @@ module grid
    centre = minloc(abs(names(1:node_x*core_x,1:node_y*core_y)-proc_name))
    west=names(centre(1)-1,centre(2))
    east=names(centre(1)+1,centre(2))
+   if (.not.(meri_loop)) then
+    if (centre(1) == 1) west = -1
+    if (centre(1) == node_x*core_x) east = -1
+   end if
    north=names(centre(1),centre(2)+1)
    south=names(centre(1),centre(2)-1)
+   if (.not.(zona_loop)) then
+    if (centre(2) == 1) south = -1
+    if (centre(2) == node_y*core_y) north = -1
+   end if
    
 !   print *, proc_name, west, east, north, south
    

@@ -1,2 +1,4 @@
 maximum cores per node          :  24
 number of ensemble members      :   1
+meridonal reentrant             :  T
+zonal reentrant                 :  T
