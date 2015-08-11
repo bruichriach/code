@@ -122,7 +122,7 @@ module llist_ops
    end do
    call remove_link(stochwind)
   end if
-  if (mod(n,ceiling(2.0d0/dt)) == 0.0d0) then
+  if (mod(n,ceiling(8.0d0/dt)) == 0.0d0) then
    call create_link(stochwind)
    call create_field(stochwind%u,.false.)
    call create_field(stochwind%v,.false.)
