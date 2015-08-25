@@ -484,9 +484,11 @@ program sw
    end if
   end if
    
-  
+ 
   
    inty=0.0d0
+   thavx=0.0d0
+   thavy=0.0d0
    do k=1,nz
     call end_sync(h_tmp(k))
     y(k)=-Gx(u_tmp(k)%bz*Ax(h_tmp(k)))  &
@@ -507,8 +509,12 @@ program sw
       end if
      end if
     end if
+    thavx=thavx%bz+invrho(k)*Ax(h_tmp(k))
+    thavy=thavy%bz+invrho(k)*Ay(h_tmp(k))
    end do
-  
+   inthavx=merge(0.0d0,1.0d0/thavx%bz,(thavx%bz == 0.0d0))
+   inthavy=merge(0.0d0,1.0d0/thavy%bz,(thavy%bz == 0.0d0))
+
   
   
    
@@ -522,6 +528,7 @@ program sw
   do k=1,nz
    ape(k)=(h(k)%bz-minh(k)%bz)*(-pres%bz+m(k)%bz-minm(k)%bz)
   end do
+
 #else
   do k=1,nz
    ape(k)=(h(k)%bz-minh(k)%bz)*(m(k)%bz-minm(k)%bz)

@@ -27,7 +27,7 @@ module params
  
  
  real (kind=db), parameter :: pi=4.0d0*atan(1.0d0)
- real (kind=db) :: omega
+! real (kind=db) :: omega
  real (kind=db) :: g
  
   ! Degree/radian conversion parameters
@@ -38,10 +38,12 @@ module params
 #ifdef DO_TIME_AVERAGE
  real (kind=db), allocatable :: ng(:)
 #endif
+ real (kind=db), allocatable :: rho(:)
+ real (kind=db), allocatable :: invrho(:) 
 
- real (kind=db) :: f0
- real (kind=db) :: h0
- real (kind=db) :: ld
+! real (kind=db) :: f0
+! real (kind=db) :: h0
+! real (kind=db) :: ld
 
 
  real (kind=db) :: maxh
@@ -111,8 +113,7 @@ module params
 
   noslip = .true.
  
-  omega=2.0d0*pi/8.64d4
-  g=9.81d0
+  g=1.0d3
  
 
 #ifndef ALLOW_STATIC_LAYER
@@ -143,25 +144,13 @@ module params
 #endif
 #endif
 
-  f0=2.0d0*omega*sin(deg2rad*70.0d0)
-  h0=1.0d3
-#ifndef ALLOW_STATIC_LAYER
-  ld=sqrt(sum(gp(1:nz-1))*h0)/f0
-#else
-  ld=sqrt(sum(gp(1:nz))*h0)/f0
-#endif
+  allocate(rho(nz))
+  allocate(invrho(nz))
 
 
 
 
-#ifdef ALLOW_RIGID_LID
-  maxh=1.25d0!h0
-  dt = (0.25d0*dx)/dsqrt(sum(ngp(1:nz-1))*maxh)
-#else
-  maxh=1.25d0*1.01d0
-  dt = (0.25d0*dx)/dsqrt(sum(ngp)*maxh)
-#endif
-
+  dt=1.118033988749895E-02
 
 
 
@@ -184,8 +173,8 @@ module params
 
      
   bf=2.0d-2
-  res=0.0d0/(f0**2*ld*h0) 
-  tau=2.0d-1/(f0**2*ld*h0*1026.0d0)      
+  res=0.0d0 
+  tau=1.0d-2      
   umax=2.0d-2
   bfricpoly=2
   cvar=(1.0d0/pi**2)  
@@ -236,35 +225,40 @@ module params
       read(10,format,iostat=endoffile,advance='YES') noslip
       if (proc_name == proc_master) print *, 'Reading record: ', desc//':', noslip
       
-     case ('planetary rotational frequency')
-      format="(e23.16)"
-      read(10,format,iostat=endoffile,advance='YES') omega
-      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', omega
+!     case ('planetary rotational frequency')
+!      format="(e23.16)"
+!      read(10,format,iostat=endoffile,advance='YES') omega
+!      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', omega
       
      case ('gravitational acceleration')
       format="(e23.16)"
       read(10,format,iostat=endoffile,advance='YES') g
       if (proc_name == proc_master) print *, 'Reading record: ', desc//':', g
-      
+  
+ !    case ('reference density')
+ !     format="(e23.16)"
+ !     read(10,format,iostat=endoffile,advance='YES') refrho
+ !     if (proc_name == proc_master) print *, 'Reading record: ', desc//':', refrho
+    
      case ('reduced gravitational accel')
       write(format,"(a1,i1,a7)") '(',ubound(gp,1)-lbound(gp,1)+1,'e23.16)'
       read(10,format,iostat=endoffile,advance='YES')  (gp(ii) , ii=lbound(gp,1),ubound(gp,1))
       if (proc_name == proc_master) print *, 'Reading record: ', desc//':', gp
       
-     case ('dimensional coriolis')
-      format="(e23.16)"
-      read(10,format,iostat=endoffile,advance='YES') f0
-      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', f0
+ !    case ('dimensional coriolis')
+ !     format="(e23.16)"
+ !     read(10,format,iostat=endoffile,advance='YES') f0
+ !     if (proc_name == proc_master) print *, 'Reading record: ', desc//':', f0
       
-     case ('dimensional depth')
-      format="(e23.16)"
-      read(10,format,iostat=endoffile,advance='YES') h0
-      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', h0
+ !    case ('dimensional depth')
+ !     format="(e23.16)"
+ !     read(10,format,iostat=endoffile,advance='YES') h0
+ !     if (proc_name == proc_master) print *, 'Reading record: ', desc//':', h0
       
-     case ('dimensional deformation radius')
-      format="(e23.16)"
-      read(10,format,iostat=endoffile,advance='YES') ld
-      if (proc_name == proc_master) print *, 'Reading record: ', desc//':', ld
+ !    case ('dimensional deformation radius')
+ !     format="(e23.16)"
+ !     read(10,format,iostat=endoffile,advance='YES') ld
+ !     if (proc_name == proc_master) print *, 'Reading record: ', desc//':', ld
       
      case ('timestep')
       format="(e23.16)"
@@ -365,6 +359,12 @@ module params
 #endif
 #endif
 
+ rho(nz)=1.0d0
+ do ii = nz-1,1,-1
+  rho(ii)=rho(ii+1)+ngp(ii)/ngp(nz)
+ end do
+ invrho=1.0d0/rho
+
   call random_seed(SIZE=seed_size)
   allocate(put_seed(seed_size))
   put_seed = seed + 37 * (/ (ii - 1, ii = 1, seed_size) /)
@@ -422,9 +422,9 @@ module params
   format="(a32,a1,l3)"
   write(10,format) desc, ':', noslip
   
-  desc='planetary rotational frequency'
-  format="(a32,a1,e23.16)"
-  write(10,format) desc, ':', omega
+  !desc='planetary rotational frequency'
+  !format="(a32,a1,e23.16)"
+  !write(10,format) desc, ':', omega
   
   desc='gravitational acceleration'
   format="(a32,a1,e23.16)"
@@ -434,17 +434,17 @@ module params
   write(format,"(a8,i1,a7)") '(a32,a1,',ubound(gp,1)-lbound(gp,1)+1,'e23.16)'
   write(10,format) desc, ':', (gp(ii) , ii=lbound(gp,1),ubound(gp,1))
   
-  desc='dimensional coriolis'
-  format="(a32,a1,e23.16)"
-  write(10,format) desc, ':', f0
+  !desc='dimensional coriolis'
+  !format="(a32,a1,e23.16)"
+  !write(10,format) desc, ':', f0
   
-  desc='dimensional depth'
-  format="(a32,a1,e23.16)"
-  write(10,format) desc, ':', h0
+  !desc='dimensional depth'
+  !format="(a32,a1,e23.16)"
+  !write(10,format) desc, ':', h0
   
-  desc='dimensional deformation radius'
-  format="(a32,a1,e23.16)"
-  write(10,format) desc, ':', ld
+  !desc='dimensional deformation radius'
+  !format="(a32,a1,e23.16)"
+  !write(10,format) desc, ':', ld
 
   desc='timestep'
   format="(a32,a1,e23.16)"
@@ -503,6 +503,7 @@ module params
   real(kind=8) :: t
   integer :: yrs, days, hours
   character(26) :: modeltime
+  real(kind=db) :: f0=1.366727515784050E-04
    
    t=(dt/f0)*dble(n)
    yrs=floor(t/3.15576d7)

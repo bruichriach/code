@@ -288,8 +288,8 @@ module solver
      tendv => v(i)%tend1%bz
     end if
     call end_sync(pres)
-    tendu=tendu + Gx(pres)
-    tendv=tendv + Gy(pres)
+    tendu=tendu + invrho(i)*Gx(pres)
+    tendv=tendv + invrho(i)*Gy(pres)
    end do
   
   

@@ -880,7 +880,7 @@ module grid_operate
      +smagu(i)%bz  &
      +Ay(f%bz+zeta(i)%bz)   &
       *Ay(Ax(v(i)))    &
-     -Gx(m(i))    &
+     -invrho(i)*Gx(m(i))    &
      -Gx(ke(i))     &
      +0.0d0
     if (i == nz) tend = tend + utau%bz*merge(0.0d0,1.0d0/h_u(nz)%bz,  &
@@ -920,7 +920,7 @@ module grid_operate
      +smagv(i)%bz   &
      -Ax(f%bz+zeta(i)%bz)   &
      *Ax(Ay(u(i)))    &
-     -Gy(m(i))   &
+     -invrho(i)*Gy(m(i))   &
      -Gy(ke(i))    &
      +0.0d0
     if (i == nz) tend = tend + vtau%bz*merge(0.0d0,1.0d0/h_v(nz)%bz,  &
