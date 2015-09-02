@@ -9,6 +9,10 @@
 #define ALLOW_STOCHASTIC_WIND
 
 #define DO_TIME_AVERAGE
+#ifdef DO_TIME_AVERAGE
+#define DO_SHORT_AVERAGE
+#endif
+
 
 
 

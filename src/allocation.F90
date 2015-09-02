@@ -279,6 +279,17 @@ module allocation
    write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,hgrid_out)
+   allocate(dat%t)
+   call create_var(dat%t,hgrid,.false.)
+   write (dat%t%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%t%out%name=adjustl(dat%t%out%name)
+   call init_writeouts(dat%t,hgrid_out)
+   allocate(dat%s)
+   call create_var(dat%s,hgrid,.false.)
+   write (dat%s%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%s%out%name=adjustl(dat%s%out%name)
+   call init_writeouts(dat%s,hgrid_out)
+   dat%counter=>counter
    
   end subroutine
    
@@ -303,6 +314,17 @@ module allocation
    write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,ugrid_out)
+   allocate(dat%t)
+   call create_var(dat%t,ugrid,.false.)
+   write (dat%t%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%t%out%name=adjustl(dat%t%out%name)
+   call init_writeouts(dat%t,ugrid_out)
+   allocate(dat%s)
+   call create_var(dat%s,ugrid,.false.)
+   write (dat%s%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%s%out%name=adjustl(dat%s%out%name)
+   call init_writeouts(dat%s,ugrid_out)
+   dat%counter=>counter
    
   end subroutine
   
@@ -324,6 +346,17 @@ module allocation
    write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,vgrid_out)
+   allocate(dat%t)
+   call create_var(dat%t,vgrid,.false.)
+   write (dat%t%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%t%out%name=adjustl(dat%t%out%name)
+   call init_writeouts(dat%t,vgrid_out)
+   allocate(dat%s)
+   call create_var(dat%s,vgrid,.false.)
+   write (dat%s%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%s%out%name=adjustl(dat%s%out%name)
+   call init_writeouts(dat%s,vgrid_out)
+   dat%counter=>counter
    
   end subroutine
   
@@ -345,6 +378,18 @@ module allocation
    write (dat%out%name, "(a32)") adjustl(name)//".dat"
    dat%out%name=adjustl(dat%out%name)
    call init_writeouts(dat,zgrid_out)
+   allocate(dat%t)
+   call create_var(dat%t,zgrid,.false.)
+   write (dat%t%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%t%out%name=adjustl(dat%t%out%name)
+   call init_writeouts(dat%t,zgrid_out)
+   allocate(dat%s)
+   call create_var(dat%s,zgrid,.false.)
+   write (dat%s%out%name, "(a32)") "s_"//adjustl(name)//".dat"
+   dat%s%out%name=adjustl(dat%s%out%name)
+   call init_writeouts(dat%s,zgrid_out)
+   dat%counter=>counter
+   
    
   end subroutine
   
@@ -430,6 +475,17 @@ module allocation
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),hgrid_out)
+    allocate(dat(k)%t)
+    call create_var(dat(k)%t,hgrid,.false.)
+    write (dat(k)%t%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%t%out%name=adjustl(dat(k)%t%out%name)
+    call init_writeouts(dat(k)%t,hgrid_out)
+    allocate(dat(k)%s)
+    call create_var(dat(k)%s,hgrid,.false.)
+    write (dat(k)%s%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%s%out%name=adjustl(dat(k)%s%out%name)
+    call init_writeouts(dat(k)%s,hgrid_out)
+    dat(k)%counter=>counter
    end do
    
   end subroutine
@@ -456,6 +512,18 @@ module allocation
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),ugrid_out)
+    allocate(dat(k)%t)
+    call create_var(dat(k)%t,ugrid,.false.)
+    write (dat(k)%t%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%t%out%name=adjustl(dat(k)%t%out%name)
+    call init_writeouts(dat(k)%t,ugrid_out)
+    dat(k)%counter=>counter
+    allocate(dat(k)%s)
+    call create_var(dat(k)%s,ugrid,.false.)
+    write (dat(k)%s%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%s%out%name=adjustl(dat(k)%s%out%name)
+    call init_writeouts(dat(k)%s,ugrid_out)
+    dat(k)%counter=>counter
    end do
    
   end subroutine
@@ -481,6 +549,17 @@ module allocation
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),vgrid_out)
+    allocate(dat(k)%t)
+    call create_var(dat(k)%t,vgrid,.false.)
+    write (dat(k)%t%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%t%out%name=adjustl(dat(k)%t%out%name)
+    call init_writeouts(dat(k)%t,vgrid_out)
+    allocate(dat(k)%s)
+    call create_var(dat(k)%s,vgrid,.false.)
+    write (dat(k)%s%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%s%out%name=adjustl(dat(k)%s%out%name)
+    call init_writeouts(dat(k)%s,vgrid_out)
+    dat(k)%counter=>counter
    end do
    
   end subroutine
@@ -507,6 +586,17 @@ module allocation
     write (dat(k)%out%name, "(a27,i1,a4)") adjustl(name)//"_",k,".dat"
     dat(k)%out%name=adjustl(dat(k)%out%name)
     call init_writeouts(dat(k),zgrid_out)
+    allocate(dat(k)%t)
+    call create_var(dat(k)%t,zgrid,.false.)
+    write (dat(k)%t%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%t%out%name=adjustl(dat(k)%t%out%name)
+    call init_writeouts(dat(k)%t,zgrid_out)
+    allocate(dat(k)%s)
+    call create_var(dat(k)%s,zgrid,.false.)
+    write (dat(k)%s%out%name, "(a27,i1,a4)") "s_"//adjustl(name)//"_",k,".dat"
+    dat(k)%s%out%name=adjustl(dat(k)%s%out%name)
+    call init_writeouts(dat(k)%s,zgrid_out)
+    dat(k)%counter=>counter
    end do
    
   end subroutine

@@ -270,6 +270,21 @@ MODULE writeout
   
  end subroutine
  
+ subroutine init_sum_write(dat)
+  use writeout_grid
+  use global
+  use variables
+ 
+  implicit none
+  
+  class(var) :: dat
+   
+  dat%s%bz=dat%s%bz/dble(dat%counter)
+  call init_var_write(dat%s)
+  dat%s%bz=0.0d0
+  
+ end subroutine
+ 
  subroutine end_var_write(dat,foldername,fmt)
   use writeout_grid
   use parallel
@@ -350,7 +365,7 @@ MODULE writeout
  
   implicit none
    
-  integer :: i
+  integer :: k
   
   
   
@@ -362,21 +377,340 @@ MODULE writeout
   call init_var_write(pres)
 #endif
   call init_var_write(d(0))
-  do i=1,nz
-   call init_var_write(d(i))
-   call init_var_write(h(i))
-   call init_var_write(u(i))
-   call init_var_write(v(i))
-   call init_var_write(h(i)%tend_out)
-   call init_var_write(u(i)%tend_out)
-   call init_var_write(v(i)%tend_out)
-   call init_var_write(smagu(i))
-   call init_var_write(smagv(i))
-   call init_var_write(ke(i))
-   call init_var_write(ape(i))
-   call init_var_write(q(i))
-   call init_var_write(zeta(i))
+  do k=1,nz
+   call init_var_write(d(k))
+   call init_var_write(h(k))
+   call init_var_write(u(k))
+   call init_var_write(v(k))
+   call init_var_write(h(k)%tend_out)
+   call init_var_write(u(k)%tend_out)
+   call init_var_write(v(k)%tend_out)
+   call init_var_write(smagu(k))
+   call init_var_write(smagv(k))
+   call init_var_write(ke(k))
+   call init_var_write(ape(k))
+   call init_var_write(q(k))
+   call init_var_write(zeta(k))
   end do
+  
+#ifdef DO_TIME_AVERAGE
+#ifdef DO_SHORT_AVERAGE
+   do k=1,nz
+    call init_sum_write(h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(h_u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(h_v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(h_z(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hu_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hu(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hu_v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hu_z(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hv_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hv_u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hv(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hv_z(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(u_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(u_v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(u_z(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(v_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(v_u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(v_z(k))
+   end do
+
+   
+   do k=1,nz
+    call init_sum_write(huu_h(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(huu_z(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hvv_h(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(hvv_z(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(huv_h(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(huv_z(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(huv_uz(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(huv_vz(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(huuu(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(huuv(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(huvv(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(hvvv(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hum(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(hvm(k))
+   end do
+      
+   do k=1,nz
+    call init_sum_write(hm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(up_dm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(up_dm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(up_du_u(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(up_dv_v(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(dn_dm_x_u(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(dn_dm_y_v(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(dn_du_u(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(dn_dv_v(k))
+   end do
+   
+   do k=0,nz
+    call init_sum_write(dd(k))
+   end do
+   
+   do k=0,nz
+    call init_sum_write(d(k))
+   end do
+      
+   do k=1,nz
+    call init_sum_write(m(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hm(k))
+   end do
+ 
+   call init_sum_write(utau)
+   call init_sum_write(vtau)
+ 
+   call init_sum_write(bfricu)
+   call init_sum_write(bfricv)
+   
+   do k=1,nz
+    call init_sum_write(hsmagu(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hsmagv(k))
+   end do
+ 
+   call init_sum_write(uutau)
+   call init_sum_write(vvtau)
+ 
+   call init_sum_write(ubfricu)
+   call init_sum_write(vbfricv)
+   
+   do k=1,nz
+    call init_sum_write(husmagu(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hvsmagv(k))
+   end do
+   
+   
+   do k=1,nz
+    call init_sum_write(hq_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hq_u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hq_v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hq(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(huq_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(huq(k))
+   end do
+   do k=1,nz
+    call init_sum_write(huq_v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(huq_z(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(hvq_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hvq_u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hvq(k))
+   end do
+   do k=1,nz
+    call init_sum_write(hvq_z(k))
+   end do
+ 
+   do k=1,nz
+    call init_sum_write(hqq(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(q(k))
+   end do
+   do k=1,nz
+    call init_sum_write(q_u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(q_v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(q(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(uq_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(uq(k))
+   end do
+   do k=1,nz
+    call init_sum_write(uq_v(k))
+   end do
+   do k=1,nz
+    call init_sum_write(uq_z(k))
+   end do
+   
+   do k=1,nz
+    call init_sum_write(vq_h(k))
+   end do
+   do k=1,nz
+    call init_sum_write(vq_u(k))
+   end do
+   do k=1,nz
+    call init_sum_write(vq(k))
+   end do
+   do k=1,nz
+    call init_sum_write(vq_z(k))
+   end do
+ 
+   do k=1,nz
+    call init_sum_write(qq(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(tendh(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(htendu(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(htendv(k))
+   end do
+
+
+
+   do k=1,nz
+    call init_sum_write(utendh(k))
+   end do
+
+   do k=1,nz
+    call init_sum_write(vtendh(k))
+   end do
+#endif
+#endif
   
   
  
@@ -391,7 +725,7 @@ MODULE writeout
   
   integer, intent(in) :: num
   character(32) :: filename, desc
-  integer :: i
+  integer :: i, k
   logical :: dir_e
   
   
@@ -438,6 +772,326 @@ MODULE writeout
     call end_var_write(zeta(i),filename,0)
    
    end do
+   
+   
+  
+#ifdef DO_TIME_AVERAGE
+#ifdef DO_SHORT_AVERAGE
+   do k=1,nz
+    call end_var_write(h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(h_u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(h_v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(h_z(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hu_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hu(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hu_v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hu_z(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hv_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hv_u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hv(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hv_z(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(u_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(u_v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(u_z(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(v_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(v_u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(v_z(k)%s,filename,0)
+   end do
+
+   
+   do k=1,nz
+    call end_var_write(huu_h(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(huu_z(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hvv_h(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(hvv_z(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(huv_h(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(huv_z(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(huv_uz(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(huv_vz(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(huuu(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(huuv(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(huvv(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(hvvv(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hum(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(hvm(k)%s,filename,0)
+   end do
+      
+   do k=1,nz
+    call end_var_write(hm_x_u(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hm_y_v(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(up_dm_x_u(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(up_dm_y_v(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(up_du_u(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(up_dv_v(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(dn_dm_x_u(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(dn_dm_y_v(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(dn_du_u(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(dn_dv_v(k)%s,filename,0)
+   end do
+   
+   do k=0,nz
+    call end_var_write(dd(k)%s,filename,0)
+   end do
+   
+   do k=0,nz
+    call end_var_write(d(k)%s,filename,0)
+   end do
+      
+   do k=1,nz
+    call end_var_write(m(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hm(k)%s,filename,0)
+   end do
+ 
+   call end_var_write(utau%s,filename,0)
+   call end_var_write(vtau%s,filename,0)
+ 
+   call end_var_write(bfricu%s,filename,0)
+   call end_var_write(bfricv%s,filename,0)
+   
+   do k=1,nz
+    call end_var_write(hsmagu(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hsmagv(k)%s,filename,0)
+   end do
+ 
+   call end_var_write(uutau%s,filename,0)
+   call end_var_write(vvtau%s,filename,0)
+ 
+   call end_var_write(ubfricu%s,filename,0)
+   call end_var_write(vbfricv%s,filename,0)
+   
+   do k=1,nz
+    call end_var_write(husmagu(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hvsmagv(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hq_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hq_u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hq_v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hq(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(huq_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(huq(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(huq_v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(huq_z(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(hvq_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hvq_u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hvq(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(hvq_z(k)%s,filename,0)
+   end do
+ 
+   do k=1,nz
+    call end_var_write(hqq(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(q(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(q_u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(q_v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(q(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(uq_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(uq(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(uq_v(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(uq_z(k)%s,filename,0)
+   end do
+   
+   do k=1,nz
+    call end_var_write(vq_h(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(vq_u(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(vq(k)%s,filename,0)
+   end do
+   do k=1,nz
+    call end_var_write(vq_z(k)%s,filename,0)
+   end do
+ 
+   do k=1,nz
+    call end_var_write(qq(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(tendh(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(htendu(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(htendv(k)%s,filename,0)
+   end do
+
+
+
+   do k=1,nz
+    call end_var_write(utendh(k)%s,filename,0)
+   end do
+
+   do k=1,nz
+    call end_var_write(vtendh(k)%s,filename,0)
+   end do
+#endif
+#endif
    
    open(unit=10,file=trim(filename)//'/params.txt',status='unknown',form='formatted')
    

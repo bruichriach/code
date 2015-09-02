@@ -50,6 +50,13 @@ module global
   type(var), pointer :: tend2
   type(var), pointer :: tend3
   real(kind=db), pointer :: bz(:,:)
+#ifdef DO_TIME_AVERAGE
+  type(var), pointer :: t
+#endif
+#ifdef DO_SHORT_AVERAGE
+  type(var), pointer :: s
+  integer, pointer :: counter
+#endif
   type(out_var) :: out
   type(mpi_sendrecv), allocatable :: mpi(:)
   integer :: tag
@@ -70,6 +77,11 @@ module global
  
   
  type(grd), target :: hgrid, ugrid, vgrid, zgrid
+ 
+ 
+#ifdef DO_SHORT_AVERAGE
+ integer, target :: counter=0
+#endif
  
  contains
  
@@ -95,7 +107,9 @@ module variables
 
  use global
  use params
-
+ 
+ 
+ 
  type(hvar) :: s
  
  type(hvar), allocatable :: d(:)
@@ -103,21 +117,52 @@ module variables
  type(uvar), allocatable :: d_u(:)
  type(vvar), allocatable :: d_v(:)
  
+ type(hvar), allocatable :: dd(:)
+ 
  type(hvar), allocatable :: h(:)
  type(uvar), allocatable :: u(:)
  type(vvar), allocatable :: v(:)
  
-
-#ifdef DO_TIME_AVERAGE
- type(uvar), allocatable :: hu(:)
- type(vvar), allocatable :: hv(:)
-#endif
- 
- type(hvar), allocatable :: minh(:)
- 
  type(uvar), allocatable :: h_u(:)
  type(vvar), allocatable :: h_v(:)
  type(zvar), allocatable :: h_z(:)
+ 
+ type(hvar), allocatable :: u_h(:)
+ type(vvar), allocatable :: u_v(:)
+ type(zvar), allocatable :: u_z(:)
+ 
+ type(hvar), allocatable :: v_h(:)
+ type(uvar), allocatable :: v_u(:)
+ type(zvar), allocatable :: v_z(:)
+ 
+ type(uvar), allocatable :: hu(:)
+ type(vvar), allocatable :: hv(:)
+ 
+ type(hvar), allocatable :: hu_h(:)
+ type(vvar), allocatable :: hu_v(:)
+ type(zvar), allocatable :: hu_z(:)
+ 
+ type(hvar), allocatable :: hv_h(:)
+ type(uvar), allocatable :: hv_u(:)
+ type(zvar), allocatable :: hv_z(:)
+ 
+ type(hvar), allocatable :: huu_h(:)
+ type(zvar), allocatable :: huu_z(:)
+
+ type(hvar), allocatable :: hvv_h(:)
+ type(zvar), allocatable :: hvv_z(:)
+ 
+ type(hvar), allocatable :: huv_h(:)
+ type(zvar), allocatable :: huv_z(:)
+ type(zvar), allocatable :: huv_uz(:)
+ type(zvar), allocatable :: huv_vz(:)
+ 
+ type(hvar), allocatable :: huuu(:)
+ type(hvar), allocatable :: huuv(:)
+ type(hvar), allocatable :: huvv(:)
+ type(hvar), allocatable :: hvvv(:)
+ 
+ type(hvar), allocatable :: minh(:)
  
  type(hvar), allocatable :: h_tmp(:)
  type(uvar), allocatable :: u_tmp(:)
@@ -137,11 +182,35 @@ module variables
  
  type(uvar), allocatable :: smagu(:)
  type(vvar), allocatable :: smagv(:)
- 
- type(zvar), allocatable :: q(:)
+
+ type(uvar), allocatable :: hsmagu(:)
+ type(vvar), allocatable :: hsmagv(:)
+
+ type(uvar), allocatable :: husmagu(:)
+ type(vvar), allocatable :: hvsmagv(:)
   
  type(hvar), allocatable :: m(:)
  type(hvar), allocatable :: minm(:)
+ 
+ type(uvar), allocatable :: hum(:)
+ type(vvar), allocatable :: hvm(:)
+ 
+ type(uvar), allocatable :: hm_x_u(:)
+ type(vvar), allocatable :: hm_y_v(:)
+ 
+ type(uvar), allocatable :: up_dm_x_u(:)
+ type(vvar), allocatable :: up_dm_y_v(:)
+ 
+ type(uvar), allocatable :: dn_dm_x_u(:)
+ type(vvar), allocatable :: dn_dm_y_v(:)
+ 
+ type(uvar), allocatable :: up_du_u(:)
+ type(vvar), allocatable :: up_dv_v(:)
+ 
+ type(uvar), allocatable :: dn_du_u(:)
+ type(vvar), allocatable :: dn_dv_v(:)
+ 
+ type(hvar), allocatable :: hm(:)
  
  type(uvar) :: bfricu
  type(vvar) :: bfricv
@@ -149,132 +218,66 @@ module variables
  type(uvar) :: utau
  type(vvar) :: vtau
  
+ type(uvar) :: ubfricu
+ type(vvar) :: vbfricv
+ 
+ type(uvar) :: uutau
+ type(vvar) :: vvtau
+ 
  type(zvar) :: f
-
-#ifdef DO_TIME_AVERAGE
-
- type(hvar), allocatable :: s_h_h(:)
- type(uvar), allocatable :: s_h_u(:)
- type(vvar), allocatable :: s_h_v(:)
- type(zvar), allocatable :: s_h_z(:)
  
- type(hvar), allocatable :: s_hu_h(:)
- type(uvar), allocatable :: s_hu_u(:)
- type(vvar), allocatable :: s_hu_v(:)
- type(zvar), allocatable :: s_hu_z(:)
-
- type(hvar), allocatable :: s_hv_h(:)
- type(uvar), allocatable :: s_hv_u(:)
- type(vvar), allocatable :: s_hv_v(:)
- type(zvar), allocatable :: s_hv_z(:)
-
- type(hvar), allocatable :: s_u_h(:)
- type(uvar), allocatable :: s_u_u(:)
- type(vvar), allocatable :: s_u_v(:)
- type(zvar), allocatable :: s_u_z(:)
-
- type(hvar), allocatable :: s_v_h(:)
- type(uvar), allocatable :: s_v_u(:)
- type(vvar), allocatable :: s_v_v(:)
- type(zvar), allocatable :: s_v_z(:)
+ type(zvar), allocatable :: q(:)
  
- type(hvar), allocatable :: s_huu_h(:)
- type(zvar), allocatable :: s_huu_z(:)
+ type(hvar), allocatable :: q_h(:)
+ type(uvar), allocatable :: q_u(:)
+ type(vvar), allocatable :: q_v(:)
+ 
+ type(zvar), allocatable :: hq(:)
 
- type(hvar), allocatable :: s_hvv_h(:)
- type(zvar), allocatable :: s_hvv_z(:)
+ type(hvar), allocatable :: hq_h(:)
+ type(uvar), allocatable :: hq_u(:)
+ type(vvar), allocatable :: hq_v(:)
  
- type(hvar), allocatable :: s_huuu_h(:)
- type(hvar), allocatable :: s_huuv_h(:)
- type(hvar), allocatable :: s_huvv_h(:)
- type(hvar), allocatable :: s_hvvv_h(:)
- 
- type(hvar), allocatable :: s_hum_h(:)
- type(hvar), allocatable :: s_hvm_h(:)
+ type(uvar), allocatable :: huq(:)
 
- type(hvar), allocatable :: s_huv_h(:)
- type(zvar), allocatable :: s_huv_z(:)
- type(zvar), allocatable :: s_huv_uz(:)
- type(zvar), allocatable :: s_huv_vz(:)
+ type(hvar), allocatable :: huq_h(:)
+ type(vvar), allocatable :: huq_v(:)
+ type(zvar), allocatable :: huq_z(:)
  
- type(uvar), allocatable :: s_hm_x_u(:)
- type(vvar), allocatable :: s_hm_y_v(:)
- 
- type(uvar), allocatable :: s_up_dm_x_u(:)
- type(vvar), allocatable :: s_up_dm_y_v(:)
- 
- type(uvar), allocatable :: s_dn_dm_x_u(:)
- type(vvar), allocatable :: s_dn_dm_y_v(:)
- 
- type(uvar), allocatable :: s_up_du_u(:)
- type(vvar), allocatable :: s_up_dv_v(:)
- 
- type(uvar), allocatable :: s_dn_du_u(:)
- type(vvar), allocatable :: s_dn_dv_v(:)
- 
- type(hvar), allocatable :: s_dd_h(:)
- 
- type(hvar), allocatable :: s_d_h(:)
- 
- type(hvar), allocatable :: s_m_h(:)
- 
- type(hvar), allocatable :: s_hm_h(:)
- 
- type(uvar) :: s_utau_u
- type(vvar) :: s_vtau_v
- 
- type(uvar) :: s_bfricu_u
- type(vvar) :: s_bfricv_v
- 
- type(uvar), allocatable :: s_hsmagu_u(:)
- type(vvar), allocatable :: s_hsmagv_v(:)
+ type(vvar), allocatable :: hvq(:)
 
- type(hvar), allocatable :: s_hq_h(:)
- type(uvar), allocatable :: s_hq_u(:)
- type(vvar), allocatable :: s_hq_v(:)
- type(zvar), allocatable :: s_hq_z(:)
-
- type(hvar), allocatable :: s_huq_h(:)
- type(uvar), allocatable :: s_huq_u(:)
- type(vvar), allocatable :: s_huq_v(:)
- type(zvar), allocatable :: s_huq_z(:)
-
- type(hvar), allocatable :: s_hvq_h(:)
- type(uvar), allocatable :: s_hvq_u(:)
- type(vvar), allocatable :: s_hvq_v(:)
- type(zvar), allocatable :: s_hvq_z(:)
+ type(hvar), allocatable :: hvq_h(:)
+ type(uvar), allocatable :: hvq_u(:)
+ type(vvar), allocatable :: hvq_v(:)
+ type(zvar), allocatable :: hvq_z(:)
  
- type(zvar), allocatable :: s_hqq_z(:)
-
- type(hvar), allocatable :: s_q_h(:)
- type(uvar), allocatable :: s_q_u(:)
- type(vvar), allocatable :: s_q_v(:)
- type(zvar), allocatable :: s_q_z(:)
-
- type(hvar), allocatable :: s_uq_h(:)
- type(uvar), allocatable :: s_uq_u(:)
- type(vvar), allocatable :: s_uq_v(:)
- type(zvar), allocatable :: s_uq_z(:)
-
- type(hvar), allocatable :: s_vq_h(:)
- type(uvar), allocatable :: s_vq_u(:)
- type(vvar), allocatable :: s_vq_v(:)
- type(zvar), allocatable :: s_vq_z(:)
+ type(zvar), allocatable :: hqq(:)
  
- type(zvar), allocatable :: s_qq_z(:)
+ type(uvar), allocatable :: uq(:)
 
- type(hvar), allocatable :: s_tendh_h(:)
+ type(hvar), allocatable :: uq_h(:)
+ type(vvar), allocatable :: uq_v(:)
+ type(zvar), allocatable :: uq_z(:)
+ 
+ type(vvar), allocatable :: vq(:)
 
- type(uvar), allocatable :: s_htendu_u(:)
+ type(hvar), allocatable :: vq_h(:)
+ type(uvar), allocatable :: vq_u(:)
+ type(vvar), allocatable :: vq_v(:)
+ type(zvar), allocatable :: vq_z(:)
+ 
+ type(zvar), allocatable :: qq(:)
+ 
+ type(hvar), allocatable :: tendh(:)
 
- type(vvar), allocatable :: s_htendv_v(:)
+ type(uvar), allocatable :: htendu(:)
 
- type(hvar), allocatable :: s_utendh_h(:)
+ type(vvar), allocatable :: htendv(:)
 
- type(hvar), allocatable :: s_vtendh_h(:)
-
-#endif
-
+ type(hvar), allocatable :: utendh(:)
+ 
+ type(hvar), allocatable :: vtendh(:)
+ 
 
 #ifdef ALLOW_RIGID_LID
 
