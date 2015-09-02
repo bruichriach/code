@@ -183,6 +183,14 @@ module variables
 
  type(hvar), allocatable :: s_hvv_h(:)
  type(zvar), allocatable :: s_hvv_z(:)
+ 
+ type(hvar), allocatable :: s_huuu_h(:)
+ type(hvar), allocatable :: s_huuv_h(:)
+ type(hvar), allocatable :: s_huvv_h(:)
+ type(hvar), allocatable :: s_hvvv_h(:)
+ 
+ type(hvar), allocatable :: s_hum_h(:)
+ type(hvar), allocatable :: s_hvm_h(:)
 
  type(hvar), allocatable :: s_huv_h(:)
  type(zvar), allocatable :: s_huv_z(:)
@@ -266,6 +274,7 @@ module variables
  type(hvar), allocatable :: s_vtendh_h(:)
 
 #endif
+
 
 #ifdef ALLOW_RIGID_LID
 

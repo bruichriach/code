@@ -98,10 +98,11 @@ program sw
  
  
 
-#ifdef DO_TIME_AVERAGE
 
  call create_field(hu,'hu',.true.,1)
  call create_field(hv,'hv',.true.,1)
+ 
+#ifdef DO_TIME_AVERAGE
 
  call create_field(s_h_h,'s_h_h',.false.,1)
  call create_field(s_h_u,'s_h_u',.false.,1)
@@ -133,8 +134,15 @@ program sw
 
  call create_field(s_hvv_h,'s_hvv_h',.false.,1)
  call create_field(s_hvv_z,'s_hvv_z',.false.,1)
-
-
+ 
+ call create_field(s_huuu_h,'s_huuu_h',.false.,1)
+ call create_field(s_huuv_h,'s_huuv_h',.false.,1)
+ call create_field(s_huvv_h,'s_huvv_h',.false.,1)
+ call create_field(s_hvvv_h,'s_hvvv_h',.false.,1)
+ 
+ call create_field(s_hum_h,'s_hum_h',.false.,1)
+ call create_field(s_hvm_h,'s_hvm_h',.false.,1)
+ 
  call create_field(s_huv_h,'s_huv_h',.false.,1)
  call create_field(s_huv_z,'s_huv_z',.false.,1)
  call create_field(s_huv_uz,'s_huv_uz',.false.,1)
@@ -216,7 +224,8 @@ program sw
 
 
 #endif
- 
+
+
  
  s=-1.0d0!+(0.25d0)*(max(1.0d0-(y_dist(s,y0/2.0d0)/(0.25d0*y0))**8,0.0d0) - &
          !   max(1.0d0-(y_dist(s,0.0d0)/(0.25d0*y0))**8,0.0d0))
