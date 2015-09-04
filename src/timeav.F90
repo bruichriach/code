@@ -36,101 +36,31 @@ module timeav
    do k=1,nz
     call av_iteratation(h(k))
    end do
-   do k=1,nz
-    call av_iteratation(h_u(k))
-   end do
-   do k=1,nz
-    call av_iteratation(h_v(k))
-   end do
-   do k=1,nz
-    call av_iteratation(h_z(k))
-   end do
    
    do k=1,nz
-    hu_h(k)%bz=h(k)%bz*Ax(u(k))
-    call av_iteratation(hu_h(k))
-   end do
-   do k=1,nz
-    hu(k)%bz=h_u(k)%bz*u(k)%bz
     call av_iteratation(hu(k))
    end do
-   do k=1,nz
-    hu_v(k)%bz=h_v(k)%bz*Ax(Ay(u(k)))
-    call av_iteratation(hu_v(k))
-   end do
-   do k=1,nz
-    hu_z(k)%bz=h_z(k)%bz*Ay(u(k))
-    call av_iteratation(hu_z(k))
-   end do
    
    do k=1,nz
-    hv_h(k)%bz=h(k)%bz*Ay(v(k))
-    call av_iteratation(hv_h(k))
-   end do
-   do k=1,nz
-    hv_u(k)%bz=h_u(k)%bz*Ay(Ax(v(k)))
-    call av_iteratation(hv_u(k))
-   end do
-   do k=1,nz
-    hv(k)%bz=h_v(k)%bz*v(k)%bz
     call av_iteratation(hv(k))
    end do
-   do k=1,nz
-    hv_z(k)%bz=h_z(k)%bz*Ax(v(k))
-    call av_iteratation(hv_z(k))
-   end do
 
-   do k=1,nz
-    u_h(k)=Ax(u(k))
-    call av_iteratation(u_h(k))
-   end do
    do k=1,nz
     call av_iteratation(u(k))
    end do
-   do k=1,nz
-    u_v(k)=Ax(Ay(u(k)))
-    call av_iteratation(u_v(k))
-   end do
-   do k=1,nz
-    u_z(k)=Ay(u(k))
-    call av_iteratation(u_z(k))
-   end do
 
-   do k=1,nz
-    v_h(k)=Ay(v(k))
-    call av_iteratation(v_h(k))
-   end do
-   do k=1,nz
-    v_u(k)=Ay(Ax(v(k)))
-    call av_iteratation(v_u(k))
-   end do
    do k=1,nz
     call av_iteratation(v(k))
    end do
-   do k=1,nz
-    v_z(k)=Ax(v(k))
-    call av_iteratation(v_z(k))
-   end do
-
    
    do k=1,nz
-    huu_h(k)=h(k)%bz*Ax(u(k)%bz**2)
-    call av_iteratation(huu_h(k))
-   end do
-
-   do k=1,nz
-    huu_z(k)=h_z(k)%bz*Ay(u(k))**2
-    call av_iteratation(huu_z(k))
+    huu(k)=h(k)%bz*Ax(u(k)%bz**2)
+    call av_iteratation(huu(k))
    end do
    
    do k=1,nz
-    hvv_h(k)=h(k)%bz*Ay(v(k)%bz**2)
-    call av_iteratation(hvv_h(k))
-   end do
-
-   do k=1,nz
-    hvv_z(k)=h_z(k)%bz*Ax(v(k))**2
-    call av_iteratation(hvv_z(k))
+    hvv(k)=h(k)%bz*Ay(v(k)%bz**2)
+    call av_iteratation(hvv(k))
    end do
    
    do k=1,nz
@@ -154,91 +84,83 @@ module timeav
    end do
    
    do k=1,nz
-    huuu(k)=h(k)%bz*Ax(u(k)%bz**3)
+    huuu(k)=h_u(k)%bz*u(k)%bz**3
     call av_iteratation(huuu(k))
    end do
 
    do k=1,nz
-    huuv(k)=h_z(k)%bz*Ax(u(k)%bz**2)*Ay(v(k))
+    huuv(k)=h_v(k)%bz*Ay(uu(k))*v(k)%bz
     call av_iteratation(huuv(k))
    end do
    
    do k=1,nz
-    huvv(k)=h(k)%bz*Ax(u(k))*Ay(v(k)%bz**2)
+    huvv(k)=h_u(k)%bz*u(k)%bz*Ax(vv(k))
     call av_iteratation(huvv(k))
    end do
 
    do k=1,nz
-    hvvv(k)=h(k)%bz*Ay(v(k)%bz**3)
+    hvvv(k)=h_v(k)%bz*v(k)%bz**3
     call av_iteratation(hvvv(k))
    end do
    
    do k=1,nz
-    !hum(k)=h_u(k)%bz*u(k)%bz*(-Ax(pres)+Ax(m(k)))
     hum(k)=h_u(k)%bz*u(k)%bz*Ax(m(k))
     call av_iteratation(hum(k))
    end do
 
    do k=1,nz
-    !hvm_h(k)=h_v(k)%bz*v(k)%bz*(-Ax(pres)+Ax(m(k)))
     hvm(k)=h_v(k)%bz*v(k)%bz*Ay(m(k))
     call av_iteratation(hvm(k))
    end do
       
    do k=1,nz
-    !hm_x_u(k)=h_u(k)%bz*(-Gx(pres)+Gx(m(k)))
-    hm_x_u(k)=h_u(k)%bz*Gx(m(k))
-    call av_iteratation(hm_x_u(k))
+    hm_x(k)=h_u(k)%bz*Gx(m(k))
+    call av_iteratation(hm_x(k))
    end do
    
    do k=1,nz
-    !hm_y_v(k)=h_v(k)%bz*(-Gy(pres)+Gy(m(k)))
-    hm_y_v(k)=h_v(k)%bz*Gy(m(k))
-    call av_iteratation(hm_y_v(k))
+    hm_y(k)=h_v(k)%bz*Gy(m(k))
+    call av_iteratation(hm_y(k))
    end do
    
    do k=1,nz
-    !up_dm_x_u(k)=d_u(k)%bz*(-Gx(pres)+Gx(m(k)))
-    up_dm_x_u(k)=d_u(k)%bz*Gx(m(k))
-    call av_iteratation(up_dm_x_u(k))
+    up_dm_x(k)=d_u(k)%bz*Gx(m(k))
+    call av_iteratation(up_dm_x(k))
    end do
    
    do k=1,nz
-    !up_dm_y_v(k)=d_v(k)%bz*(-Gy(pres)+Gy(m(k)))
-    up_dm_y_v(k)=d_v(k)%bz*Gy(m(k))
-    call av_iteratation(up_dm_y_v(k))
+    up_dm_y(k)=d_v(k)%bz*Gy(m(k))
+    call av_iteratation(up_dm_y(k))
    end do
    
    do k=1,nz
-    up_du_u(k)=d_u(k)%bz*u(k)%bz
-    call av_iteratation(up_du_u(k))
+    up_du(k)=d_u(k)%bz*u(k)%bz
+    call av_iteratation(up_du(k))
    end do
    
    do k=1,nz
-    up_dv_v(k)=d_v(k)%bz*v(k)%bz
-    call av_iteratation(up_dv_v(k))
+    up_dv(k)=d_v(k)%bz*v(k)%bz
+    call av_iteratation(up_dv(k))
    end do
    
    do k=1,nz
-    !dn_dm_x_u(k)=d_u(k-1)%bz*(-Gx(pres)+Gx(m(k)))
-    dn_dm_x_u(k)=d_u(k-1)%bz*Gx(m(k))
-    call av_iteratation(dn_dm_x_u(k))
+    dn_dm_x(k)=d_u(k-1)%bz*Gx(m(k))
+    call av_iteratation(dn_dm_x(k))
    end do
    
    do k=1,nz
-    !dn_dm_y_v(k)=d_v(k-1)%bz*(-Gy(pres)+Gy(m(k)))
-    dn_dm_y_v(k)=d_v(k-1)%bz*Gy(m(k))
-    call av_iteratation(dn_dm_y_v(k))
+    dn_dm_y(k)=d_v(k-1)%bz*Gy(m(k))
+    call av_iteratation(dn_dm_y(k))
    end do
    
    do k=1,nz
-    dn_du_u(k)=d_u(k-1)%bz*u(k)%bz
-    call av_iteratation(dn_du_u(k))
+    dn_du(k)=d_u(k-1)%bz*u(k)%bz
+    call av_iteratation(dn_du(k))
    end do
    
    do k=1,nz
-    dn_dv_v(k)=d_v(k-1)%bz*v(k)%bz
-    call av_iteratation(dn_dv_v(k))
+    dn_dv(k)=d_v(k-1)%bz*v(k)%bz
+    call av_iteratation(dn_dv(k))
    end do
    
    do k=0,nz
@@ -251,12 +173,10 @@ module timeav
    end do
       
    do k=1,nz
-    !m_h(k)=-pres%bz+m(k)%bz
     call av_iteratation(m(k))
    end do
    
    do k=1,nz
-    !hm(k)=h(k)%bz*(-pres%bz+m(k)%bz)
     hm(k)=h(k)%bz*m(k)%bz
     call av_iteratation(hm(k))
    end do
@@ -298,26 +218,10 @@ module timeav
    end do
    
    do k=1,nz
-    hq_h(k)=Ax(Ay(f%bz+zeta(k)%bz))
-    call av_iteratation(hq_h(k))
-   end do
-   do k=1,nz
-    hq_u(k)=Ay(f%bz+zeta(k)%bz)
-    call av_iteratation(hq_u(k))
-   end do
-   do k=1,nz
-    hq_v(k)=Ax(f%bz+zeta(k)%bz)
-    call av_iteratation(hq_v(k))
-   end do
-   do k=1,nz
     hq(k)=f%bz+zeta(k)%bz
     call av_iteratation(hq(k))
    end do
    
-   do k=1,nz
-    huq_h(k)=Ax(Ay(f%bz+zeta(k)%bz)*u(k)%bz)
-    call av_iteratation(huq_h(k))
-   end do
    do k=1,nz
     huq(k)=Ay(f%bz+zeta(k)%bz)*u(k)%bz
     call av_iteratation(huq(k))
@@ -326,15 +230,7 @@ module timeav
     huq_v(k)=Ax((f%bz+zeta(k)%bz)*Ay(u(k)))
     call av_iteratation(huq_v(k))
    end do
-   do k=1,nz
-    huq_z(k)=(f%bz+zeta(k)%bz)*Ay(u(k))
-    call av_iteratation(huq_z(k))
-   end do
    
-   do k=1,nz
-    hvq_h(k)=Ay(Ax(f%bz+zeta(k)%bz)*v(k)%bz)
-    call av_iteratation(hvq_h(k))
-   end do
    do k=1,nz
     hvq_u(k)=Ay((f%bz+zeta(k)%bz)*Ax(v(k)))
     call av_iteratation(hvq_u(k))
@@ -342,10 +238,6 @@ module timeav
    do k=1,nz
     hvq(k)=Ax(f%bz+zeta(k)%bz)*v(k)%bz
     call av_iteratation(hvq(k))
-   end do
-   do k=1,nz
-    hvq_z(k)=(f%bz+zeta(k)%bz)*Ax(v(k))
-    call av_iteratation(hvq_z(k))
    end do
  
    do k=1,nz
@@ -358,22 +250,9 @@ module timeav
     call av_iteratation(q_h(k))
    end do
    do k=1,nz
-    q_u(k)=Ay(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_u(k)%bz,(h_u(k)%bz == 0.0d0))
-    call av_iteratation(q_u(k))
-   end do
-   do k=1,nz
-    q_v(k)=Ax(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_v(k)%bz,(h_v(k)%bz == 0.0d0))
-    call av_iteratation(q_v(k))
-   end do
-   do k=1,nz
-    q(k)=(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
     call av_iteratation(q(k))
    end do
    
-   do k=1,nz
-    uq_h(k)=Ax(Ay(f%bz+zeta(k)%bz)*u(k)%bz)*merge(0.0d0,1.0d0/h(k)%bz,(h(k)%bz == 0.0d0))
-    call av_iteratation(uq_h(k))
-   end do
    do k=1,nz
     uq(k)=Ay(f%bz+zeta(k)%bz)*u(k)%bz*merge(0.0d0,1.0d0/h_u(k)%bz,(h_u(k)%bz == 0.0d0))
     call av_iteratation(uq(k))
@@ -382,15 +261,7 @@ module timeav
     uq_v(k)=Ax((f%bz+zeta(k)%bz)*Ay(u(k)))*merge(0.0d0,1.0d0/h_v(k)%bz,(h_v(k)%bz == 0.0d0))
     call av_iteratation(uq_v(k))
    end do
-   do k=1,nz
-    uq_z(k)=(f%bz+zeta(k)%bz)*Ay(u(k))*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
-    call av_iteratation(uq_z(k))
-   end do
    
-   do k=1,nz
-    vq_h(k)=Ay(Ax(f%bz+zeta(k)%bz)*v(k)%bz)*merge(0.0d0,1.0d0/h(k)%bz,(h(k)%bz == 0.0d0))
-    call av_iteratation(vq_h(k))
-   end do
    do k=1,nz
     vq_u(k)=Ay((f%bz+zeta(k)%bz)*Ax(v(k)))*merge(0.0d0,1.0d0/h_u(k)%bz,(h_u(k)%bz == 0.0d0))
     call av_iteratation(vq_u(k))
@@ -398,10 +269,6 @@ module timeav
    do k=1,nz
     vq(k)=Ax(f%bz+zeta(k)%bz)*v(k)%bz*merge(0.0d0,1.0d0/h_v(k)%bz,(h_v(k)%bz == 0.0d0))
     call av_iteratation(vq(k))
-   end do
-   do k=1,nz
-    vq_z(k)=(f%bz+zeta(k)%bz)*Ax(v(k))*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
-    call av_iteratation(vq_z(k))
    end do
  
    do k=1,nz
@@ -486,83 +353,30 @@ module timeav
    do k=1,nz
     call write_timemean(h(k))
    end do
-   do k=1,nz
-    call write_timemean(h_u(k))
-   end do
-   do k=1,nz
-    call write_timemean(h_v(k))
-   end do
-   do k=1,nz
-    call write_timemean(h_z(k))
-   end do
    
-   do k=1,nz
-    call write_timemean(hu_h(k))
-   end do
    do k=1,nz
     call write_timemean(hu(k))
    end do
-   do k=1,nz
-    call write_timemean(hu_v(k))
-   end do
-   do k=1,nz
-    call write_timemean(hu_z(k))
-   end do
    
-   do k=1,nz
-    call write_timemean(hv_h(k))
-   end do
-   do k=1,nz
-    call write_timemean(hv_u(k))
-   end do
    do k=1,nz
     call write_timemean(hv(k))
    end do
-   do k=1,nz
-    call write_timemean(hv_z(k))
-   end do
 
-   do k=1,nz
-    call write_timemean(u_h(k))
-   end do
    do k=1,nz
     call write_timemean(u(k))
    end do
-   do k=1,nz
-    call write_timemean(u_v(k))
-   end do
-   do k=1,nz
-    call write_timemean(u_z(k))
-   end do
 
    do k=1,nz
-    call write_timemean(v_h(k))
-   end do
-   do k=1,nz
-    call write_timemean(v_u(k))
-   end do
-   do k=1,nz
     call write_timemean(v(k))
-   end do
-   do k=1,nz
-    call write_timemean(v_z(k))
    end do
 
  
    do k=1,nz
-    call write_timemean(huu_h(k))
+    call write_timemean(huu(k))
    end do
 
    do k=1,nz
-    call write_timemean(huu_z(k))
-   end do
-
-   do k=1,nz
-    call write_timemean(hvv_h(k))
-   end do
-
-   do k=1,nz
-    call write_timemean(hvv_z(k))
+    call write_timemean(hvv(k))
    end do
    
    do k=1,nz
@@ -606,43 +420,43 @@ module timeav
    end do
    
    do k=1,nz
-    call write_timemean(hm_x_u(k))
+    call write_timemean(hm_x(k))
    end do
    
    do k=1,nz
-    call write_timemean(hm_y_v(k))
+    call write_timemean(hm_y(k))
    end do
    
    do k=1,nz
-    call write_timemean(up_dm_x_u(k))
+    call write_timemean(up_dm_x(k))
    end do
    
    do k=1,nz
-    call write_timemean(up_dm_y_v(k))
+    call write_timemean(up_dm_y(k))
    end do
    
    do k=1,nz
-    call write_timemean(up_du_u(k))
+    call write_timemean(up_du(k))
    end do
    
    do k=1,nz
-    call write_timemean(up_dv_v(k))
+    call write_timemean(up_dv(k))
    end do
    
    do k=1,nz
-    call write_timemean(dn_dm_x_u(k))
+    call write_timemean(dn_dm_x(k))
    end do
    
    do k=1,nz
-    call write_timemean(dn_dm_y_v(k))
+    call write_timemean(dn_dm_y(k))
    end do
    
    do k=1,nz
-    call write_timemean(dn_du_u(k))
+    call write_timemean(dn_du(k))
    end do
    
    do k=1,nz
-    call write_timemean(dn_dv_v(k))
+    call write_timemean(dn_dv(k))
    end do
    
    do k=0,nz
@@ -691,42 +505,21 @@ module timeav
    end do
    
    do k=1,nz
-    call write_timemean(hq_h(k))
-   end do
-   do k=1,nz
-    call write_timemean(hq_u(k))
-   end do
-   do k=1,nz
-    call write_timemean(hq_v(k))
-   end do
-   do k=1,nz
     call write_timemean(hq(k))
    end do
    
-   do k=1,nz
-    call write_timemean(huq_h(k))
-   end do
    do k=1,nz
     call write_timemean(huq(k))
    end do
    do k=1,nz
     call write_timemean(huq_v(k))
    end do
-   do k=1,nz
-    call write_timemean(huq_z(k))
-   end do
    
-   do k=1,nz
-    call write_timemean(hvq_h(k))
-   end do
    do k=1,nz
     call write_timemean(hvq_u(k))
    end do
    do k=1,nz
     call write_timemean(hvq(k))
-   end do
-   do k=1,nz
-    call write_timemean(hvq_z(k))
    end do
   
    do k=1,nz
@@ -737,39 +530,21 @@ module timeav
     call write_timemean(q_h(k))
    end do
    do k=1,nz
-    call write_timemean(q_u(k))
-   end do
-   do k=1,nz
-    call write_timemean(q_v(k))
-   end do
-   do k=1,nz
     call write_timemean(q(k))
    end do
    
-   do k=1,nz
-    call write_timemean(uq_h(k))
-   end do
    do k=1,nz
     call write_timemean(uq(k))
    end do
    do k=1,nz
     call write_timemean(uq_v(k))
    end do
-   do k=1,nz
-    call write_timemean(uq_z(k))
-   end do
    
-   do k=1,nz
-    call write_timemean(vq_h(k))
-   end do
    do k=1,nz
     call write_timemean(vq_u(k))
    end do
    do k=1,nz
     call write_timemean(vq(k))
-   end do
-   do k=1,nz
-    call write_timemean(vq_z(k))
    end do
   
    do k=1,nz
@@ -830,83 +605,30 @@ module timeav
    do k=1,nz
     call read_timemean(h(k))
    end do
-   do k=1,nz
-    call read_timemean(h_u(k))
-   end do
-   do k=1,nz
-    call read_timemean(h_v(k))
-   end do
-   do k=1,nz
-    call read_timemean(h_z(k))
-   end do
    
-   do k=1,nz
-    call read_timemean(hu_h(k))
-   end do
    do k=1,nz
     call read_timemean(hu(k))
    end do
-   do k=1,nz
-    call read_timemean(hu_v(k))
-   end do
-   do k=1,nz
-    call read_timemean(hu_z(k))
-   end do
    
-   do k=1,nz
-    call read_timemean(hv_h(k))
-   end do
-   do k=1,nz
-    call read_timemean(hv_u(k))
-   end do
    do k=1,nz
     call read_timemean(hv(k))
    end do
-   do k=1,nz
-    call read_timemean(hv_z(k))
-   end do
 
-   do k=1,nz
-    call read_timemean(u_h(k))
-   end do
    do k=1,nz
     call read_timemean(u(k))
    end do
-   do k=1,nz
-    call read_timemean(u_v(k))
-   end do
-   do k=1,nz
-    call read_timemean(u_z(k))
-   end do
 
-   do k=1,nz
-    call read_timemean(v_h(k))
-   end do
-   do k=1,nz
-    call read_timemean(v_u(k))
-   end do
    do k=1,nz
     call read_timemean(v(k))
    end do
-   do k=1,nz
-    call read_timemean(v_z(k))
-   end do
 
    
    do k=1,nz
-    call read_timemean(huu_h(k))
-   end do
-
-   do k=1,nz
-    call read_timemean(huu_z(k))
+    call read_timemean(huu(k))
    end do
    
    do k=1,nz
-    call read_timemean(hvv_h(k))
-   end do
-
-   do k=1,nz
-    call read_timemean(hvv_z(k))
+    call read_timemean(hvv(k))
    end do
    
    do k=1,nz
@@ -950,43 +672,43 @@ module timeav
    end do
    
    do k=1,nz
-    call read_timemean(hm_x_u(k))
+    call read_timemean(hm_x(k))
    end do
    
    do k=1,nz
-    call read_timemean(hm_y_v(k))
+    call read_timemean(hm_y(k))
    end do
    
    do k=1,nz
-    call read_timemean(up_dm_x_u(k))
+    call read_timemean(up_dm_x(k))
    end do
    
    do k=1,nz
-    call read_timemean(up_dm_y_v(k))
+    call read_timemean(up_dm_y(k))
    end do
    
    do k=1,nz
-    call read_timemean(up_du_u(k))
+    call read_timemean(up_du(k))
    end do
    
    do k=1,nz
-    call read_timemean(up_dv_v(k))
+    call read_timemean(up_dv(k))
    end do
    
    do k=1,nz
-    call read_timemean(dn_dm_x_u(k))
+    call read_timemean(dn_dm_x(k))
    end do
    
    do k=1,nz
-    call read_timemean(dn_dm_y_v(k))
+    call read_timemean(dn_dm_y(k))
    end do
    
    do k=1,nz
-    call read_timemean(dn_du_u(k))
+    call read_timemean(dn_du(k))
    end do
    
    do k=1,nz
-    call read_timemean(dn_dv_v(k))
+    call read_timemean(dn_dv(k))
    end do
    
    do k=0,nz
@@ -1035,42 +757,21 @@ module timeav
    end do
    
    do k=1,nz
-    call read_timemean(hq_h(k))
-   end do
-   do k=1,nz
-    call read_timemean(hq_u(k))
-   end do
-   do k=1,nz
-    call read_timemean(hq_v(k))
-   end do
-   do k=1,nz
     call read_timemean(hq(k))
    end do
    
-   do k=1,nz
-    call read_timemean(huq_h(k))
-   end do
    do k=1,nz
     call read_timemean(huq(k))
    end do
    do k=1,nz
     call read_timemean(huq_v(k))
    end do
-   do k=1,nz
-    call read_timemean(huq_z(k))
-   end do
    
-   do k=1,nz
-    call read_timemean(hvq_h(k))
-   end do
    do k=1,nz
     call read_timemean(hvq_u(k))
    end do
    do k=1,nz
     call read_timemean(hvq(k))
-   end do
-   do k=1,nz
-    call read_timemean(hvq_z(k))
    end do
   
    do k=1,nz
@@ -1081,39 +782,21 @@ module timeav
     call read_timemean(q_h(k))
    end do
    do k=1,nz
-    call read_timemean(q_u(k))
-   end do
-   do k=1,nz
-    call read_timemean(q_v(k))
-   end do
-   do k=1,nz
     call read_timemean(q(k))
    end do
    
-   do k=1,nz
-    call read_timemean(uq_h(k))
-   end do
    do k=1,nz
     call read_timemean(uq(k))
    end do
    do k=1,nz
     call read_timemean(uq_v(k))
    end do
-   do k=1,nz
-    call read_timemean(uq_z(k))
-   end do
    
-   do k=1,nz
-    call read_timemean(vq_h(k))
-   end do
    do k=1,nz
     call read_timemean(vq_u(k))
    end do
    do k=1,nz
     call read_timemean(vq(k))
-   end do
-   do k=1,nz
-    call read_timemean(vq_z(k))
    end do
   
    do k=1,nz

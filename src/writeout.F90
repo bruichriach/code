@@ -398,83 +398,31 @@ MODULE writeout
    do k=1,nz
     call init_sum_write(h(k))
    end do
-   do k=1,nz
-    call init_sum_write(h_u(k))
-   end do
-   do k=1,nz
-    call init_sum_write(h_v(k))
-   end do
-   do k=1,nz
-    call init_sum_write(h_z(k))
-   end do
    
-   do k=1,nz
-    call init_sum_write(hu_h(k))
-   end do
    do k=1,nz
     call init_sum_write(hu(k))
    end do
-   do k=1,nz
-    call init_sum_write(hu_v(k))
-   end do
-   do k=1,nz
-    call init_sum_write(hu_z(k))
-   end do
    
-   do k=1,nz
-    call init_sum_write(hv_h(k))
-   end do
-   do k=1,nz
-    call init_sum_write(hv_u(k))
-   end do
    do k=1,nz
     call init_sum_write(hv(k))
    end do
-   do k=1,nz
-    call init_sum_write(hv_z(k))
-   end do
 
-   do k=1,nz
-    call init_sum_write(u_h(k))
-   end do
    do k=1,nz
     call init_sum_write(u(k))
    end do
-   do k=1,nz
-    call init_sum_write(u_v(k))
-   end do
-   do k=1,nz
-    call init_sum_write(u_z(k))
-   end do
 
-   do k=1,nz
-    call init_sum_write(v_h(k))
-   end do
-   do k=1,nz
-    call init_sum_write(v_u(k))
-   end do
    do k=1,nz
     call init_sum_write(v(k))
    end do
+
+   
    do k=1,nz
-    call init_sum_write(v_z(k))
+    call init_sum_write(huu(k))
    end do
 
    
    do k=1,nz
-    call init_sum_write(huu_h(k))
-   end do
-
-   do k=1,nz
-    call init_sum_write(huu_z(k))
-   end do
-   
-   do k=1,nz
-    call init_sum_write(hvv_h(k))
-   end do
-
-   do k=1,nz
-    call init_sum_write(hvv_z(k))
+    call init_sum_write(hvv(k))
    end do
    
    do k=1,nz
@@ -518,43 +466,43 @@ MODULE writeout
    end do
       
    do k=1,nz
-    call init_sum_write(hm_x_u(k))
+    call init_sum_write(hm_x(k))
    end do
    
    do k=1,nz
-    call init_sum_write(hm_y_v(k))
+    call init_sum_write(hm_y(k))
    end do
    
    do k=1,nz
-    call init_sum_write(up_dm_x_u(k))
+    call init_sum_write(up_dm_x(k))
    end do
    
    do k=1,nz
-    call init_sum_write(up_dm_y_v(k))
+    call init_sum_write(up_dm_y(k))
    end do
    
    do k=1,nz
-    call init_sum_write(up_du_u(k))
+    call init_sum_write(up_du(k))
    end do
    
    do k=1,nz
-    call init_sum_write(up_dv_v(k))
+    call init_sum_write(up_dv(k))
    end do
    
    do k=1,nz
-    call init_sum_write(dn_dm_x_u(k))
+    call init_sum_write(dn_dm_x(k))
    end do
    
    do k=1,nz
-    call init_sum_write(dn_dm_y_v(k))
+    call init_sum_write(dn_dm_y(k))
    end do
    
    do k=1,nz
-    call init_sum_write(dn_du_u(k))
+    call init_sum_write(dn_du(k))
    end do
    
    do k=1,nz
-    call init_sum_write(dn_dv_v(k))
+    call init_sum_write(dn_dv(k))
    end do
    
    do k=0,nz
@@ -603,42 +551,21 @@ MODULE writeout
    
    
    do k=1,nz
-    call init_sum_write(hq_h(k))
-   end do
-   do k=1,nz
-    call init_sum_write(hq_u(k))
-   end do
-   do k=1,nz
-    call init_sum_write(hq_v(k))
-   end do
-   do k=1,nz
     call init_sum_write(hq(k))
    end do
    
-   do k=1,nz
-    call init_sum_write(huq_h(k))
-   end do
    do k=1,nz
     call init_sum_write(huq(k))
    end do
    do k=1,nz
     call init_sum_write(huq_v(k))
    end do
-   do k=1,nz
-    call init_sum_write(huq_z(k))
-   end do
    
-   do k=1,nz
-    call init_sum_write(hvq_h(k))
-   end do
    do k=1,nz
     call init_sum_write(hvq_u(k))
    end do
    do k=1,nz
     call init_sum_write(hvq(k))
-   end do
-   do k=1,nz
-    call init_sum_write(hvq_z(k))
    end do
  
    do k=1,nz
@@ -649,39 +576,21 @@ MODULE writeout
     call init_sum_write(q_h(k))
    end do
    do k=1,nz
-    call init_sum_write(q_u(k))
-   end do
-   do k=1,nz
-    call init_sum_write(q_v(k))
-   end do
-   do k=1,nz
     call init_sum_write(q(k))
    end do
    
-   do k=1,nz
-    call init_sum_write(uq_h(k))
-   end do
    do k=1,nz
     call init_sum_write(uq(k))
    end do
    do k=1,nz
     call init_sum_write(uq_v(k))
    end do
-   do k=1,nz
-    call init_sum_write(uq_z(k))
-   end do
    
-   do k=1,nz
-    call init_sum_write(vq_h(k))
-   end do
    do k=1,nz
     call init_sum_write(vq_u(k))
    end do
    do k=1,nz
     call init_sum_write(vq(k))
-   end do
-   do k=1,nz
-    call init_sum_write(vq_z(k))
    end do
  
    do k=1,nz
@@ -782,83 +691,31 @@ MODULE writeout
    do k=1,nz
     call end_var_write(h(k)%s,filename,0)
    end do
-   do k=1,nz
-    call end_var_write(h_u(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(h_v(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(h_z(k)%s,filename,0)
-   end do
    
-   do k=1,nz
-    call end_var_write(hu_h(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(hu(k)%s,filename,0)
    end do
-   do k=1,nz
-    call end_var_write(hu_v(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(hu_z(k)%s,filename,0)
-   end do
    
-   do k=1,nz
-    call end_var_write(hv_h(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(hv_u(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(hv(k)%s,filename,0)
    end do
-   do k=1,nz
-    call end_var_write(hv_z(k)%s,filename,0)
-   end do
 
-   do k=1,nz
-    call end_var_write(u_h(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(u(k)%s,filename,0)
    end do
-   do k=1,nz
-    call end_var_write(u_v(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(u_z(k)%s,filename,0)
-   end do
 
-   do k=1,nz
-    call end_var_write(v_h(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(v_u(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(v(k)%s,filename,0)
    end do
+
+   
    do k=1,nz
-    call end_var_write(v_z(k)%s,filename,0)
+    call end_var_write(huu(k)%s,filename,0)
    end do
 
    
    do k=1,nz
-    call end_var_write(huu_h(k)%s,filename,0)
-   end do
-
-   do k=1,nz
-    call end_var_write(huu_z(k)%s,filename,0)
-   end do
-   
-   do k=1,nz
-    call end_var_write(hvv_h(k)%s,filename,0)
-   end do
-
-   do k=1,nz
-    call end_var_write(hvv_z(k)%s,filename,0)
+    call end_var_write(hvv(k)%s,filename,0)
    end do
    
    do k=1,nz
@@ -902,43 +759,43 @@ MODULE writeout
    end do
       
    do k=1,nz
-    call end_var_write(hm_x_u(k)%s,filename,0)
+    call end_var_write(hm_x(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(hm_y_v(k)%s,filename,0)
+    call end_var_write(hm_y(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(up_dm_x_u(k)%s,filename,0)
+    call end_var_write(up_dm_x(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(up_dm_y_v(k)%s,filename,0)
+    call end_var_write(up_dm_y(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(up_du_u(k)%s,filename,0)
+    call end_var_write(up_du(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(up_dv_v(k)%s,filename,0)
+    call end_var_write(up_dv(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(dn_dm_x_u(k)%s,filename,0)
+    call end_var_write(dn_dm_x(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(dn_dm_y_v(k)%s,filename,0)
+    call end_var_write(dn_dm_y(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(dn_du_u(k)%s,filename,0)
+    call end_var_write(dn_du(k)%s,filename,0)
    end do
    
    do k=1,nz
-    call end_var_write(dn_dv_v(k)%s,filename,0)
+    call end_var_write(dn_dv(k)%s,filename,0)
    end do
    
    do k=0,nz
@@ -986,42 +843,21 @@ MODULE writeout
    end do
    
    do k=1,nz
-    call end_var_write(hq_h(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(hq_u(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(hq_v(k)%s,filename,0)
-   end do
-   do k=1,nz
     call end_var_write(hq(k)%s,filename,0)
    end do
    
-   do k=1,nz
-    call end_var_write(huq_h(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(huq(k)%s,filename,0)
    end do
    do k=1,nz
     call end_var_write(huq_v(k)%s,filename,0)
    end do
-   do k=1,nz
-    call end_var_write(huq_z(k)%s,filename,0)
-   end do
    
-   do k=1,nz
-    call end_var_write(hvq_h(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(hvq_u(k)%s,filename,0)
    end do
    do k=1,nz
     call end_var_write(hvq(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(hvq_z(k)%s,filename,0)
    end do
  
    do k=1,nz
@@ -1032,39 +868,21 @@ MODULE writeout
     call end_var_write(q_h(k)%s,filename,0)
    end do
    do k=1,nz
-    call end_var_write(q_u(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(q_v(k)%s,filename,0)
-   end do
-   do k=1,nz
     call end_var_write(q(k)%s,filename,0)
    end do
    
-   do k=1,nz
-    call end_var_write(uq_h(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(uq(k)%s,filename,0)
    end do
    do k=1,nz
     call end_var_write(uq_v(k)%s,filename,0)
    end do
-   do k=1,nz
-    call end_var_write(uq_z(k)%s,filename,0)
-   end do
    
-   do k=1,nz
-    call end_var_write(vq_h(k)%s,filename,0)
-   end do
    do k=1,nz
     call end_var_write(vq_u(k)%s,filename,0)
    end do
    do k=1,nz
     call end_var_write(vq(k)%s,filename,0)
-   end do
-   do k=1,nz
-    call end_var_write(vq_z(k)%s,filename,0)
    end do
  
    do k=1,nz

@@ -65,34 +65,20 @@ program sw
  call create_field(u_tmp,.false.,1)
  call create_field(v_tmp,.false.,1)
  
- call create_field(h_u,'h_u',.true.,1)
- call create_field(h_v,'h_v',.true.,1)
- call create_field(h_z,'h_z',.false.,1)
+ call create_field(h_u,.true.,1)
+ call create_field(h_v,.true.,1)
+ call create_field(h_z,.false.,1)
 
  call create_field(hu,'hu',.true.,1)
  call create_field(hv,'hv',.true.,1)
- 
- call create_field(hu_h,'hu_h',.false.,1)
- call create_field(hu_v,'hu_v',.false.,1)
- call create_field(hu_z,'hu_z',.false.,1)
- 
- call create_field(hv_h,'hv_h',.false.,1)
- call create_field(hv_u,'hv_u',.false.,1)
- call create_field(hv_z,'hv_z',.false.,1)
 
- call create_field(u_h,'u_h',.false.,1)
- call create_field(u_v,'u_v',.false.,1)
- call create_field(u_z,'u_z',.false.,1)
+ call create_field(u_v,.false.,1)
 
- call create_field(v_h,'v_h',.false.,1)
- call create_field(v_u,'v_u',.false.,1)
- call create_field(v_z,'v_z',.false.,1)
+ call create_field(v_u,.false.,1)
  
- call create_field(huu_h,'huu_h',.false.,1)
- call create_field(huu_z,'huu_z',.false.,1)
+ call create_field(huu,'huu',.false.,1)
 
- call create_field(hvv_h,'hvv_h',.false.,1)
- call create_field(hvv_z,'hvv_z',.false.,1)
+ call create_field(hvv,'hvv',.false.,1)
  
  call create_field(huv_h,'huv_h',.false.,1)
  call create_field(huv_z,'huv_z',.false.,1)
@@ -107,21 +93,23 @@ program sw
  call create_field(hum,'hum',.false.,1)
  call create_field(hvm,'hvm',.false.,1)
  
- call create_field(hm_x_u,'hm_x_u',.false.,1)
- call create_field(hm_y_v,'hm_y_v',.false.,1)
+ call create_field(hm_x,'hm_x',.false.,1)
+ call create_field(hm_y,'hm_y',.false.,1)
  
- call create_field(up_dm_x_u,'up_dm_x_u',.false.,1)
- call create_field(up_dm_y_v,'up_dm_y_v',.false.,1)
+ call create_field(up_dm_x,'up_dm_x',.false.,1)
+ call create_field(up_dm_y,'up_dm_y',.false.,1)
  
- call create_field(up_du_u,'up_du_u',.false.,1)
- call create_field(up_dv_v,'up_dv_v',.false.,1)
+ call create_field(up_du,'up_du',.false.,1)
+ call create_field(up_dv,'up_dv',.false.,1)
  
- call create_field(dn_dm_x_u,'dn_dm_x_u',.false.,1)
- call create_field(dn_dm_y_v,'dn_dm_y_v',.false.,1)
+ call create_field(dn_dm_x,'dn_dm_x',.false.,1)
+ call create_field(dn_dm_y,'dn_dm_y',.false.,1)
  
- call create_field(dn_du_u,'dn_du_u',.false.,1)
- call create_field(dn_dv_v,'dn_dv_v',.false.,1)
+ call create_field(dn_du,'dn_du',.false.,1)
+ call create_field(dn_dv,'dn_dv',.false.,1)
  
+ call create_field(uu,.true.,1)
+ call create_field(vv,.true.,1)
  call create_field(ke,'ke',.true.,1)
  call create_field(ape,'ape',.false.,1)
  
@@ -144,36 +132,23 @@ program sw
  call create_field(hvsmagv,'hvsmagv',.false.,1)
  
  call create_field(q_h,'q_h',.false.,1)
- call create_field(q_u,'q_u',.false.,1)
- call create_field(q_v,'q_v',.false.,1)
  call create_field(q,'q',.false.,1)
 
- call create_field(uq_h,'uq_h',.false.,1)
  call create_field(uq,'uq',.false.,1)
  call create_field(uq_v,'uq_v',.false.,1)
- call create_field(uq_z,'uq_z',.false.,1)
 
- call create_field(vq_h,'vq_h',.false.,1)
  call create_field(vq_u,'vq_u',.false.,1)
  call create_field(vq,'vq',.false.,1)
- call create_field(vq_z,'vq_z',.false.,1)
  
  call create_field(qq,'qq',.false.,1)
 
- call create_field(hq_h,'hq_h',.false.,1)
- call create_field(hq_u,'hq_u',.false.,1)
- call create_field(hq_v,'hq_v',.false.,1)
  call create_field(hq,'hq',.false.,1)
 
- call create_field(huq_h,'huq_h',.false.,1)
  call create_field(huq,'huq',.false.,1)
  call create_field(huq_v,'huq_v',.false.,1)
- call create_field(huq_z,'huq_z',.false.,1)
 
- call create_field(hvq_h,'hvq_h',.false.,1)
  call create_field(hvq_u,'hvq_u',.false.,1)
  call create_field(hvq,'hvq',.false.,1)
- call create_field(hvq_z,'hvq_z',.false.,1)
  
  call create_field(hqq,'hqq',.false.,1)
   
@@ -302,8 +277,11 @@ program sw
  end do
  
  do k=1,nz
-  ke(k)=0.5d0*(Ax(u(k)*u(k))+Ay(v(k)*v(k)))
-  call start_sync(ke(k))
+   uu(k)=u(k)%bz**2
+   vv(k)=v(k)%bz**2
+   call start_sync(uu(k))
+   call start_sync(vv(k))
+   ke(k)=0.5d0*(Ax(uu(k))+Ay(vv(k)))
  end do
  
  
@@ -622,7 +600,11 @@ program sw
    end if
    call start_sync(u(k))
    call start_sync(v(k))
-   ke(k)=0.5d0*(Ax(u(k)%bz**2)+Ay(v(k)%bz**2))
+   uu(k)=u(k)%bz**2
+   vv(k)=v(k)%bz**2
+   call start_sync(uu(k))
+   call start_sync(vv(k))
+   ke(k)=0.5d0*(Ax(uu(k))+Ay(vv(k)))
    call start_sync(ke(k))
    call end_sync(h(k))
    h_u(k)=Ax(h(k))

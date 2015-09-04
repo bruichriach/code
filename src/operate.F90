@@ -846,7 +846,7 @@ module grid_operate
     else
      tend => h(i)%tend1%bz
     end if
-    tend=-Gx(u(i)%bz*h_u(i)%bz)-Gy(v(i)%bz*h_v(i)%bz)
+    tend=-Gx(hu(i)%bz)-Gy(hv(i)%bz)
    end do
    
    nullify(tend)
@@ -876,10 +876,11 @@ module grid_operate
    call end_sync(v(i))
    call end_sync(m(i))
    call end_sync(ke(i))
+   v_u(i)=Ay(Ax(v(i)))
     tend=0.0d0    &
      +smagu(i)%bz  &
      +Ay(f%bz+zeta(i)%bz)   &
-      *Ay(Ax(v(i)))    &
+      *v_u(i)%bz    &
      -invrho(i)*Gx(m(i))    &
      -Gx(ke(i))     &
      +0.0d0
@@ -916,10 +917,11 @@ module grid_operate
    call end_sync(u(i))
    call end_sync(m(i))
    call end_sync(ke(i))
+   u_v(i)=Ax(Ay(u(i)))
     tend=0.0d0    &
      +smagv(i)%bz   &
      -Ax(f%bz+zeta(i)%bz)   &
-     *Ax(Ay(u(i)))    &
+     *u_v(i)%bz    &
      -invrho(i)*Gy(m(i))   &
      -Gy(ke(i))    &
      +0.0d0

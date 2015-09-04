@@ -127,40 +127,44 @@ module variables
  type(vvar), allocatable :: h_v(:)
  type(zvar), allocatable :: h_z(:)
  
- type(hvar), allocatable :: u_h(:)
+ !type(hvar), allocatable :: u_h(:)
  type(vvar), allocatable :: u_v(:)
- type(zvar), allocatable :: u_z(:)
+ !type(zvar), allocatable :: u_z(:)
  
- type(hvar), allocatable :: v_h(:)
+ !type(hvar), allocatable :: v_h(:)
  type(uvar), allocatable :: v_u(:)
- type(zvar), allocatable :: v_z(:)
+ !type(zvar), allocatable :: v_z(:)
  
  type(uvar), allocatable :: hu(:)
  type(vvar), allocatable :: hv(:)
  
- type(hvar), allocatable :: hu_h(:)
- type(vvar), allocatable :: hu_v(:)
- type(zvar), allocatable :: hu_z(:)
+ !type(hvar), allocatable :: hu_h(:)
+ !type(vvar), allocatable :: hu_v(:)
+ !type(zvar), allocatable :: hu_z(:)
  
- type(hvar), allocatable :: hv_h(:)
- type(uvar), allocatable :: hv_u(:)
- type(zvar), allocatable :: hv_z(:)
+ !type(hvar), allocatable :: hv_h(:)
+ !type(uvar), allocatable :: hv_u(:)
+ !type(zvar), allocatable :: hv_z(:)
  
- type(hvar), allocatable :: huu_h(:)
- type(zvar), allocatable :: huu_z(:)
+ type(uvar), allocatable :: uu(:)
 
- type(hvar), allocatable :: hvv_h(:)
- type(zvar), allocatable :: hvv_z(:)
+ type(vvar), allocatable :: vv(:)
+ 
+ type(hvar), allocatable :: huu(:)
+! type(zvar), allocatable :: huu_z(:)
+
+ type(hvar), allocatable :: hvv(:)
+! type(zvar), allocatable :: hvv_z(:)
  
  type(hvar), allocatable :: huv_h(:)
  type(zvar), allocatable :: huv_z(:)
  type(zvar), allocatable :: huv_uz(:)
  type(zvar), allocatable :: huv_vz(:)
  
- type(hvar), allocatable :: huuu(:)
- type(hvar), allocatable :: huuv(:)
- type(hvar), allocatable :: huvv(:)
- type(hvar), allocatable :: hvvv(:)
+ type(uvar), allocatable :: huuu(:)
+ type(vvar), allocatable :: huuv(:)
+ type(uvar), allocatable :: huvv(:)
+ type(vvar), allocatable :: hvvv(:)
  
  type(hvar), allocatable :: minh(:)
  
@@ -195,20 +199,20 @@ module variables
  type(uvar), allocatable :: hum(:)
  type(vvar), allocatable :: hvm(:)
  
- type(uvar), allocatable :: hm_x_u(:)
- type(vvar), allocatable :: hm_y_v(:)
+ type(uvar), allocatable :: hm_x(:)
+ type(vvar), allocatable :: hm_y(:)
  
- type(uvar), allocatable :: up_dm_x_u(:)
- type(vvar), allocatable :: up_dm_y_v(:)
+ type(uvar), allocatable :: up_dm_x(:)
+ type(vvar), allocatable :: up_dm_y(:)
  
- type(uvar), allocatable :: dn_dm_x_u(:)
- type(vvar), allocatable :: dn_dm_y_v(:)
+ type(uvar), allocatable :: dn_dm_x(:)
+ type(vvar), allocatable :: dn_dm_y(:)
  
- type(uvar), allocatable :: up_du_u(:)
- type(vvar), allocatable :: up_dv_v(:)
+ type(uvar), allocatable :: up_du(:)
+ type(vvar), allocatable :: up_dv(:)
  
- type(uvar), allocatable :: dn_du_u(:)
- type(vvar), allocatable :: dn_dv_v(:)
+ type(uvar), allocatable :: dn_du(:)
+ type(vvar), allocatable :: dn_dv(:)
  
  type(hvar), allocatable :: hm(:)
  
@@ -229,42 +233,40 @@ module variables
  type(zvar), allocatable :: q(:)
  
  type(hvar), allocatable :: q_h(:)
- type(uvar), allocatable :: q_u(:)
- type(vvar), allocatable :: q_v(:)
+! type(uvar), allocatable :: q_u(:)
+! type(vvar), allocatable :: q_v(:)
  
  type(zvar), allocatable :: hq(:)
 
- type(hvar), allocatable :: hq_h(:)
- type(uvar), allocatable :: hq_u(:)
- type(vvar), allocatable :: hq_v(:)
+! type(hvar), allocatable :: hq_h(:)
+! type(uvar), allocatable :: hq_u(:)
+! type(vvar), allocatable :: hq_v(:)
  
  type(uvar), allocatable :: huq(:)
 
- type(hvar), allocatable :: huq_h(:)
+! type(hvar), allocatable :: huq_h(:)
  type(vvar), allocatable :: huq_v(:)
- type(zvar), allocatable :: huq_z(:)
+! type(zvar), allocatable :: huq_z(:)
  
  type(vvar), allocatable :: hvq(:)
 
- type(hvar), allocatable :: hvq_h(:)
+! type(hvar), allocatable :: hvq_h(:)
  type(uvar), allocatable :: hvq_u(:)
- type(vvar), allocatable :: hvq_v(:)
- type(zvar), allocatable :: hvq_z(:)
+! type(zvar), allocatable :: hvq_z(:)
  
  type(zvar), allocatable :: hqq(:)
  
  type(uvar), allocatable :: uq(:)
 
- type(hvar), allocatable :: uq_h(:)
+! type(hvar), allocatable :: uq_h(:)
  type(vvar), allocatable :: uq_v(:)
- type(zvar), allocatable :: uq_z(:)
+! type(zvar), allocatable :: uq_z(:)
  
  type(vvar), allocatable :: vq(:)
 
- type(hvar), allocatable :: vq_h(:)
+! type(hvar), allocatable :: vq_h(:)
  type(uvar), allocatable :: vq_u(:)
- type(vvar), allocatable :: vq_v(:)
- type(zvar), allocatable :: vq_z(:)
+! type(zvar), allocatable :: vq_z(:)
  
  type(zvar), allocatable :: qq(:)
  
