@@ -646,7 +646,7 @@ MODULE writeout
    end do
    
    do k=1,nz
-    call init_sum_write(q(k))
+    call init_sum_write(q_h(k))
    end do
    do k=1,nz
     call init_sum_write(q_u(k))
@@ -1029,7 +1029,7 @@ MODULE writeout
    end do
    
    do k=1,nz
-    call end_var_write(q(k)%s,filename,0)
+    call end_var_write(q_h(k)%s,filename,0)
    end do
    do k=1,nz
     call end_var_write(q_u(k)%s,filename,0)
@@ -1099,25 +1099,25 @@ MODULE writeout
    
    write(desc,"(a32)") 'wind energy flux'
    format="(a32,a1,e23.16)"
-   write(10,format) adjustl(desc), ':', sum(0.5d0*(utau%out%z(1:mx,1:my)*u(3)%out%z(1:mx,1:my)+ &
-              utau%out%z(2:mx+1,1:my)*u(3)%out%z(2:mx+1,1:my))+  &
-              0.5d0*(vtau%out%z(1:mx,1:my)*v(3)%out%z(1:mx,1:my)+  &
-              vtau%out%z(1:mx,2:my+1)*v(3)%out%z(1:mx,2:my+1)))
+   write(10,format) adjustl(desc), ':', sum(0.5d0*(uutau%s%out%z(1:mx,1:my)+ &
+              uutau%s%out%z(2:mx+1,1:my))+  &
+              0.5d0*(vvtau%s%out%z(1:mx,1:my)+  &
+              vvtau%s%out%z(1:mx,2:my+1)))
    
    write(desc,"(a32)") 'bottom friction energy flux'
    format="(a32,a1,e23.16)"
-   write(10,format) adjustl(desc), ':', -sum(0.5d0*(bfricu%out%z(1:mx,1:my)*u(1)%out%z(1:mx,1:my)+ &
-              bfricu%out%z(2:mx+1,1:my)*u(1)%out%z(2:mx+1,1:my))+  &
-              0.5d0*(bfricv%out%z(1:mx,1:my)*v(1)%out%z(1:mx,1:my)+  &
-              bfricv%out%z(1:mx,2:my+1)*v(1)%out%z(1:mx,2:my+1)))
+   write(10,format) adjustl(desc), ':', -sum(0.5d0*(ubfricu%s%out%z(1:mx,1:my)+ &
+              ubfricu%s%out%z(2:mx+1,1:my))+  &
+              0.5d0*(vbfricv%s%out%z(1:mx,1:my)+  &
+              vbfricv%s%out%z(1:mx,2:my+1)))
    
    do i=1,nz
     write(desc,"(a31,i1)") 'smagorisky energy flux, layer ', i
     format="(a32,a1,e23.16)"
-    write(10,format) adjustl(desc), ':', sum(h(i)%out%z(1:mx,1:my)*(0.5d0*(smagu(i)%out%z(1:mx,1:my)*u(i)%out%z(1:mx,1:my)+ &
-              smagu(i)%out%z(2:mx+1,1:my)*u(i)%out%z(2:mx+1,1:my))+  &
-              0.5d0*(smagv(i)%out%z(1:mx,1:my)*v(i)%out%z(1:mx,1:my)+  &
-              smagv(i)%out%z(1:mx,2:my+1)*v(i)%out%z(1:mx,2:my+1))))
+    write(10,format) adjustl(desc), ':', sum(0.5d0*(husmagu(i)%s%out%z(1:mx,1:my)+ &
+              husmagu(i)%s%out%z(2:mx+1,1:my))+  &
+              0.5d0*(hvsmagv(i)%s%out%z(1:mx,1:my)+  &
+              hvsmagv(i)%s%out%z(1:mx,2:my+1)))
    end do
 
    write(desc,"(a32)") 'minimum layer thickness'

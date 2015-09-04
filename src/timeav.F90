@@ -354,8 +354,8 @@ module timeav
    end do
    
    do k=1,nz
-    q(k)=Ax(Ay(f%bz+zeta(k)%bz))*merge(0.0d0,1.0d0/h(k)%bz,(h(k)%bz == 0.0d0))
-    call av_iteratation(q(k))
+    q_h(k)=Ax(Ay(f%bz+zeta(k)%bz))*merge(0.0d0,1.0d0/h(k)%bz,(h(k)%bz == 0.0d0))
+    call av_iteratation(q_h(k))
    end do
    do k=1,nz
     q_u(k)=Ay(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_u(k)%bz,(h_u(k)%bz == 0.0d0))
