@@ -709,6 +709,8 @@ MODULE writeout
    do k=1,nz
     call init_sum_write(vtendh(k))
    end do
+
+   counter=0
 #endif
 #endif
   
