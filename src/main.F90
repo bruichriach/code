@@ -511,16 +511,10 @@ program sw
 #endif
  
 
-#ifdef ALLOW_RIGID_LID
-  do k=1,nz
-   ape(k)=(h(k)%bz-minh(k)%bz)*(-pres%bz+m(k)%bz-minm(k)%bz)
-  end do
-
-#else
   do k=1,nz
    ape(k)=(h(k)%bz-minh(k)%bz)*(m(k)%bz-minm(k)%bz)
   end do
-#endif
+
 
   call timeav_iteratation()
   

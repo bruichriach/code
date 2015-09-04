@@ -278,7 +278,11 @@ module solver
   integer, intent(in) :: n
   real(kind=db), pointer :: tendu(:,:), tendv(:,:)
   
-  
+   
+   do i=1,nz
+    m(i)=m(i)%bz-pres%bz
+    call start_sync(m(i))
+   end do
    do i=1,nz
     if (n == 1) then
      tendu => u(i)%tend2%bz
