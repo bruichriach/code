@@ -266,12 +266,23 @@ module grid_operate
   pure function sGx(a) result (b)
    use global
    use params
-   
+   use parallel
+ 
    implicit none
    
    class(var), intent(in) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
-   
+   real(kind=db), pointer :: test
+   integer :: k
+
+    do k=0,proc_num-1
+     if (allocated(a%mpi(k)%r_mpi)) then
+      if ((a%mpi(k)%r_req /= mpi_request_null)) then
+    !print *, "OMG Error Error Error"
+        test=0.0d0
+     end if
+    end if
+   end do
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) - &
         a%z(a%p%lx:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny))*indx
  
@@ -280,12 +291,26 @@ module grid_operate
   pure function sGy(a) result (b)
    use global
    use params
+   use parallel
+
+
    
    implicit none
    
    class(var), intent(in) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
-   
+     real(kind=db), pointer :: test
+   integer :: k
+
+    do k=0,proc_num-1
+     if (allocated(a%mpi(k)%r_mpi)) then
+      if ((a%mpi(k)%r_req /= mpi_request_null)) then
+    !print *, "OMG Error Error Error"
+        test=0.0d0
+     end if
+    end if
+   end do
+ 
    
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1) - &
         a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly:a%p%ly+a%p%ny))*indy
@@ -295,11 +320,25 @@ module grid_operate
   pure function sAx(a) result (b)
    use global
    use params
+   use parallel
+
+
    
    implicit none
    
    class(var), intent(in) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny)
+   real(kind=db), pointer :: test
+   integer :: k
+
+    do k=0,proc_num-1
+     if (allocated(a%mpi(k)%r_mpi)) then
+      if ((a%mpi(k)%r_req /= mpi_request_null)) then
+    !print *, "OMG Error Error Error"
+        test=0.0d0
+     end if
+    end if
+   end do
    
    
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx+1,a%p%ly+1:a%p%ly+a%p%ny) + &
@@ -310,11 +349,24 @@ module grid_operate
   pure function sAy(a) result (b)
    use global
    use params
+   use parallel
+
    
    implicit none
    
    class(var), intent(in) :: a
    real(kind=db) :: b(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1)
+   real(kind=db), pointer :: test
+   integer :: k
+
+    do k=0,proc_num-1
+     if (allocated(a%mpi(k)%r_mpi)) then
+      if ((a%mpi(k)%r_req /= mpi_request_null)) then
+    !print *, "OMG Error Error Error"
+        test=0.0d0
+     end if
+    end if
+   end do
    
    
    b=(a%z(a%p%lx+1:a%p%lx+a%p%nx,a%p%ly+1:a%p%ly+a%p%ny+1) + &

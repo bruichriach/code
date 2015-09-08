@@ -241,7 +241,7 @@ program sw
   call read_var(v(k),'old')
  end do
 #ifdef ALLOW_RIGID_LID
- call read_var(pres,'old')
+ !call read_var(pres,'old')
 #endif
  
  do k=1,nz
@@ -274,6 +274,12 @@ program sw
   call start_sync(h_u(k))
   h_v(k)=Ay(h(k))
   call start_sync(h_v(k))
+#ifdef DO_TIME_AVERAGE
+   hu(k)=h_u(k)%bz*u(k)%bz
+   hv(k)=h_v(k)%bz*v(k)%bz
+   call start_sync(hu(k))
+   call start_sync(hv(k))
+#endif
  end do
  
  do k=1,nz
@@ -282,6 +288,7 @@ program sw
    call start_sync(uu(k))
    call start_sync(vv(k))
    ke(k)=0.5d0*(Ax(uu(k))+Ay(vv(k)))
+   call start_sync(ke(k))
  end do
  
  
@@ -295,7 +302,7 @@ program sw
 !--------------------------------------------------------------------------!
 !--------------------------------------------------------------------------!
  
-
+call end_sync(s)
  
 !--------------------------------------------------------------------------------------------------------------!
 
@@ -314,15 +321,15 @@ program sw
       modeltime(n), CHAR(13)
    end if
   end if 
-  
-  do k=1,nz
+   
+ do k=1,nz
    call end_sync(h_u(k))
    call end_sync(h_v(k))
    call depth(h_u,Ax(s),d_u)
    call depth(h_v,Ay(s),d_v)
    h_z(k)=0.5d0*(Ay(h_u(k))+Ax(h_v(k)))
-   zeta(k)%bz=Gx(v(k))-Gy(u(k))
-   q(k)=(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
+!   zeta(k)%bz=Gx(v(k))-Gy(u(k))
+!   q(k)=(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
   end do
   
   if (n == 0) then
@@ -350,7 +357,8 @@ program sw
 #ifdef ALLOW_STOCHASTIC_WIND
   call set_wind(n)
 #endif
-  
+ 
+
   do k=1,nz
    call end_sync(u(k))
    call end_sync(v(k))
@@ -359,17 +367,20 @@ program sw
    smag(k)=max(dx,dy)**4*cvar*sqrt(tension(k)%bz**2+Ax(Ay(strain(k)%bz**2)))
    call start_sync(smag(k))
   end do
+
   
   
   
   do k=1,nz
    call end_sync(u(k))
    call end_sync(v(k))
-   zeta(k)=Gx(v(k))-Gy(u(k))
+  ! zeta(k)=Gx(v(k))-Gy(u(k))
+   zeta(k)%bz=Gx(v(k))-Gy(u(k))
+   q(k)=(f%bz+zeta(k)%bz)*merge(0.0d0,1.0d0/h_z(k)%bz,(h_z(k)%bz == 0.0d0))
   end do
   do k=1,nz
    call end_sync(lapu(k))
-   call end_sync(lapv(k))
+   !call end_sync(lapv(k))
    call end_sync(smag(k))
    smagu(k)=-Ax(smag(k))*(sGxx(lapu(k))+sGyy(lapu(k)))
   end do
@@ -377,7 +388,7 @@ program sw
   bfricu=bf*sqrt(Ax(ke(1))/umax)**bfricpoly*u(1)%bz
   call tend_u(n)
   do k=1,nz
-   call end_sync(lapu(k))
+   !call end_sync(lapu(k))
    call end_sync(lapv(k))
    call end_sync(smag(k))
    smagv(k)=-Ay(smag(k))*(sGxx(lapv(k))+sGyy(lapv(k)))

@@ -25,6 +25,7 @@ module timeav
    use variables
    use overload
    use grid_operate
+   use sync
 
    implicit none
    
@@ -69,6 +70,8 @@ module timeav
    end do
    
    do k=1,nz
+    call end_sync(u(k))
+    call end_sync(v(k))
     huv_z(k)=h_z(k)%bz*Ay(u(k))*Ax(v(k))
     call av_iteratation(huv_z(k))
    end do
@@ -89,12 +92,14 @@ module timeav
    end do
 
    do k=1,nz
-    huuv(k)=h_v(k)%bz*Ay(uu(k))*v(k)%bz
+    call end_sync(uu(k))
+    huuv(k)=h_v(k)%bz*Ax(Ay(uu(k)))*v(k)%bz
     call av_iteratation(huuv(k))
    end do
    
    do k=1,nz
-    huvv(k)=h_u(k)%bz*u(k)%bz*Ax(vv(k))
+    call end_sync(vv(k))
+    huvv(k)=h_u(k)%bz*u(k)%bz*Ay(Ax(vv(k)))
     call av_iteratation(huvv(k))
    end do
 
@@ -104,6 +109,7 @@ module timeav
    end do
    
    do k=1,nz
+    call end_sync(m(k))
     hum(k)=h_u(k)%bz*u(k)%bz*Ax(m(k))
     call av_iteratation(hum(k))
    end do
