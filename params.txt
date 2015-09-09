@@ -8,7 +8,7 @@ gravitational acceleration      : 0.9810000000000000E+03
 reduced gravitational accel     : 0.3000000000000000E+00 0.7000000000000000E+00
 timestep                        : 0.1118033988749895E-01
 runtime                         : 0.1000000000000000E+05
-writetime                       : 0.2500000000000000E+04
+writetime                       : 0.1000000000000000E+04
 bottom friction                 : 0.2000000000000000E+00
 bottom friction velocity        : 0.2000000000000000E-01
 bottom friction polynomial      :   2
