@@ -1,18 +1,17 @@
 #!/bin/bash --login
-#PBS -N t3l
+#PBS -N u3l
 #PBS -l select=1
 
 
-#PBS -l walltime=47:30:00
-#PBS -q long
+#PBS -l walltime=23:30:00
 
 
 #PBS -A n01-Marshall3
 
-export PBS_O_WORKDIR=$(readlink -f /work/n01/n01/forshaw/dat/t3l)
+export PBS_O_WORKDIR=$(readlink -f /work/n01/n01/forshaw/dat/u3l)
 
 
-cd /work/n01/n01/forshaw/dat/t3l
+cd /work/n01/n01/forshaw/dat/u3l
 
 export OMP_NUM_THREADS=1
 
